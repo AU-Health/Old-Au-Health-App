@@ -7,10 +7,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 //https://stackoverflow.com/questions/36795819/when-should-i-use-curly-braces-for-es6-import/36796281#36796281 << super cool explanation on imports
 
 //importing the different screens
-import HomeScreen from './Home';
-import ChallengeScreen from './Challenges';
-import ProgressScreen from './Progress';
-import SettingScreen from './Settings';
+import HomeScreen from './screens/Home';
+import ChallengeScreen from './screens/Challenges';
+import ProgressScreen from './screens/Progress';
+import SettingScreen from './screens/Settings';
 
 //importing icons
 import { MaterialCommunityIcons } from '@expo/vector-icons'
