@@ -1,15 +1,61 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { createAppContainer } from 'react-navigation';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+//https://stackoverflow.com/questions/36795819/when-should-i-use-curly-braces-for-es6-import/36796281#36796281 << super cool explanation on imports
 
+//importing the different screens
+import HomeScreen from './screens/Home';
+import ChallengeScreen from './screens/Challenges';
+import ProgressScreen from './screens/Progress';
+import SettingScreen from './screens/Settings';
+
+//importing icons
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+
+//App
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    return (
+        <NavigationContainer>
+              <Tab.Navigator
+              screenOptions={( { route }) => ({
+                  tabBarIcon: ({ color, size }) => {
+                      //icons found using this webiste: https://oblador.github.io/react-native-vector-icons/
+                      //scroll down to the material community tab cause that's what I imported
+                      const icons = {
+                          Home: 'home',
+                          Progress: 'progress-clock',
+                          Challenges: 'ship-wheel',
+                          Settings: 'settings-helper',
+                      };
+
+                      return (
+                        <MaterialCommunityIcons
+                            name = {icons[route.name]}
+                            color = {color}
+                            size = {size}
+                        />
+                      );
+                  },
+                  //headerStyle: { backgroundColor: '#000000'}, //trying to set the color of the navi bar
+              })}
+              tabBarOptions={{
+                  activeTintColor: '#1b998b',
+                  inactiveTintColor: 'grey',
+              }}
+              >
+                <Tab.Screen name="Home" component={HomeScreen} />
+                <Tab.Screen name="Progress" component={ProgressScreen} />
+                <Tab.Screen name="Challenges" component={ChallengeScreen} />
+                <Tab.Screen name="Settings" component={SettingScreen} />
+              </Tab.Navigator>
+        </NavigationContainer>
+    );
 }
+
+const Tab = createBottomTabNavigator();
 
 const styles = StyleSheet.create({
   container: {
