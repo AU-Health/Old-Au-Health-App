@@ -10,15 +10,14 @@ import HomeScreen from './screens/Home';
 import ChallengeScreen from './screens/Challenges';
 import ProgressScreen from './screens/Progress';
 import SettingScreen from './screens/Settings';
-import 'Frontend\App.CSS'
-//importing icons
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import AppStyle from './AppStyle';
 
 //App
 export default function App() {
     return (
         <NavigationContainer>
-          <Text className ="harambe">Hi</Text>
+          <Text style={AppStyle.harambe}>Hi</Text>
               <Tab.Navigator
               screenOptions={( { route }) => ({
                   tabBarIcon: ({ color, size }) => {
