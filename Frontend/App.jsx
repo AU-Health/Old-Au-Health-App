@@ -9,15 +9,16 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeScreen from './screens/Home';
 import ChallengeScreen from './screens/Challenges';
 import ProgressScreen from './screens/Progress';
-import SettingScreen from './screens/Settings';
+import Settings from './screens/Settings';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import AppStyle from './AppStyle';
+
 
 //App
 export default function App() {
     return (
         <NavigationContainer>
-          <Text style={AppStyle.harambe}>Hi</Text>
+          <Text>Hi</Text>
               <Tab.Navigator
               screenOptions={( { route }) => ({
                   tabBarIcon: ({ color, size }) => {
@@ -48,7 +49,7 @@ export default function App() {
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="Progress" component={ProgressScreen} />
                 <Tab.Screen name="Challenges" component={ChallengeScreen} />
-                <Tab.Screen name="Settings" component={SettingScreen} />
+                <Tab.Screen name="Settings" component={Settings} />
               </Tab.Navigator>
         </NavigationContainer>
     );

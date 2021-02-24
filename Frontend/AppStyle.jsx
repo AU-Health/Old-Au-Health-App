@@ -7,7 +7,6 @@ const AppStyle = StyleSheet.create({
         justifyContent: 'center', 
         alignItems: 'center'
     }
-    
 
 })
 
