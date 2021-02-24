@@ -9,7 +9,7 @@
         <ul>
             <li>Apple</li>
             <ol>
-                <li>Step 1</li>
+                <li>Go to <a href="https://dev.mysql.com/downloads/mysql/">MySQL installer</a> and download for MacOS Look at rest of instructions by seeing Windows</li>
             </ol>
             <li>Windows (reference: https://www.youtube.com/watch?v=GIRcpjg-3Eg)</li>
             <ol>
