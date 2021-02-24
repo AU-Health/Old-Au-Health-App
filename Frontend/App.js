@@ -19,6 +19,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 export default function App() {
     return (
         <NavigationContainer>
+          <Text>Hi</Text>
               <Tab.Navigator
               screenOptions={( { route }) => ({
                   tabBarIcon: ({ color, size }) => {
