@@ -5,20 +5,20 @@ import { createAppContainer } from 'react-navigation';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 //https://stackoverflow.com/questions/36795819/when-should-i-use-curly-braces-for-es6-import/36796281#36796281 << super cool explanation on imports
-
 //importing the different screens
 import HomeScreen from './screens/Home';
 import ChallengeScreen from './screens/Challenges';
 import ProgressScreen from './screens/Progress';
-import SettingScreen from './screens/Settings';
-
-//importing icons
+import Settings from './screens/Settings';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import AppStyle from './AppStyle';
+
 
 //App
 export default function App() {
     return (
         <NavigationContainer>
+          <Text>Hi</Text>
               <Tab.Navigator
               screenOptions={( { route }) => ({
                   tabBarIcon: ({ color, size }) => {
@@ -49,7 +49,7 @@ export default function App() {
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="Progress" component={ProgressScreen} />
                 <Tab.Screen name="Challenges" component={ChallengeScreen} />
-                <Tab.Screen name="Settings" component={SettingScreen} />
+                <Tab.Screen name="Settings" component={Settings} />
               </Tab.Navigator>
         </NavigationContainer>
     );
