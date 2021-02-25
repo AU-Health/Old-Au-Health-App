@@ -35,7 +35,7 @@ export default class Login extends React.Component {
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 					<Image style={{ width: '150px', height: '150px' }} source={require('../assets/eaglelogo.png')} />
 					<br />
-					<Text h5><b>Login</b></Text>
+					<Text h5><b>Login </b> or <b><a href=''>Sign-up</a></b></Text>
 					<br /><br />
 					<Text style={{ alignSelf: 'baseline' }}>Username</Text>
 					<TextInput
