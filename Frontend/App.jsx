@@ -11,6 +11,7 @@ import ChallengeScreen from './screens/Challenges';
 import ProgressScreen from './screens/Progress';
 import Settings from './screens/Settings';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import {useDimensions} from '@react-native-community/hooks';
 import AppStyle from './AppStyle';
 
 
@@ -18,7 +19,6 @@ import AppStyle from './AppStyle';
 export default function App() {
     return (
         <NavigationContainer>
-          <Text>Hi</Text>
               <Tab.Navigator
               screenOptions={( { route }) => ({
                   tabBarIcon: ({ color, size }) => {
