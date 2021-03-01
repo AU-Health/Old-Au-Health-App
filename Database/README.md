@@ -3,7 +3,9 @@
 <h1>SETUP</h1>
 <p>Will need to setup MySQL,DataGrip(kinda optional) and PHPMyAdmin</p>
 
-<ul>
+<h2>Setting up XAAMP with PHPMyAdmin and MySQL</h2>
+
+<ol>
     <li>Click on the link <a href="https://www.apachefriends.org/index.html">here</a></li>
     <li>Download XAAMP for your OS </li>
     <li>Open file which was downloaded</li>
@@ -29,8 +31,21 @@
     <li>Click "Next"</li>
     <li>Select location to save your XAAMP and click "Next"</li>
     <li>Select "English" for language and click "Next"</li>
-    <li>Remove checkmark to "Learn more about Bitnami for XAAMP" and click next (XAAMP will be installing)</li>
-</ul>
+    <li>Remove checkmark to "Learn more about Bitnami for XAAMP" and click next. (XAAMP will be installing)</li>
+    <li>Go to next steps with "Setting password for MySQL"</li>
+</ol>
+
+<h2>Setting password for MySQL</h2>
+<ol>
+    <li>Open "XAAMP Control Panel"</li>
+    <li>In the row with MySQL, click "Start" (starts MySQL)</li>
+    <li>In the row with MySQL, click "Admin" (Open phpMyAdmin)</li>
+    <li>Select "User Accounts" tab at the top bar</li>
+    <li>In the row with hostname "127.0.0.1", click "Edit priviledges"</li>
+    <li>Click "change password"</li>
+    <li>Type in and retype password. Save password somewhere</li>
+    <li>Click "Go"</li>
+</ol>
 
 
 <h1>Starting the Database</h1>
