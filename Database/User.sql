@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS `CurrentQuestionnaireResponse`
 (
     `UserId`      INT NOT NULL UNIQUE,
     `SleepRating` TINYINT(1), #if hours of sleep is added, then sleep will be own table
-    PRIMARY KEY (UserId)
+    PRIMARY KEY (UserId),
+    FOREIGN KEY (UserId) REFERENCES User (UserId)
 );
 
 #Table for User questionnaire history
@@ -86,31 +87,8 @@ CREATE TABLE `USER SPINS`
 (
     `UserId`           INT        NOT NULL UNIQUE,
     `SpinsPerDay`      TINYINT(2) NOT NULL DEFAULT (1),
-    `NextSpinDateTime` DATETIME            DEFAULT (SYSDATE())
-);
-
-#Stores types of categories
-CREATE TABLE `CategoryTypes`
-(
-    `CategoryId`   TINYINT(1) UNIQUE  NOT NULL,
-    `CategoryName` VARCHAR(20) UNIQUE NOT NULL,
-    PRIMARY KEY (CategoryId)
-);
-
-#Store user types
-CREATE TABLE `UserTypes`
-(
-    `UserTypeId`   TINYINT(1) UNIQUE  NOT NULL,
-    `UserTypeName` VARCHAR(10) UNIQUE NOT NULL,
-    PRIMARY KEY (UserTypeId)
-);
-
-#Store Gender types
-CREATE TABLE `GenderTypes`
-(
-    `GenderTypeId`   TINYINT(2) UNIQUE  NOT NULL,
-    `GenderTypeName` VARCHAR(10) UNIQUE NOT NULL,
-    PRIMARY KEY (GenderTypeId)
+    `NextSpinDateTime` DATETIME            DEFAULT (SYSDATE()),
+    PRIMARY KEY (UserId)
 );
 
 #Current Dares
@@ -149,7 +127,6 @@ CREATE TABLE `TruthsCurrent`
 #Dare History ... assuming dares cannot be repeated
 CREATE TABLE `DaresHistory`
 (
-
     `UserId`         INT      NOT NULL UNIQUE,
     `DareId`         SMALLINT NOT NULL UNIQUE, #will later reference the dare id in the other schema
     `UserResponse`   BOOLEAN DEFAULT (FALSE),  #response to dare (whether success or not). Decide if this needs to be there or will it be in the jumble with all truth responses
@@ -163,7 +140,6 @@ CREATE TABLE `DaresHistory`
 #Questions History ... assuming questions cannot be repeated
 CREATE TABLE `QuestionsHistory`
 (
-
     `UserId`         INT      NOT NULL UNIQUE,
     `QuestionId`     SMALLINT NOT NULL UNIQUE,    #will later reference the question id in the other schema
     `ExpireDateTime` DATETIME NOT NULL,
@@ -177,7 +153,6 @@ CREATE TABLE `QuestionsHistory`
 #Truths History ... assuming dares cannot be repeated
 CREATE TABLE `TruthsHistory`
 (
-
     `UserId`         INT      NOT NULL UNIQUE,
     `TruthId`        SMALLINT NOT NULL UNIQUE,    #will later reference the truth  id in the other schema
     `ExpireDateTime` DATETIME NOT NULL,
@@ -188,21 +163,13 @@ CREATE TABLE `TruthsHistory`
     FOREIGN KEY (Completed) REFERENCES ActivityCompletedTypes (ActivityCompletedTypeId)
 );
 
-#Activity Completion types
-CREATE TABLE `ActivityCompletedTypes`
-(
-    `ActivityCompletedTypeId`   TINYINT(1) NOT NULL UNIQUE,
-    `ActivityCompletedTypeName` VARCHAR(10),
-    PRIMARY KEY (ActivityCompletedTypeId)
-);
-
 #Table of Organizations user is apart of
 CREATE TABLE `UserOrganizations`
 (
     `UserId`         INT      NOT NULL UNIQUE,
     `OrganizationId` SMALLINT NOT NULL, #will be id of communities which are created
     PRIMARY KEY (UserId, OrganizationId),
-    FOREIGN KEY (UserId) REFERENCES User(UserId)
+    FOREIGN KEY (UserId) REFERENCES User (UserId)
 );
 
 #User Reminders table (if needed)
@@ -210,7 +177,8 @@ CREATE TABLE `UserReminders`
 (
     `UserId`   INT         NOT NULL UNIQUE,
     `Reminder` VARCHAR(20) NOT NULL UNIQUE,
-    PRIMARY KEY (UserId, Reminder)
+    PRIMARY KEY (UserId, Reminder),
+    FOREIGN KEY (UserId) REFERENCES User (UserId)
 );
 
 #User Refresh tokens
@@ -239,11 +207,82 @@ CREATE TABLE IF NOT EXISTS `CategoryLevels`
 );
 
 #User Settings
-CREATE TABLE `UserSettings`(
-    `SettingId` INT NOT NULL UNIQUE,
-    `UserId` INT NOT NULL UNIQUE,
-    `Setting` VARCHAR(20) NOT NULL,
+CREATE TABLE `UserSettings`
+(
+    `SettingId`    INT         NOT NULL UNIQUE,
+    `UserId`       INT         NOT NULL UNIQUE,
+    `Setting`      VARCHAR(20) NOT NULL,
     `SettingValue` VARCHAR(20) NOT NULL,
     PRIMARY KEY (SettingId),
-    FOREIGN KEY (UserId) REFERENCES User(UserId)
-)
+    FOREIGN KEY (UserId) REFERENCES User (UserId)
+);
+
+#############  KNOWN TYPES #############
+
+#Stores types of categories
+CREATE TABLE `CategoryTypes`
+(
+    `CategoryId`   TINYINT(1) UNIQUE  NOT NULL,
+    `CategoryName` VARCHAR(30) UNIQUE NOT NULL,
+    PRIMARY KEY (CategoryId)
+);
+
+INSERT INTO CategoryTypes(CategoryId, CategoryName)
+VALUES (1, 'Physical Activity');
+INSERT INTO CategoryTypes(CategoryId, CategoryName)
+VALUES (2, 'Occupational Wellness');
+INSERT INTO CategoryTypes(CategoryId, CategoryName)
+VALUES (3, 'Emotional Wellness');
+INSERT INTO CategoryTypes(CategoryId, CategoryName)
+VALUES (4, 'Social Wellness');
+INSERT INTO CategoryTypes(CategoryId, CategoryName)
+VALUES (5, 'Fruit & Vegetable Consumption');
+INSERT INTO CategoryTypes(CategoryId, CategoryName)
+VALUES (6, 'Sleep');
+INSERT INTO CategoryTypes(CategoryId, CategoryName)
+VALUES (7, 'Water Consumption');
+
+
+#Store user types
+CREATE TABLE `UserTypes`
+(
+    `UserTypeId`   TINYINT(1) UNIQUE  NOT NULL,
+    `UserTypeName` VARCHAR(10) UNIQUE NOT NULL,
+    PRIMARY KEY (UserTypeId)
+);
+
+INSERT INTO UserTypes(UserTypeId, UserTypeName)
+VALUES (1, 'Normal User');
+INSERT INTO UserTypes(UserTypeId, UserTypeName)
+VALUES (1, 'Admin');
+
+
+#Store Gender types
+CREATE TABLE `GenderTypes`
+(
+    `GenderTypeId`   TINYINT(2) UNIQUE  NOT NULL,
+    `GenderTypeName` VARCHAR(10) UNIQUE NOT NULL,
+    PRIMARY KEY (GenderTypeId)
+);
+
+INSERT INTO GenderTypes(GenderTypeId, GenderTypeName) VALUES (1,'Cisgender');
+INSERT INTO GenderTypes(GenderTypeId, GenderTypeName) VALUES (2,'Trasgender');
+INSERT INTO GenderTypes(GenderTypeId, GenderTypeName) VALUES (3,'Two-spirit');
+INSERT INTO GenderTypes(GenderTypeId, GenderTypeName) VALUES (4,'Non-binary');
+INSERT INTO GenderTypes(GenderTypeId, GenderTypeName) VALUES (5,'Genderqueer');
+INSERT INTO GenderTypes(GenderTypeId, GenderTypeName) VALUES (6,'Gender expression');
+INSERT INTO GenderTypes(GenderTypeId, GenderTypeName) VALUES (7,'Gender Fluid');
+INSERT INTO GenderTypes(GenderTypeId, GenderTypeName) VALUES (8,'Gender Neutral');
+INSERT INTO GenderTypes(GenderTypeId, GenderTypeName) VALUES (9,'Other');
+
+#Activity Completion types
+CREATE TABLE `ActivityCompletedTypes`
+(
+    `ActivityCompletedTypeId`   TINYINT(1) NOT NULL UNIQUE,
+    `ActivityCompletedTypeName` VARCHAR(10),
+    PRIMARY KEY (ActivityCompletedTypeId)
+);
+
+INSERT INTO ActivityCompletedTypes(ActivityCompletedTypeId, ActivityCompletedTypeName) VALUES (1,'Completed');
+INSERT INTO ActivityCompletedTypes(ActivityCompletedTypeId, ActivityCompletedTypeName) VALUES (2,'Failed to Complete');
+INSERT INTO ActivityCompletedTypes(ActivityCompletedTypeId, ActivityCompletedTypeName) VALUES (3,'No Attempt');
