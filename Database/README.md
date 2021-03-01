@@ -27,6 +27,11 @@ Will need to setup MySQL,DataGrip(kinda optional) and PHPMyAdmin
     1. Select location to save your XAAMP and click "Next"
     1. Select "English" for language and click "Next"
     1. Remove checkmark to "Learn more about Bitnami for XAAMP" and click next. (XAAMP will be installing)
+    1. Upon installing: go to xaamp->phpMyAdmin-> open "config.inc"
+    1. Set blowfish_secret on line 6 from "xaamp" to something else by one of the two options:
+        * Do this command in node: require('crypto').randomBytes(32).toString('hex')
+        * Use my secret which is '174258d118d15909cb5568a13479d53dedfe2fad3fb5299bb1e3b882e026f59a'
+    
     1. Go to next steps with "Setting password for MySQL"
 
 
