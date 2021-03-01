@@ -1,48 +1,43 @@
 #Welcome to AU Cares Database
 
-<h1>Setup</h1>
+<h1>SETUP</h1>
+<p>Will need to setup MySQL,DataGrip(kinda optional) and PHPMyAdmin</p>
 
-
-
-<ol>
-    <li>Download MySql
+<ul>
+    <li>Click on the link <a href="https://www.apachefriends.org/index.html">here</a></li>
+    <li>Download XAAMP for your OS </li>
+    <li>Open file which was downloaded</li>
+    <li>(For Windows) If warning pops up for Windows with UAC and msConfig,
+        <ol>
+            <li>Click on Windows Search bar and type "Run"</li>
+            <li>Enter "msconfig" and click "OK"</li>
+            <li>Select the "Tools" tab</li>
+            <li>Select "Change UAC Settings" and click "Launch"</li>
+            <li>Move slide bar to "Never Notify" and press "OK"</li>
+            <li>Click "OK" in the window.</li>
+            <li>Select "OK" for where the warning popped up</li>
+        </ol>
+    </li>
+    <li>In window for things to download, only keep checkmarks for:
         <ul>
-            <li>Apple</li>
-            <ol>
-                <li>Go to <a href="https://dev.mysql.com/downloads/mysql/">MySQL installer</a> and download for MacOS Look at rest of instructions by seeing Windows</li>
-            </ol>
-            <li>Windows (reference: https://www.youtube.com/watch?v=GIRcpjg-3Eg)</li>
-            <ol>
-                <li>Go to <a href="https://dev.mysql.com/downloads/installer/">MySql windows installer</a></li>
-                <li> Select "Download" button for the smaller size file (Web version) by clicking download</li>
-                <li>Select "No thanks, just start my download." at the bottom the new screen --- Download of MySql starts after clicking</li>
-                <li>Open MySql installer which was downloaded</li>
-                <li>(Setup)Select "Developer Default" and click next</li>
-                <li>(Downloads) Download what is asked and click execute. Keep clicking "Try Again" on those that fail</li>
-                <li>(Installation) Go through installation .... might take some time</li>
-                <li>(Product Configuration) All should be ready to configure. Just click next</li>
-                <li>(Type and networking) Ensure config type is "Development Computer" and port 3306. Leave defaults and Click next</li>
-                <li>(Authentication Method) Select User Strong password and click next</li>
-                <li>(Accounts and Roles) MySQL pass: "AuHealthApp123987$%^" .... I might need to add people?</li>
-                <li>(Windows Service) Remove checkmark for "Start the MySQL Server at System Startup". Click next</li>
-                <li>(Apply configuration steps) Click execute</li>
-                <li>(Product configuration) Click next</li>
-                <li>(Connect to server) At the bottom, leave user as root and put password from earlier step. Click check. After this step server should be connected. Click next</li>
-                <li>(Apply configuration) Click execute</li>
-                <li>(Installation complete) Click finish</li>
-            </ol>
+            <li>Apache</li>
+            <li>MySQL</li>
+            <li>PHP</li>
+            <li>phpMyAdmin</li>
         </ul>
     </li>
-    <li>Set up database with DataGrip (reference https://www.jetbrains.com/help/datagrip/connecting-to-a-database.html#connect-to-mysql-database)</li>
-    <ol>
-        <li>Download Datagrip</li>
-        <li>In the project folder, go to File-> New Project ->Datasource -> MySQL</li>
-        <ul>
-            <li>Leave all as default and add comment if you would like</li>
-            <li>For user, put "root"</li>
-            <li>For pass: put password from earlier</li>
-            <li>Click test connection. Download needed drivers</li>
-            <li>Click OK -- datagrip should connect with server</li>
-        </ul>
-    </ol>
+    <li>Click "Next"</li>
+    <li>Select location to save your XAAMP and click "Next"</li>
+    <li>Select "English" for language and click "Next"</li>
+    <li>Remove checkmark to "Learn more about Bitnami for XAAMP" and click next (XAAMP will be installing)</li>
+</ul>
+
+
+<h1>Starting the Database</h1>
+<ol>
+    <li>Open "XAAMP Control Panel"</li>
+    <li>In the row with Apache, click "Start"</li>
+    <li>(To start MySQL) In the row with MySQL, click "Start"</li>
+    <li>(To start PHPMyAdmin) In the row with MySQL, click "Admin".</li>
+
 </ol>
