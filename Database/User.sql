@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `User`
     `ConsentFormSigned`   BOOLEAN     NOT NULL,
     `UserAccountDisabled` BOOLEAN     NOT NULL,
     PRIMARY KEY (UserId),
-    FOREIGN KEY (UserType) REFERENCES UserTypes(UserTypeId)
+    FOREIGN KEY (UserType) REFERENCES UserTypes (UserTypeId)
 #     FOREIGN KEY (UserType) REFERENCES User(UserId)#change this to actual when you make it
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
@@ -112,3 +112,138 @@ CREATE TABLE `GenderTypes`
     `GenderTypeName` VARCHAR(10) UNIQUE NOT NULL,
     PRIMARY KEY (GenderTypeId)
 );
+
+#Current Dares
+CREATE TABLE `DaresCurrent`
+(
+    `UserId`         INT      NOT NULL UNIQUE,
+    `DareId`         SMALLINT NOT NULL UNIQUE, #will later reference the dare id in the other schema
+    `IssuedDateTime` DATETIME NOT NULL,
+    `ExpireDateTime` DATETIME NOT NULL,
+    PRIMARY KEY (UserId, DareId),
+    FOREIGN KEY (UserId) REFERENCES User (UserId)
+);
+
+#Current Questions
+CREATE TABLE `QuestionsCurrent`
+(
+    `UserId`         INT      NOT NULL UNIQUE,
+    `QuestionId`     SMALLINT NOT NULL UNIQUE, #will later reference the question id in the other schema
+    `IssuedDateTime` DATETIME NOT NULL,
+    `ExpireDateTime` DATETIME NOT NULL,
+    PRIMARY KEY (UserId, QuestionId),
+    FOREIGN KEY (UserId) REFERENCES User (UserId)
+);
+
+#Current Truths
+CREATE TABLE `TruthsCurrent`
+(
+    `UserId`         INT      NOT NULL UNIQUE,
+    `TruthId`        SMALLINT NOT NULL UNIQUE, #will later reference the truth id in the other schema
+    `IssuedDateTime` DATETIME NOT NULL,
+    `ExpireDateTime` DATETIME NOT NULL,
+    PRIMARY KEY (UserId, TruthId),
+    FOREIGN KEY (UserId) REFERENCES User (UserId)
+);
+
+#Dare History ... assuming dares cannot be repeated
+CREATE TABLE `DaresHistory`
+(
+
+    `UserId`         INT      NOT NULL UNIQUE,
+    `DareId`         SMALLINT NOT NULL UNIQUE, #will later reference the dare id in the other schema
+    `UserResponse`   BOOLEAN DEFAULT (FALSE),  #response to dare (whether success or not). Decide if this needs to be there or will it be in the jumble with all truth responses
+    `ExpireDateTime` DATETIME NOT NULL,
+    `Completed`      TINYINT(1),
+    PRIMARY KEY (UserId, DareId),
+    FOREIGN KEY (UserId) REFERENCES User (UserId),
+    FOREIGN KEY (Completed) REFERENCES ActivityCompletedTypes (ActivityCompletedTypeId)
+);
+
+#Questions History ... assuming questions cannot be repeated
+CREATE TABLE `QuestionsHistory`
+(
+
+    `UserId`         INT      NOT NULL UNIQUE,
+    `QuestionId`     SMALLINT NOT NULL UNIQUE,    #will later reference the question id in the other schema
+    `ExpireDateTime` DATETIME NOT NULL,
+    `UserResponse`   VARCHAR(100) DEFAULT (NULL), #response to question. Decide if this needs to be there or will it be in the jumble with all question responses
+    `Completed`      TINYINT(1),
+    PRIMARY KEY (UserId, QuestionId),
+    FOREIGN KEY (UserId) REFERENCES User (UserId),
+    FOREIGN KEY (Completed) REFERENCES ActivityCompletedTypes (ActivityCompletedTypeId)
+);
+
+#Truths History ... assuming dares cannot be repeated
+CREATE TABLE `TruthsHistory`
+(
+
+    `UserId`         INT      NOT NULL UNIQUE,
+    `TruthId`        SMALLINT NOT NULL UNIQUE,    #will later reference the truth  id in the other schema
+    `ExpireDateTime` DATETIME NOT NULL,
+    `UserResponse`   VARCHAR(100) DEFAULT (NULL), #response to truth. Decide if this needs to be there or will it be in the jumble with all truth responses
+    `Completed`      TINYINT(1),
+    PRIMARY KEY (UserId, TruthId),
+    FOREIGN KEY (UserId) REFERENCES User (UserId),
+    FOREIGN KEY (Completed) REFERENCES ActivityCompletedTypes (ActivityCompletedTypeId)
+);
+
+#Activity Completion types
+CREATE TABLE `ActivityCompletedTypes`
+(
+    `ActivityCompletedTypeId`   TINYINT(1) NOT NULL UNIQUE,
+    `ActivityCompletedTypeName` VARCHAR(10),
+    PRIMARY KEY (ActivityCompletedTypeId)
+);
+
+#Table of Organizations user is apart of
+CREATE TABLE `UserOrganizations`
+(
+    `UserId`         INT      NOT NULL UNIQUE,
+    `OrganizationId` SMALLINT NOT NULL, #will be id of communities which are created
+    PRIMARY KEY (UserId, OrganizationId),
+    FOREIGN KEY (UserId) REFERENCES User(UserId)
+);
+
+#User Reminders table (if needed)
+CREATE TABLE `UserReminders`
+(
+    `UserId`   INT         NOT NULL UNIQUE,
+    `Reminder` VARCHAR(20) NOT NULL UNIQUE,
+    PRIMARY KEY (UserId, Reminder)
+);
+
+#User Refresh tokens
+CREATE TABLE `UserRefreshTokens`
+(
+    `RefreshTokenId` INT NOT NULL UNIQUE,
+    `UserId`         INT NOT NULL,
+    `RefreshToken`   VARCHAR(20), #change this based on what actual
+    PRIMARY KEY (RefreshTokenId),
+    FOREIGN KEY (UserId) REFERENCES User (UserId)
+);
+
+#Category of each level
+CREATE TABLE IF NOT EXISTS `CategoryLevels`
+(
+    `UserId`                            INT        NOT NULL UNIQUE,
+    `PhysicalActivityLevel`             TINYINT(1) NOT NULL DEFAULT (0),
+    `OccupationalWellnessLevel`         TINYINT(1) NOT NULL DEFAULT (0),
+    `EmotionalWellnessLevel`            TINYINT(1) NOT NULL DEFAULT (0),
+    `SocialWellnessLevel`               TINYINT(1) NOT NULL DEFAULT (0),
+    `FruitAndVegetableConsumptionLevel` TINYINT(1) NOT NULL DEFAULT (0),
+    `SleepLevel`                        TINYINT(1) NOT NULL DEFAULT (0),
+    `WaterConsumptionLevel`             TINYINT(1) NOT NULL DEFAULT (0),
+    PRIMARY KEY (UserId),
+    FOREIGN KEY (UserId) REFERENCES User (UserId)
+);
+
+#User Settings
+CREATE TABLE `UserSettings`(
+    `SettingId` INT NOT NULL UNIQUE,
+    `UserId` INT NOT NULL UNIQUE,
+    `Setting` VARCHAR(20) NOT NULL,
+    `SettingValue` VARCHAR(20) NOT NULL,
+    PRIMARY KEY (SettingId),
+    FOREIGN KEY (UserId) REFERENCES User(UserId)
+)
