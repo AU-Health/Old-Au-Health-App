@@ -11,6 +11,7 @@ export default class Login extends React.Component {
 	state = {
 		username: '',
 		password: '',
+		signup: false,
 
 	}
 
@@ -33,7 +34,7 @@ export default class Login extends React.Component {
 		return (
 			<SafeAreaView>
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-					<Image style={{ width: '150px', height: '150px' }} source={require('../assets/eaglelogo.png')} />
+					<Image style={{ width: 150, height: 150 }} source={require('../assets/eaglelogo.png')} />
 					<br />
 					<Text h5><b>Login </b> or <b><a href=''>Sign-up</a></b></Text>
 					<br /><br />
