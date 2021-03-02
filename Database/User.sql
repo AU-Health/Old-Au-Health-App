@@ -4,15 +4,15 @@ SET time_zone = "+00:00";
 #Create the main User Table
 CREATE TABLE IF NOT EXISTS `User`
 (
-    `UserId`              INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    `UserEmail`           VARCHAR(50)  NOT NULL UNIQUE, #figure out what this will be. Is it varchar
-    `Password`            VARCHAR(50)  NOT NULL UNIQUE, #figure out what this will be. Is it varchar?
-    `PasswordSalt`        VARCHAR(50)  NOT NULL UNIQUE, #figure out if this is needed
-    `AccountCreateDate`   DATETIME     NOT NULL,        #maybe use date instead?
-    `LastLogin`           DATETIME     NOT NULL,        #maybe use date instead?
-    `UserType`            TINYINT(1)   NOT NULL CHECK ( UserType >= 1 && UserType <= 2 ),
-    `UserVerified`        BOOLEAN      NOT NULL DEFAULT (FALSE),
-    `ConsentFormSigned`   BOOLEAN      NOT NULL DEFAULT (FALSE),
+    `UserId`              MEDIUMINT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+    `UserEmail`           VARCHAR(50)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar
+    `Password`            VARCHAR(50)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar?
+    `PasswordSalt`        VARCHAR(50)        NOT NULL UNIQUE, #figure out if this is needed
+    `AccountCreateDate`   DATE               NOT NULL,
+    `LastLoginDate`       DATE               NOT NULL,
+    `UserType`            TINYINT(1)         NOT NULL CHECK ( UserType >= 1 && UserType <= 2 ),
+    `UserVerified`        BOOLEAN            NOT NULL DEFAULT (FALSE),
+    `ConsentFormSigned`   BOOLEAN            NOT NULL DEFAULT (FALSE),
     `UserAccountDisabled` BOOLEAN,
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserType) REFERENCES UserTypes (UserTypeId)
@@ -23,19 +23,20 @@ CREATE TABLE IF NOT EXISTS `User`
 #User Metadata Info table ..... ..... will be updated as more information comes in
 CREATE TABLE IF NOT EXISTS `UserMetadata`
 (
-    `UserId`       INT UNSIGNED NOT NULL UNIQUE,
+    `UserId`       MEDIUMINT UNSIGNED NOT NULL UNIQUE,
     `WeightPounds` SMALLINT(3) UNSIGNED,
     `HeightInches` TINYINT UNSIGNED,
-    `Race`         VARCHAR(20), #change length if needed
+    `Race`         TINYINT,
     `Sex`          CHAR,
-    `Gender`       TINYINT(2),  #either varchar or change to string?
+    `Gender`       TINYINT(2), #either varchar or change to string?
     `Birthday`     DATE,
     `CurrentYear`  TINYINT(1) UNSIGNED CHECK ( CurrentYear >= 1 && CurrentYear <= 7 ),
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserId) REFERENCES User (UserId),
     FOREIGN KEY (Gender) REFERENCES GenderTypes (GenderTypeId),
-    FOREIGN KEY (CurrentYear) REFERENCES UniversityYear (UniversityYearName)
-)ENGINE = InnoDB
+    FOREIGN KEY (CurrentYear) REFERENCES UniversityYear (UniversityYearName),
+    FOREIGN KEY (Race) REFERENCES RaceTypes (RaceTypeId)
+) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_unicode_ci;
 
@@ -43,19 +44,19 @@ CREATE TABLE IF NOT EXISTS `UserMetadata`
 #Do we really need this table? We could just add all responses to one table
 CREATE TABLE IF NOT EXISTS `CurrentQuestionnaireResponse`
 (
-    `UserId`      INT UNSIGNED NOT NULL UNIQUE,
+    `UserId`      MEDIUMINT UNSIGNED NOT NULL UNIQUE,
     `SleepRating` TINYINT(1), #if hours of sleep is added, then sleep will be own table
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserId) REFERENCES User (UserId)
-)ENGINE = InnoDB
+) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_unicode_ci;;
 
 #Table for User questionnaire history
 CREATE TABLE IF NOT EXISTS `HistoryQuestionnaireResponse`
 (
-    `HistoryQuestionnaireId` INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT, #should these be big ints or just unsigned ints?
-    `UserId`                 INT UNSIGNED NOT NULL,
+    `HistoryQuestionnaireId` INT UNSIGNED       NOT NULL UNIQUE AUTO_INCREMENT, #should these be big ints or just unsigned ints?
+    `UserId`                 MEDIUMINT UNSIGNED NOT NULL,
     `SleepRating`            TINYINT(1),#there will be a continuation of other attributes later
     PRIMARY KEY (HistoryQuestionnaireId),
     FOREIGN KEY (UserId) REFERENCES User (UserId)
@@ -64,14 +65,14 @@ CREATE TABLE IF NOT EXISTS `HistoryQuestionnaireResponse`
 #Table to store user current points
 CREATE TABLE IF NOT EXISTS `CategoryPoints`
 (
-    `UserId`                             INT UNSIGNED NOT NULL UNIQUE,
-    `PhysicalActivityPoints`             SMALLINT(3)  NOT NULL DEFAULT (0),
-    `OccupationalWellnessPoints`         SMALLINT(3)  NOT NULL DEFAULT (0),
-    `EmotionalWellnessPoints`            SMALLINT(3)  NOT NULL DEFAULT (0),
-    `SocialWellnessPoints`               SMALLINT(3)  NOT NULL DEFAULT (0),
-    `FruitAndVegetableConsumptionPoints` SMALLINT(3)  NOT NULL DEFAULT (0),
-    `SleepPoints`                        SMALLINT(3)  NOT NULL DEFAULT (0),
-    `WaterConsumptionPoints`             SMALLINT(3)  NOT NULL DEFAULT (0),
+    `UserId`                             MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `PhysicalActivityPoints`             SMALLINT(3)        NOT NULL DEFAULT (0),
+    `OccupationalWellnessPoints`         SMALLINT(3)        NOT NULL DEFAULT (0),
+    `EmotionalWellnessPoints`            SMALLINT(3)        NOT NULL DEFAULT (0),
+    `SocialWellnessPoints`               SMALLINT(3)        NOT NULL DEFAULT (0),
+    `FruitAndVegetableConsumptionPoints` SMALLINT(3)        NOT NULL DEFAULT (0),
+    `SleepPoints`                        SMALLINT(3)        NOT NULL DEFAULT (0),
+    `WaterConsumptionPoints`             SMALLINT(3)        NOT NULL DEFAULT (0),
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
@@ -79,10 +80,10 @@ CREATE TABLE IF NOT EXISTS `CategoryPoints`
 #Table to store user history current points
 CREATE TABLE `CategoryPointsHistory`
 (
-    `UserId`         INT UNSIGNED NOT NULL,
-    `Category`       TINYINT      NOT NULL,
-    `CategoryPoints` SMALLINT(3)  NOT NULL DEFAULT (0),
-    `Date`           DATE         NOT NULL,
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL,
+    `Category`       TINYINT            NOT NULL,
+    `CategoryPoints` SMALLINT(3)        NOT NULL DEFAULT (0),
+    `Date`           DATE               NOT NULL,
     PRIMARY KEY (UserId, Category, Date),
     FOREIGN KEY (UserId) REFERENCES User (UserId),
     FOREIGN KEY (Category) REFERENCES CategoryTypes (CategoryId)
@@ -91,9 +92,9 @@ CREATE TABLE `CategoryPointsHistory`
 #Table for storing user's next spin and number of spins a day
 CREATE TABLE `USER SPINS`
 (
-    `UserId`           INT UNSIGNED NOT NULL UNIQUE,
-    `SpinsPerDay`      TINYINT(2)   NOT NULL DEFAULT (1),
-    `NextSpinDateTime` DATETIME              DEFAULT (SYSDATE()),
+    `UserId`           MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `SpinsPerDay`      TINYINT(2)         NOT NULL DEFAULT (1),
+    `NextSpinDateTime` DATETIME                    DEFAULT (SYSDATE()),
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
@@ -101,10 +102,10 @@ CREATE TABLE `USER SPINS`
 #Current Dares
 CREATE TABLE `DaresCurrent`
 (
-    `UserId`         INT UNSIGNED      NOT NULL UNIQUE,
-    `DareId`         SMALLINT UNSIGNED NOT NULL UNIQUE, #will later reference the dare id in the other schema
-    `IssuedDateTime` DATETIME          NOT NULL,
-    `ExpireDateTime` DATETIME          NOT NULL,
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `DareId`         SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the dare id in the other schema
+    `IssuedDateTime` DATETIME           NOT NULL,
+    `ExpireDateTime` DATETIME           NOT NULL,
     PRIMARY KEY (UserId, DareId),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
@@ -112,10 +113,10 @@ CREATE TABLE `DaresCurrent`
 #Current Questions
 CREATE TABLE `QuestionsCurrent`
 (
-    `UserId`         INT UNSIGNED      NOT NULL UNIQUE,
-    `QuestionId`     SMALLINT UNSIGNED NOT NULL UNIQUE, #will later reference the question id in the other schema
-    `IssuedDateTime` DATETIME          NOT NULL,
-    `ExpireDateTime` DATETIME          NOT NULL,
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `QuestionId`     SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the question id in the other schema
+    `IssuedDateTime` DATETIME           NOT NULL,
+    `ExpireDateTime` DATETIME           NOT NULL,
     PRIMARY KEY (UserId, QuestionId),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
@@ -123,10 +124,10 @@ CREATE TABLE `QuestionsCurrent`
 #Current Truths
 CREATE TABLE `TruthsCurrent`
 (
-    `UserId`         INT UNSIGNED      NOT NULL UNIQUE,
-    `TruthId`        SMALLINT UNSIGNED NOT NULL UNIQUE, #will later reference the truth id in the other schema
-    `IssuedDateTime` DATETIME          NOT NULL,
-    `ExpireDateTime` DATETIME          NOT NULL,
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `TruthId`        SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the truth id in the other schema
+    `IssuedDateTime` DATETIME           NOT NULL,
+    `ExpireDateTime` DATETIME           NOT NULL,
     PRIMARY KEY (UserId, TruthId),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
@@ -134,23 +135,23 @@ CREATE TABLE `TruthsCurrent`
 #Dare History ... assuming dares cannot be repeated
 CREATE TABLE `DaresHistory`
 (
-    `UserId`         INT UNSIGNED      NOT NULL UNIQUE,
-    `DareId`         SMALLINT UNSIGNED NOT NULL UNIQUE, #will later reference the dare id in the other schema
-    `UserResponse`   BOOLEAN DEFAULT (FALSE),           #response to dare (whether success or not). Decide if this needs to be there or will it be in the jumble with all truth responses
-    `ExpireDateTime` DATETIME          NOT NULL,
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `DareId`         SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the dare id in the other schema
+    `UserResponse`   BOOLEAN DEFAULT (FALSE),            #response to dare (whether success or not). Decide if this needs to be there or will it be in the jumble with all truth responses
+    `ExpireDateTime` DATETIME           NOT NULL,
     `Completed`      TINYINT(1),
     PRIMARY KEY (UserId, DareId),
-    FOREIGN KEY (UserId) REFERENCES User (UserId),      ##SHOULD i do cascade delete and maybe instead separately store how many of each was done so storage isnt used,
+    FOREIGN KEY (UserId) REFERENCES User (UserId),       ##SHOULD i do cascade delete and maybe instead separately store how many of each was done so storage isnt used,
     FOREIGN KEY (Completed) REFERENCES ActivityCompletedTypes (ActivityCompletedTypeId)
 );
 
 #Questions History ... assuming questions cannot be repeated
 CREATE TABLE `QuestionsHistory`
 (
-    `UserId`         INT UNSIGNED      NOT NULL UNIQUE,
-    `QuestionId`     SMALLINT UNSIGNED NOT NULL UNIQUE, #will later reference the question id in the other schema
-    `ExpireDateTime` DATETIME          NOT NULL,
-    `UserResponse`   VARCHAR(100) DEFAULT (NULL),       #response to question. Decide if this needs to be there or will it be in the jumble with all question responses
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `QuestionId`     SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the question id in the other schema
+    `ExpireDateTime` DATETIME           NOT NULL,
+    `UserResponse`   VARCHAR(100) DEFAULT (NULL),        #response to question. Decide if this needs to be there or will it be in the jumble with all question responses
     `Completed`      TINYINT(1),
     PRIMARY KEY (UserId, QuestionId),
     FOREIGN KEY (UserId) REFERENCES User (UserId),
@@ -160,10 +161,10 @@ CREATE TABLE `QuestionsHistory`
 #Truths History ... assuming dares cannot be repeated
 CREATE TABLE `TruthsHistory`
 (
-    `UserId`         INT UNSIGNED      NOT NULL UNIQUE,
-    `TruthId`        SMALLINT UNSIGNED NOT NULL UNIQUE, #will later reference the truth  id in the other schema
-    `ExpireDateTime` DATETIME          NOT NULL,
-    `UserResponse`   VARCHAR(250) DEFAULT (NULL),       #response to truth. Decide if this needs to be there or will it be in the jumble with all truth responses
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `TruthId`        SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the truth  id in the other schema
+    `ExpireDateTime` DATETIME           NOT NULL,
+    `UserResponse`   VARCHAR(250) DEFAULT (NULL),        #response to truth. Decide if this needs to be there or will it be in the jumble with all truth responses
     `Completed`      TINYINT(1),
     PRIMARY KEY (UserId, TruthId),
     FOREIGN KEY (UserId) REFERENCES User (UserId),
@@ -173,8 +174,8 @@ CREATE TABLE `TruthsHistory`
 #Table of Organizations user is apart of
 CREATE TABLE `UserOrganizations`
 (
-    `UserId`         INT UNSIGNED      NOT NULL UNIQUE,
-    `OrganizationId` SMALLINT UNSIGNED NOT NULL, #will be id of communities which are created
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `OrganizationId` SMALLINT UNSIGNED  NOT NULL, #will be id of communities which are created
     PRIMARY KEY (UserId, OrganizationId),
     FOREIGN KEY (UserId) REFERENCES User (UserId)
 );
@@ -182,8 +183,8 @@ CREATE TABLE `UserOrganizations`
 #User Reminders table (if needed)
 CREATE TABLE `UserReminders`
 (
-    `UserId`   INT UNSIGNED NOT NULL UNIQUE,
-    `Reminder` VARCHAR(20)  NOT NULL UNIQUE,
+    `UserId`   MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `Reminder` VARCHAR(20)        NOT NULL UNIQUE,
     PRIMARY KEY (UserId, Reminder),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
@@ -191,24 +192,24 @@ CREATE TABLE `UserReminders`
 #User Refresh tokens
 CREATE TABLE `UserRefreshTokens`
 (
-    `RefreshTokenId` INT UNSIGNED NOT NULL UNIQUE,
-    `UserId`         INT UNSIGNED NOT NULL,
+    `RefreshTokenId` INT UNSIGNED       NOT NULL UNIQUE,
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL,
     `RefreshToken`   VARCHAR(20), #change this based on what actual
     PRIMARY KEY (RefreshTokenId),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
 
-#Category of each level
+#Level inside each category
 CREATE TABLE IF NOT EXISTS `CategoryLevels`
 (
-    `UserId`                            INT UNSIGNED NOT NULL UNIQUE,
-    `PhysicalActivityLevel`             TINYINT(1)   NOT NULL DEFAULT (0),
-    `OccupationalWellnessLevel`         TINYINT(1)   NOT NULL DEFAULT (0),
-    `EmotionalWellnessLevel`            TINYINT(1)   NOT NULL DEFAULT (0),
-    `SocialWellnessLevel`               TINYINT(1)   NOT NULL DEFAULT (0),
-    `FruitAndVegetableConsumptionLevel` TINYINT(1)   NOT NULL DEFAULT (0),
-    `SleepLevel`                        TINYINT(1)   NOT NULL DEFAULT (0),
-    `WaterConsumptionLevel`             TINYINT(1)   NOT NULL DEFAULT (0),
+    `UserId`                            MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `PhysicalActivityLevel`             TINYINT(1)         NOT NULL DEFAULT (0),
+    `OccupationalWellnessLevel`         TINYINT(1)         NOT NULL DEFAULT (0),
+    `EmotionalWellnessLevel`            TINYINT(1)         NOT NULL DEFAULT (0),
+    `SocialWellnessLevel`               TINYINT(1)         NOT NULL DEFAULT (0),
+    `FruitAndVegetableConsumptionLevel` TINYINT(1)         NOT NULL DEFAULT (0),
+    `SleepLevel`                        TINYINT(1)         NOT NULL DEFAULT (0),
+    `WaterConsumptionLevel`             TINYINT(1)         NOT NULL DEFAULT (0),
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserId) REFERENCES User (UserId)
 );
@@ -216,10 +217,10 @@ CREATE TABLE IF NOT EXISTS `CategoryLevels`
 #User Settings
 CREATE TABLE `UserSettings`
 (
-    `SettingId`    INT UNSIGNED NOT NULL UNIQUE,
-    `UserId`       INT UNSIGNED NOT NULL UNIQUE,
-    `Setting`      VARCHAR(20)  NOT NULL,
-    `SettingValue` VARCHAR(20)  NOT NULL,
+    `SettingId`    INT UNSIGNED       NOT NULL UNIQUE,
+    `UserId`       MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `Setting`      VARCHAR(20)        NOT NULL,
+    `SettingValue` VARCHAR(20)        NOT NULL,
     PRIMARY KEY (SettingId),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
@@ -285,6 +286,29 @@ INSERT INTO UniversityYear(UniversityYearId, UniversityYearName)
 VALUES (6, 'Fully Graduate');
 INSERT INTO UniversityYear(UniversityYearId, UniversityYearName)
 VALUES (7, 'Other');
+
+#Store Race types
+CREATE TABLE `RaceTypes`
+(
+    `RaceTypeId`   TINYINT(2) UNIQUE  NOT NULL,
+    `RaceTypeName` VARCHAR(20) UNIQUE NOT NULL,
+    PRIMARY KEY (RaceTypeId)
+);
+
+INSERT INTO RaceTypes(RaceTypeId, RaceTypeName)
+VALUES (1, 'American Indian/Alaska Native');
+INSERT INTO RaceTypes(RaceTypeId, RaceTypeName)
+VALUES (2, 'Asian');
+INSERT INTO RaceTypes(RaceTypeId, RaceTypeName)
+VALUES (3, 'Black');
+INSERT INTO RaceTypes(RaceTypeId, RaceTypeName)
+VALUES (4, 'Hispanic/Latino');
+INSERT INTO RaceTypes(RaceTypeId, RaceTypeName)
+VALUES (5, 'White');
+INSERT INTO RaceTypes(RaceTypeId, RaceTypeName)
+VALUES (6, 'Other');
+INSERT INTO RaceTypes(RaceTypeId, RaceTypeName)
+VALUES (6, 'N/A');
 
 
 #Store Gender types
