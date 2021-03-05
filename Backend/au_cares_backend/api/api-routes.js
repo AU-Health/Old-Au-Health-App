@@ -1,6 +1,6 @@
 /*File will have all of the routes*/
 
-const authentication = require('../au_cares_backend/modules/authentication');
+const authentication = require('../modules/authentication');
 
 //this will be the class for the routes
 const express = require("express"); //import express
