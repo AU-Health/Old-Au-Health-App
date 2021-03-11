@@ -5,9 +5,12 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input, Header, Text, Divider, Button, Label } from 'react-native-elements';
 import _ from 'lodash';
+import connect from 'react-redux';
+import {onUserLogin, onFetchProduct} from '../redux';
+import { onFetchProduct } from '../redux';
 
 
-export default class Login extends React.Component {
+class Login extends React.Component {
 	state = {
 		username: '',
 		password: '',
@@ -66,3 +69,24 @@ export default class Login extends React.Component {
 		);
 	}
 }
+
+
+const mapStateToProps = state => ({
+	myReducer: state.myReducer,
+	// reviews: state.reviews.items,
+	// reviewsError: state.reviews.error,
+	// reviewsLoading: state.reviews.loading,
+});
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		// fetchCompanies: () => dispatch(fetchProducts()),
+	
+	}
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
+
+//https://www.youtube.com/watch?v=qdAzeYAfQlY&ab_channel=JGogoi
+
