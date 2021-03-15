@@ -199,7 +199,7 @@ CREATE TABLE `UserRefreshTokens`
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
 
-#Level inside each category
+#Level user is inside each category
 CREATE TABLE IF NOT EXISTS `CategoryLevels`
 (
     `UserId`                            MEDIUMINT UNSIGNED NOT NULL UNIQUE,
