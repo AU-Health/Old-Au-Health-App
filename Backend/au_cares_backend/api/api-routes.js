@@ -6,6 +6,10 @@ const authentication = require('../modules/authentication');
 const express = require("express"); //import express
 const app = express(); //used to set up an express server
 
+app.post('/createAccount', (req, res) => {
+
+});
+
 
 app.post('/login', (req, res) => {
     authentication.login();
