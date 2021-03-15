@@ -24,6 +24,7 @@
   "homepage": "https://github.com/kennedy15/Au-Health-App#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "epress": "0.0.1-security",
     "express": "file:node_modules/express",
     "mysql": "^2.18.1",
     "nodemailer": "^6.5.0",
