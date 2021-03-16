@@ -6,14 +6,15 @@ CREATE TABLE IF NOT EXISTS `User`
 (
     `UserId`              MEDIUMINT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
     `UserEmail`           VARCHAR(50)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar
+    `UUID`                BINARY(16)         NOT NULL UNIQUE,
     `Password`            VARCHAR(50)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar?
     `PasswordSalt`        VARCHAR(50)        NOT NULL UNIQUE, #figure out if this is needed
-    `AccountCreateDate`   DATE               NOT NULL,
-    `LastLoginDate`       DATE               NOT NULL,
     `UserType`            TINYINT(1)         NOT NULL CHECK ( UserType >= 1 && UserType <= 2 ),
     `UserVerified`        BOOLEAN            NOT NULL DEFAULT (FALSE),
     `ConsentFormSigned`   BOOLEAN            NOT NULL DEFAULT (FALSE),
     `UserAccountDisabled` BOOLEAN,
+    `CreatedDate`         DATETIME           NOT NULL,
+    `LastAccessDate`      DATETIME           NOT NULL,
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserType) REFERENCES UserTypes (UserTypeId)
 ) ENGINE = InnoDB
@@ -40,24 +41,21 @@ CREATE TABLE IF NOT EXISTS `UserMetadata`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_unicode_ci;
 
-#Table for User current questionnaire response ..... will be updated as more information comes in
-#Do we really need this table? We could just add all responses to one table
-CREATE TABLE IF NOT EXISTS `CurrentQuestionnaireResponse`
-(
-    `UserId`      MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `SleepRating` TINYINT(1), #if hours of sleep is added, then sleep will be own table
-    PRIMARY KEY (UserId),
-    FOREIGN KEY (UserId) REFERENCES User (UserId)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_unicode_ci;;
 
 #Table for User questionnaire history
-CREATE TABLE IF NOT EXISTS `HistoryQuestionnaireResponse`
+CREATE TABLE IF NOT EXISTS `HistoryQuestionnaireResponses`
 (
-    `HistoryQuestionnaireId` INT UNSIGNED       NOT NULL UNIQUE AUTO_INCREMENT, #should these be big ints or just unsigned ints?
-    `UserId`                 MEDIUMINT UNSIGNED NOT NULL,
-    `SleepRating`            TINYINT(1),#there will be a continuation of other attributes later
+    `HistoryQuestionnaireId`            INT UNSIGNED       NOT NULL UNIQUE AUTO_INCREMENT, #should these be big ints or just unsigned ints?
+    `UserId`                            MEDIUMINT UNSIGNED NOT NULL,
+    `CreatedDate`                       DATETIME,
+    `PhysicalActivityStage`             TINYINT(1),
+    `OccupationalWellnessStage`         TINYINT(1),
+    `EmotionalWellnessStage`            TINYINT(1),
+    `SocialWellnessStage`               TINYINT(1),
+    `FruitAndVegetableConsumptionStage` TINYINT(1),
+    `SleepStage`                        TINYINT(1),
+    `WaterConsumptionStage`             TINYINT(1),
+
     PRIMARY KEY (HistoryQuestionnaireId),
     FOREIGN KEY (UserId) REFERENCES User (UserId)
 );
@@ -99,60 +97,29 @@ CREATE TABLE `USER SPINS`
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
 
-#Current Dares
-CREATE TABLE `DaresCurrent`
-(
-    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `DareId`         SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the dare id in the other schema
-    `IssuedDateTime` DATETIME           NOT NULL,
-    `ExpireDateTime` DATETIME           NOT NULL,
-    PRIMARY KEY (UserId, DareId),
-    FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
-);
-
-#Current Questions
-CREATE TABLE `QuestionsCurrent`
-(
-    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `QuestionId`     SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the question id in the other schema
-    `IssuedDateTime` DATETIME           NOT NULL,
-    `ExpireDateTime` DATETIME           NOT NULL,
-    PRIMARY KEY (UserId, QuestionId),
-    FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
-);
-
-#Current Truths
-CREATE TABLE `TruthsCurrent`
-(
-    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `TruthId`        SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the truth id in the other schema
-    `IssuedDateTime` DATETIME           NOT NULL,
-    `ExpireDateTime` DATETIME           NOT NULL,
-    PRIMARY KEY (UserId, TruthId),
-    FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
-);
-
 #Dare History ... assuming dares cannot be repeated
 CREATE TABLE `DaresHistory`
 (
-    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `DareId`         SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the dare id in the other schema
-    `UserResponse`   BOOLEAN DEFAULT (FALSE),            #response to dare (whether success or not). Decide if this needs to be there or will it be in the jumble with all truth responses
-    `ExpireDateTime` DATETIME           NOT NULL,
-    `Completed`      TINYINT(1),
+    `UserId`       MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `DareId`       SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the dare id in the other schema
+    `UserResponse` BOOLEAN DEFAULT (FALSE),            #response to dare (whether success or not). Decide if this needs to be there or will it be in the jumble with all truth responses
+    `Issued`       DATETIME           NOT NULL,
+    `Expiration`   DATETIME           NOT NULL,
+    `Completed`    TINYINT(1),
     PRIMARY KEY (UserId, DareId),
-    FOREIGN KEY (UserId) REFERENCES User (UserId),       ##SHOULD i do cascade delete and maybe instead separately store how many of each was done so storage isnt used,
+    FOREIGN KEY (UserId) REFERENCES User (UserId),     ##SHOULD i do cascade delete and maybe instead separately store how many of each was done so storage isnt used,
     FOREIGN KEY (Completed) REFERENCES ActivityCompletedTypes (ActivityCompletedTypeId)
 );
 
 #Questions History ... assuming questions cannot be repeated
 CREATE TABLE `QuestionsHistory`
 (
-    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `QuestionId`     SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the question id in the other schema
-    `ExpireDateTime` DATETIME           NOT NULL,
-    `UserResponse`   VARCHAR(100) DEFAULT (NULL),        #response to question. Decide if this needs to be there or will it be in the jumble with all question responses
-    `Completed`      TINYINT(1),
+    `UserId`       MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `QuestionId`   SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the question id in the other schema
+    `Issued`       DATETIME           NOT NULL,
+    `Expiration`   DATETIME           NOT NULL,
+    `UserResponse` VARCHAR(100) DEFAULT (NULL),        #response to question. Decide if this needs to be there or will it be in the jumble with all question responses
+    `Completed`    TINYINT(1)   DEFAULT (NULL),
     PRIMARY KEY (UserId, QuestionId),
     FOREIGN KEY (UserId) REFERENCES User (UserId),
     FOREIGN KEY (Completed) REFERENCES ActivityCompletedTypes (ActivityCompletedTypeId)
@@ -161,11 +128,12 @@ CREATE TABLE `QuestionsHistory`
 #Truths History ... assuming dares cannot be repeated
 CREATE TABLE `TruthsHistory`
 (
-    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `TruthId`        SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the truth  id in the other schema
-    `ExpireDateTime` DATETIME           NOT NULL,
-    `UserResponse`   VARCHAR(250) DEFAULT (NULL),        #response to truth. Decide if this needs to be there or will it be in the jumble with all truth responses
-    `Completed`      TINYINT(1),
+    `UserId`       MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `TruthId`      SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the truth  id in the other schema
+    `Issued`       DATETIME           NOT NULL,
+    `Expiration`   DATETIME           NOT NULL,
+    `UserResponse` VARCHAR(250) DEFAULT (NULL),        #response to truth. Decide if this needs to be there or will it be in the jumble with all truth responses
+    `Completed`    TINYINT(1),
     PRIMARY KEY (UserId, TruthId),
     FOREIGN KEY (UserId) REFERENCES User (UserId),
     FOREIGN KEY (Completed) REFERENCES ActivityCompletedTypes (ActivityCompletedTypeId)
