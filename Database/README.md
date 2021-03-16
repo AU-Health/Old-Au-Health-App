@@ -36,7 +36,7 @@ Will need to setup MySQL,DataGrip(kinda optional) and PHPMyAdmin
 1. Go to next steps with "Setting password for MySQL"
 
 
-##Setting password for MySQL
+## Setting password for MySQL
 
 1. Open "XAAMP Control Panel"
 1. In the row with MySQL, click "Start" (starts MySQL)
@@ -47,7 +47,7 @@ Will need to setup MySQL,DataGrip(kinda optional) and PHPMyAdmin
 1. Type in and retype password. Save password somewhere
 1. Click "Go"
 
-#Starting the Database
+# Starting the Database
 
 1. Open "XAAMP Control Panel"
 1. In the row with Apache, click "Start"
