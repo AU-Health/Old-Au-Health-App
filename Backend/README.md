@@ -1,11 +1,13 @@
-<h1>Welcome to the AU Cares Backend!!</h1>
+# Welcome to the AU Cares Backend!!
 
+# SETUP
+Tools to be installed: Node.JS, some IDE for backend, Postman(maybe)
 
-<h2>SETUP</h2>
-<p>Tools to be installed: Node.JS, some IDE for backend, Postman</p>
+## Installing Node.JS
+1. Click [here](https://nodejs.org/en/download/) and download Node JS
+1. Go through all of the steps with default settings and install
 
-<h3>Installing Node.JS</h3>
-<ol>
-    <li>Click <a href="https://nodejs.org/en/download/">here</a> and download Node JS</li>
-    <li>Go through all of the steps with default settings and install</li>
-</ol>
+## Setting up IDE and Backend
+
+1. Download preferred IDE. I recommend VS Code
+1. Open the au_cares_backend folder in terminal. Install the required packages by typing: *npm install express jsonwebtoken dotenv nodemon nodemailer mysql*
