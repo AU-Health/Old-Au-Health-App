@@ -7,8 +7,8 @@ Will need to setup MySQL,DataGrip(kinda optional) and PHPMyAdmin
 
 1. Click on the link [here](https://www.apachefriends.org/index.html)
 1. Download XAAMP for your OS 
-    *(For Mac) If you have errors downloading the file above, go to https://sourceforge.net/projects/xampp/files/ or https://www.apachefriends.org/download.html          -> "More Downloads." Click on “XAMPP Mac OS X” folder. Download the latest one (folder on the top). Click and download “xampp-ox-#-installer.dmg” NOT the            “xampp-ox-#-vm.dmg”
-1. file which was downloaded
+    * (For Mac) If you have errors downloading the file above, go to https://sourceforge.net/projects/xampp/files/ or https://www.apachefriends.org/download.html          -> "More Downloads." Click on “XAMPP Mac OS X” folder. Download the latest one (folder on the top). Click and download “xampp-ox-#-installer.dmg” NOT the            “xampp-ox-#-vm.dmg”
+1. Open file which was downloaded
 1. (For Windows) If warning pops up for Windows with UAC and msConfig,
     1. Click on Windows Search bar and type "Run"
     1. Enter "msconfig" and click "OK"
@@ -49,9 +49,10 @@ Will need to setup MySQL,DataGrip(kinda optional) and PHPMyAdmin
 
 # Starting the Database
 
+### Starting Apache, MySQL, and PHPMyAdmin
 1. Open "XAAMP Control Panel"
-1. In the row with Apache, click "Start"
-1. (To start MySQL) In the row with MySQL, click "Start"
-1. (To start PHPMyAdmin) In the row with MySQL, click "Admin".
+1. In the row with Apache, click "Start" (Starts Apache)
+1. In the row with MySQL, click "Start (Starts MySQL)"
+1. In the row with MySQL, click "Admin". (Starts phpMyAdmin)
 
 
