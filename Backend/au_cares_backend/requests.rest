@@ -2,10 +2,10 @@
 GET http://localhost:3000/ping
 
 ###Create a new user
-POST http://localhost:3000/authentication/create_account
+POST http://localhost:3000/authentication/user_create
 Content-Type: application/json
 
 {
-    "email": "aa1111a@student.american.edu",
-    "password" : "fakePass11"
+    "email": "ab111a@st2udent.american.edu",
+    "password" : "fakePass123123123"
 }

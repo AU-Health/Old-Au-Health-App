@@ -4,8 +4,8 @@ const mysql = require('mysql');
 function createNewUserInDB(hashedEmail, hashedPassword) {
     const mySqlConnection = mysql.createConnection({
         host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASS,
+        user: "root",
+        // password: process.env.DB_PASS,
         database: "au_cares_db"
     });
     mySqlConnection.connect(function(err) {
