@@ -6,15 +6,15 @@ CREATE TABLE IF NOT EXISTS `User`
 (
     `UserId`              MEDIUMINT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
     `UserEmail`           VARCHAR(50)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar
-    `UUID`                BINARY(16)         NOT NULL UNIQUE,
     `Password`            VARCHAR(50)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar?
     `PasswordSalt`        VARCHAR(50)        NOT NULL UNIQUE, #figure out if this is needed
-    `UserType`            TINYINT(1)         NOT NULL CHECK ( UserType >= 1 && UserType <= 2 ),
+    `UUID`                BINARY(16)         NOT NULL UNIQUE,
+    `UserType`            TINYINT(1)         NOT NULL DEFAULT (1) CHECK ( UserType >= 1 && UserType <= 2 ),
     `UserVerified`        BOOLEAN            NOT NULL DEFAULT (FALSE),
     `ConsentFormSigned`   BOOLEAN            NOT NULL DEFAULT (FALSE),
-    `UserAccountDisabled` BOOLEAN,
-    `CreatedDate`         DATETIME           NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-    `LastAccessDate`      DATETIME           NOT NULL DEFAULT (CURRENT_TIMESTAMP) ON UPDATE (CURRENT_TIMESTAMP),
+    `UserAccountDisabled` BOOLEAN            NOT NULL DEFAULT (FALSE),
+    `CreatedDate`         DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `LastAccessDate`      DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserType) REFERENCES UserTypes (UserTypeId)
 ) ENGINE = InnoDB
@@ -96,7 +96,7 @@ CREATE TABLE `CategoryPointsHistory`
     `UserId`         MEDIUMINT UNSIGNED NOT NULL,
     `Category`       TINYINT            NOT NULL,
     `CategoryPoints` SMALLINT(3)        NOT NULL DEFAULT (0),
-    `Date`           DATETIME           NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    `Date`           DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (UserId, Category, Date),
     FOREIGN KEY (UserId) REFERENCES User (UserId),
     FOREIGN KEY (Category) REFERENCES CategoryTypes (CategoryId)
@@ -107,7 +107,7 @@ CREATE TABLE `UserSpins`
 (
     `UserId`           MEDIUMINT UNSIGNED NOT NULL UNIQUE,
     `SpinsPerDay`      TINYINT(2)         NOT NULL DEFAULT (1),
-    `NextSpinDateTime` DATETIME                    DEFAULT (CURRENT_TIMESTAMP),
+    `NextSpinDateTime` DATETIME                    DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
@@ -118,7 +118,7 @@ CREATE TABLE `DaresHistory`
     `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
     `DareId`         SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the dare id in the other schema
     `DareResponseId` MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `Issued`         DATETIME           NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    `Issued`         DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `Expiration`     DATETIME           NOT NULL,
     `Completed`      TINYINT(1),
     PRIMARY KEY (UserId, DareId),
@@ -133,7 +133,7 @@ CREATE TABLE `QuestionsHistory`
 (
     `UserId`             MEDIUMINT UNSIGNED NOT NULL UNIQUE,
     `QuestionId`         SMALLINT UNSIGNED  NOT NULL UNIQUE,
-    `Issued`             DATETIME           NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    `Issued`             DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `Expiration`         DATETIME           NOT NULL,
     `QuestionResponseId` MEDIUMINT UNSIGNED NOT NULL UNIQUE, #decide whether to be int or medium INT.... maybe see if this reference even needed later
     `Completed`          TINYINT(1)                  DEFAULT (NULL),
@@ -149,7 +149,7 @@ CREATE TABLE `TruthsHistory`
 (
     `UserId`          MEDIUMINT UNSIGNED NOT NULL UNIQUE,
     `TruthId`         SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the truth  id in the other schema
-    `Issued`          DATETIME           NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    `Issued`          DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `Expiration`      DATETIME           NOT NULL,
     `TruthResponseId` MEDIUMINT UNSIGNED NOT NULL UNIQUE, #decide whether to have as INT or MEDIUMINT
     `Completed`       TINYINT(1),
@@ -396,3 +396,29 @@ CREATE TABLE `QuestionsResponses`
     `Data`               VARCHAR(250)       NOT NULL,
     PRIMARY KEY (`QuestionResponseId`)
 );
+
+######################FUNCTIONS##############################
+CREATE FUNCTION UuidToBin(_uuid BINARY(36))
+    RETURNS BINARY(16)
+    LANGUAGE SQL DETERMINISTIC
+    CONTAINS SQL SQL SECURITY INVOKER
+    RETURN
+        UNHEX(CONCAT(
+                SUBSTR(_uuid, 15, 4),
+                SUBSTR(_uuid, 10, 4),
+                SUBSTR(_uuid, 1, 8),
+                SUBSTR(_uuid, 20, 4),
+                SUBSTR(_uuid, 25)));
+
+CREATE FUNCTION UuidFromBin(_bin BINARY(16))
+    RETURNS BINARY(36)
+    LANGUAGE SQL DETERMINISTIC
+    CONTAINS SQL SQL SECURITY INVOKER
+    RETURN
+        LCASE(CONCAT_WS('-',
+                        HEX(SUBSTR(_bin, 5, 4)),
+                        HEX(SUBSTR(_bin, 3, 2)),
+                        HEX(SUBSTR(_bin, 1, 2)),
+                        HEX(SUBSTR(_bin, 9, 2)),
+                        HEX(SUBSTR(_bin, 11))
+            ));

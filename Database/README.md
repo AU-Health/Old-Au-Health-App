@@ -55,4 +55,6 @@ Will need to setup MySQL,DataGrip(kinda optional) and PHPMyAdmin
 1. In the row with MySQL, click "Start (Starts MySQL)"
 1. In the row with MySQL, click "Admin". (Starts phpMyAdmin)
 
+### Setting up the Database
+
 
