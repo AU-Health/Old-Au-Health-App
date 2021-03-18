@@ -6,12 +6,17 @@ function createNewUserInDB(hashedEmail, hashedPassword) {
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
         password: process.env.DB_PASS,
-        database: "User"
+        database: "au_cares_db"
     });
-    mySqlConnection.connect((err) => {
-        if (err) throw error;
-        let sqlQuery = `INSERT INTO User (UserEmail,Password,PasswordSalt,AccountCreateDate,LastLoginDate,UserType,UserVerified,ConsentFormSigned,UserAccountDisabled) VALUES(${hashedEmail},${hashedPassword},50,${Date.now()},${Date.now()},1,1,1,1)`
-    })
+    mySqlConnection.connect(function(err) {
+        if (err) throw err;
+        console.log("Connected!");
+        let sqlQuery = `INSERT INTO User(UserEmail,Password,PasswordSalt,UUID) VALUES ("${hashedEmail}","${hashedPassword}","${hashedPassword.substr(1)}",UuidToBin(UUID()))`;
+        mySqlConnection.query(sqlQuery, function(err, result) {
+            if (err) throw err;
+            console.log("1 record inserted");
+        });
+    });
 }
 
 module.exports.createNewUserInDB = createNewUserInDB;

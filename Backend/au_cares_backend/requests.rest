@@ -1,10 +1,11 @@
-GET http://localhost:3000/authentication/ping
+###Ping Request to see whether connecting to server. Should return pong
+GET http://localhost:3000/ping
 
-###
-POST http://localhost:3000/authentication/createAccount
+###Create a new user
+POST http://localhost:3000/authentication/create_account
 Content-Type: application/json
 
 {
-    "email": "testEmail@test.com",
-    "pass" : "fakePass1"
+    "email": "aa1111a@student.american.edu",
+    "password" : "fakePass11"
 }

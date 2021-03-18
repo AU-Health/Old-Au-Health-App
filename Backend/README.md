@@ -10,7 +10,7 @@ Tools to be installed: Node.JS, some IDE for backend, Postman(maybe)
 ## Setting up IDE and Backend
 
 1. Download preferred IDE. I recommend VS Code
-1. Open the au_cares_backend folder in terminal. Install the required packages by typing: *npm install express jsonwebtoken dotenv nodemon nodemailer mysql bcrypt*
+1. Open the au_cares_backend folder in terminal. Install the required packages by typing: *npm install express jsonwebtoken dotenv nodemon nodemailer mysql bcrypt crypto*
 1. Start the server by running *nodemon app.js* in the terminal
 
 ## Test API's

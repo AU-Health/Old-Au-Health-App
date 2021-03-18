@@ -5,16 +5,13 @@ const authentication = require('../services/authentication');
 const express = require("express"); //import express
 const router = express.Router(); //used to set up an express server
 
-//Test status of server
-router.get('/ping', (req, res) => {
-    res.status(200).send("pong");
-})
 
-router.post('/createAccount', (req, res) => {
+router.post('/create_account', (req, res) => {
     let userEmail = req.body.email;
     if (userEmail.substr(userEmail.length - 21) === "@student.american.edu") {
         let userPass = req.body.password;
         authentication.createUserAccount(userEmail, userPass);
+        res.status(200);
     } else {
         res.status(401).send("Email not AU");
     }

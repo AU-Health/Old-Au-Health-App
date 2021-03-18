@@ -4,6 +4,10 @@ const port = 3000;
 const express = require('express');
 const app = express();
 
+//config .env file
+const result = require('dotenv').config();
+
+
 //required routes files
 const authenticationRoute = require('./api-routes/authentication');
 

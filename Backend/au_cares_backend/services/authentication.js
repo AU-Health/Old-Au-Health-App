@@ -4,7 +4,10 @@ const dbConnection = require('../database/database');
 
 //method to create an account
 function createUserAccount(email, pass) {
+    console.log("EMAIL " + email);
+    console.log("PASS " + pass);
     dbConnection.createNewUserInDB(email, pass);
+
     //send email
 
 }
