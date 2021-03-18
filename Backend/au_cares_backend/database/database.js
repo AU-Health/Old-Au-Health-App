@@ -13,3 +13,5 @@ function createNewUserInDB(hashedEmail, hashedPassword) {
         let sqlQuery = `INSERT INTO User (UserEmail,Password,PasswordSalt,AccountCreateDate,LastLoginDate,UserType,UserVerified,ConsentFormSigned,UserAccountDisabled) VALUES(${hashedEmail},${hashedPassword},50,${Date.now()},${Date.now()},1,1,1,1)`
     })
 }
+
+module.exports.createNewUserInDB = createNewUserInDB;

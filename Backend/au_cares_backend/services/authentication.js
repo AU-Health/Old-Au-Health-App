@@ -1,9 +1,10 @@
 /*File will have all authentication related things here*/
+const dbConnection = require('../database/database');
 
 
 //method to create an account
 function createUserAccount(email, pass) {
-    createNewUserInDB(email, pass);
+    dbConnection.createNewUserInDB(email, pass);
     //send email
 
 }
@@ -14,12 +15,6 @@ function login() {
     //login the user
 }
 //methods to change password, email, or other things
-
-
-//authorize all coming in traffic to ensure user integrity
-function authorization(req, res, next) {
-
-}
 
 
 //exporting functions
