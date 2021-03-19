@@ -5,9 +5,8 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `User`
 (
     `UserId`              MEDIUMINT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    `UserEmail`           VARCHAR(50)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar
-    `Password`            VARCHAR(50)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar?
-    `PasswordSalt`        VARCHAR(50)        NOT NULL UNIQUE, #figure out if this is needed
+    `UserEmail`           VARCHAR(100)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar
+    `Password`            VARCHAR(100)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar?
     `UUID`                BINARY(16)         NOT NULL UNIQUE,
     `UserType`            TINYINT(1)         NOT NULL DEFAULT (1) CHECK ( UserType >= 1 && UserType <= 2 ),
     `UserVerified`        BOOLEAN            NOT NULL DEFAULT (FALSE),
@@ -266,7 +265,7 @@ VALUES (7, 'Other');
 CREATE TABLE `RaceTypes`
 (
     `RaceTypeId`   TINYINT(2) UNIQUE  NOT NULL,
-    `RaceTypeName` VARCHAR(20) UNIQUE NOT NULL,
+    `RaceTypeName` VARCHAR(40) UNIQUE NOT NULL,
     PRIMARY KEY (RaceTypeId)
 );
 
