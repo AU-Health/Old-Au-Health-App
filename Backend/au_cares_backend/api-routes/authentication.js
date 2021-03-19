@@ -6,11 +6,14 @@ const express = require("express"); //import express
 const router = express.Router(); //used to set up an express server
 
 
-router.post('/user_create', ensureEmailAndPass, (req, res) => {
+router.post('/user_create', ensureEmailAndPass, async(req, res) => {
     let userEmail = req.body.email;
     let userPass = req.body.password;
-    authentication.createUserAccount(userEmail, userPass);
-    res.status(200);
+    let isAdmin = req.body.isAdmin;
+    let jwt = await authentication.createUserAccount(userEmail, userPass, isAdmin);
+    console.log("JWT IS ")
+    res.status(200).send("Account created! " + jwt);
+
 
 });
 
@@ -27,9 +30,11 @@ router.post('/login', (req, res) => {
 function ensureEmailAndPass(req, res, next) {
     let email = req.body.email;
     let password = req.body.password;
-    if (!email.substr(email.length - 21) === "@student.american.edu") {
+    if (!(email.length > 20 && email.substr(email.length - 21) === "@student.american.edu")) {
+        console.log("I WAS HERE");
         res.status(401).send("Email not AU");
     }
+
     //ensure doesnt exist in the db
     //if(in db)
 
@@ -49,15 +54,9 @@ function ensureEmailAndPass(req, res, next) {
             countNonChars++;
         }
     }
-    if (!countUpperCase >= 1) {
-        res.status(401).send("Not enough capital letters. Need at least 1 uppercase");
-    }
-    if (!countLowerCase >= 1) {
-        res.status(401).send("Not enough lowercase letters. Need at least 1 lowercase");
-    }
-    if (!countNonChars >= 1) {
-        res.status(401).send("Not enough letters and signs. Need at least 1");
-    }
+    if (!countUpperCase >= 1) res.status(401).send("Not enough capital letters. Need at least 1 uppercase");
+    if (!countLowerCase >= 1) res.status(401).send("Not enough lowercase letters. Need at least 1 lowercase");
+    if (!countNonChars >= 1) res.status(401).send("Not enough letters and signs. Need at least 1");
     next();
     return;
 

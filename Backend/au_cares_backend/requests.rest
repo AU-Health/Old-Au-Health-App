@@ -6,6 +6,7 @@ POST http://localhost:3000/authentication/user_create
 Content-Type: application/json
 
 {
-    "email": "ab111a@st2udent.american.edu",
-    "password" : "fakePass123123123"
+    "email": "ab1111a@student.american.edu",
+    "password" : "fakePass",
+    "isAdmin" : false
 }
