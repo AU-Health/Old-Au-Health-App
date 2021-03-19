@@ -3,9 +3,6 @@ const dbConnection = require('../database/database');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const { log } = require('util');
-const { resolve } = require('path');
-const { rejects } = require('assert');
 const hashAlgo = crypto.createHash('sha256');
 
 
