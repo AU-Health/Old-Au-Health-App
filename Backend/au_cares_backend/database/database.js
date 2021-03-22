@@ -23,7 +23,6 @@ function createNewUserInDB(hashedEmail, hashedPassword, isAdmin) {
 }
 
 function getUserInfoFromEmail(hashedEmail) {
-    console.log("HASHED EMAIL IS " + hashedEmail);
     return new Promise((resolve, reject) => {
         const mySqlConnection = mysql.createConnection({
             host: process.env.DB_HOST,
@@ -33,7 +32,6 @@ function getUserInfoFromEmail(hashedEmail) {
         });
         mySqlConnection.connect(function(err) {
             if (err) throw err;
-            console.log("Connected!");
             let sqlQuery = `SELECT UuidFromBin(UUID) UUID,UserType,UserVerified,ConsentFormSigned,UserAccountDisabled FROM User WHERE UserEmail='${hashedEmail}'`;
             mySqlConnection.query(sqlQuery, function(err, result, fields) {
                 if (err) reject(error);
@@ -44,5 +42,37 @@ function getUserInfoFromEmail(hashedEmail) {
     });
 }
 
+function getUserHashedPasswordFromEmail(hashedEmail) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = `SELECT Password FROM User WHERE UserEmail = '${hashedEmail}'`;
+    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
+        return resolve;
+    })
+}
+
+
+/**************************Shortcuts to create connection************/
+function createMySqlConnection() {
+    return mysql.createConnection({
+        host: process.env.DB_HOST,
+        user: "root",
+        // password: process.env.DB_PASS,
+        database: "au_cares_db"
+    });
+}
+
+function queryViaMySqlConnection(sqlConnection, sqlQuery) {
+    return new Promise((resolve, reject) => {
+        sqlConnection.connect(function(err) {
+            if (err) reject(err);
+            sqlConnection.query(sqlQuery, function(err, result, fields) {
+                if (err) reject(err);
+                resolve(result[0]);
+            });
+        });
+    });
+}
+
 module.exports.createNewUserInDB = createNewUserInDB;
 module.exports.getUserInfoFromEmail = getUserInfoFromEmail;
+module.exports.getUserHashedPasswordFromEmail = getUserHashedPasswordFromEmail;

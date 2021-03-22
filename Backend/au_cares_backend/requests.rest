@@ -1,12 +1,24 @@
+######TEST SERVER CONNECTION#######
+
 ###Ping Request to see whether connecting to server. Should return pong
 GET http://localhost:3000/ping
 
+###############################AUTHENTICATION##########################
 ###Create a new user
 POST http://localhost:3000/authentication/user_create
 Content-Type: application/json
 
 {
-    "email": "ab1111a@student.american.edu",
-    "password" : "fakePass",
+    "email": "ab1111wwdfdsfdfsddfw2a@student.american.edu",
+    "password" : "Passwordhere123",
     "isAdmin" : false
+}
+
+###Login User
+POST http://localhost:3000/authentication/login
+Content-Type: application/json
+
+{
+    "email": "ab1111a@student.american.edu",
+    "password" : "Psswordhere123"
 }
