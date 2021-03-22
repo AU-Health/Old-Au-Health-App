@@ -396,6 +396,32 @@ CREATE TABLE `QuestionsResponses`
     PRIMARY KEY (`QuestionResponseId`)
 );
 
+##########################################Organization######################
+
+CREATE TABLE IF NOT EXISTS `Organization`
+(
+    `OrganizationName` VARCHAR(250) NOT NULL,
+    `OrgID`            MEDIUMINT UNSIGNED NOT NULL UNIQUE,                 
+    PRIMARY KEY (OrgID)
+);
+
+
+#Organization - Current Leaders
+CREATE TABLE `CurrentLeaders`
+(
+    `CurrentLeaderName`  VARCHAR(250) NOT NULL,
+    `CurrentLeaderID`    MEDIUMINT UNSIGNED NOT NULL UNIQUE,          
+    PRIMARY KEY (`CurrentLeaderID`)
+);
+
+#Organization - User Info
+CREATE TABLE `OrgUserInfo`
+(
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `NumPoints`   MEDIUMINT UNSIGNED  NOT NULL CHECK (NumPoints >= 0),       
+    PRIMARY KEY (`UUID`)
+);
+
 ######################FUNCTIONS##############################
 CREATE FUNCTION UuidToBin(_uuid BINARY(36))
     RETURNS BINARY(16)
