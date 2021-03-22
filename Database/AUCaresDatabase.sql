@@ -417,7 +417,7 @@ CREATE TABLE `CurrentLeaders`
 #Organization - User Info
 CREATE TABLE `OrgUserInfo`
 (
-    `UUID`        BINARY(16)         NOT NULL UNIQUE,
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
     `NumPoints`   MEDIUMINT UNSIGNED  NOT NULL CHECK (NumPoints >= 0),       
     PRIMARY KEY (`UUID`)
 );
