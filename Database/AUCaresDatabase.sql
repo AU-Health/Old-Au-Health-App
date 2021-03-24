@@ -40,6 +40,15 @@ CREATE TABLE IF NOT EXISTS `UserMetadata`
   DEFAULT CHARSET = utf8
   COLLATE = utf8_unicode_ci;
 
+#Table stores verification codes for user. Ex: email verification
+CREATE TABLE `VerificationCodes`
+(
+    `UserId` MEDIUMINT UNSIGNED,
+    `ConfirmationCode` VARCHAR(10) NOT NULL,
+    PRIMARY KEY (UserId),
+    FOREIGN KEY (UserId) REFERENCES User(UserId)
+);
+
 
 #Table for User Base Questionnaire History Responses
 CREATE TABLE IF NOT EXISTS `HistoryQuestionnaireResponses`
