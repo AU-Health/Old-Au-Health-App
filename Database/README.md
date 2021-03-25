@@ -1,58 +1,60 @@
-#Welcome to AU Cares Database
+# Welcome to AU Cares Database
 
-<h1>SETUP</h1>
-<p>Will need to setup MySQL,DataGrip(kinda optional) and PHPMyAdmin</p>
+# SETUP
+Will need to setup MySQL,DataGrip(kinda optional) and PHPMyAdmin
 
-<h2>Setting up XAAMP with PHPMyAdmin and MySQL</h2>
+## Setting up XAAMP with PHPMyAdmin and MySQL
 
-<ol>
-    <li>Click on the link <a href="https://www.apachefriends.org/index.html">here</a></li>
-    <li>Download XAAMP for your OS </li>
-    <li>Open file which was downloaded</li>
-    <li>(For Windows) If warning pops up for Windows with UAC and msConfig,
-        <ol>
-            <li>Click on Windows Search bar and type "Run"</li>
-            <li>Enter "msconfig" and click "OK"</li>
-            <li>Select the "Tools" tab</li>
-            <li>Select "Change UAC Settings" and click "Launch"</li>
-            <li>Move slide bar to "Never Notify" and press "OK"</li>
-            <li>Click "OK" in the window.</li>
-            <li>Select "OK" for where the warning popped up</li>
-        </ol>
-    </li>
-    <li>In window for things to download, only keep checkmarks for:
-        <ul>
-            <li>Apache</li>
-            <li>MySQL</li>
-            <li>PHP</li>
-            <li>phpMyAdmin</li>
-        </ul>
-    </li>
-    <li>Click "Next"</li>
-    <li>Select location to save your XAAMP and click "Next"</li>
-    <li>Select "English" for language and click "Next"</li>
-    <li>Remove checkmark to "Learn more about Bitnami for XAAMP" and click next. (XAAMP will be installing)</li>
-    <li>Go to next steps with "Setting password for MySQL"</li>
-</ol>
+1. Click on the link [here](https://www.apachefriends.org/index.html)
+1. Download XAAMP for your OS 
+    * (For Mac) If you have errors downloading the file above, go to https://sourceforge.net/projects/xampp/files/ or https://www.apachefriends.org/download.html          -> "More Downloads." Click on “XAMPP Mac OS X” folder. Download the latest one (folder on the top). Click and download “xampp-ox-#-installer.dmg” NOT the            “xampp-ox-#-vm.dmg”
+1. Open file which was downloaded
+1. (For Windows) If warning pops up for Windows with UAC and msConfig,
+    1. Click on Windows Search bar and type "Run"
+    1. Enter "msconfig" and click "OK"
+    1. Select the "Tools" tab
+    1. Select "Change UAC Settings" and click "Launch"
+    1. Move slide bar to "Never Notify" and press "OK"
+    1. Click "OK" in the window.
+    1. Select "OK" for where the warning popped up
+    
+1. In window for things to download, only keep checkmarks for:
+    * Apache
+    * MySQL
+    * PHP
+    * phpMyAdmin
+        *(For Mac) Click the check box with “XAMPP Core Files” only. 
+1. Click "Next"
+1. Select location to save your XAAMP and click "Next"
+1. Select "English" for language and click "Next"
+1. Remove checkmark to "Learn more about Bitnami for XAAMP" and click next. (XAAMP will be installing)
+1. Upon installing: go to xaamp->phpMyAdmin-> open "config.inc"
+1. Set blowfish_secret on line 6 from "xaamp" to something else by one of the two options:
+    * Do this command in node: require('crypto').randomBytes(32).toString('hex')
+    * Use my secret which is '174258d118d15909cb5568a13479d53dedfe2fad3fb5299bb1e3b882e026f59a'
 
-<h2>Setting password for MySQL</h2>
-<ol>
-    <li>Open "XAAMP Control Panel"</li>
-    <li>In the row with MySQL, click "Start" (starts MySQL)</li>
-    <li>In the row with MySQL, click "Admin" (Open phpMyAdmin)</li>
-    <li>Select "User Accounts" tab at the top bar</li>
-    <li>In the row with hostname "127.0.0.1", click "Edit priviledges"</li>
-    <li>Click "change password"</li>
-    <li>Type in and retype password. Save password somewhere</li>
-    <li>Click "Go"</li>
-</ol>
+1. Go to next steps with "Setting password for MySQL"
 
 
-<h1>Starting the Database</h1>
-<ol>
-    <li>Open "XAAMP Control Panel"</li>
-    <li>In the row with Apache, click "Start"</li>
-    <li>(To start MySQL) In the row with MySQL, click "Start"</li>
-    <li>(To start PHPMyAdmin) In the row with MySQL, click "Admin".</li>
+## Setting password for MySQL
 
-</ol>
+1. Open "XAAMP Control Panel"
+1. In the row with MySQL, click "Start" (starts MySQL)
+1. In the row with MySQL, click "Admin" (Open phpMyAdmin)
+1. Select "User Accounts" tab at the top bar
+1. In the row with hostname "127.0.0.1", click "Edit priviledges"
+1. Click "change password"
+1. Type in and retype password. Save password somewhere
+1. Click "Go"
+
+# Starting the Database
+
+### Starting Apache, MySQL, and PHPMyAdmin
+1. Open "XAAMP Control Panel"
+1. In the row with Apache, click "Start" (Starts Apache)
+1. In the row with MySQL, click "Start (Starts MySQL)"
+1. In the row with MySQL, click "Admin". (Starts phpMyAdmin)
+
+### Setting up the Database
+
+
