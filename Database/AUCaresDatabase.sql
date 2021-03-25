@@ -5,8 +5,8 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `User`
 (
     `UserId`              MEDIUMINT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    `UserEmail`           VARCHAR(100)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar
-    `Password`            VARCHAR(100)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar?
+    `UserEmail`           VARCHAR(100)       NOT NULL UNIQUE, #figure out what this will be. Is it varchar
+    `Password`            VARCHAR(100)       NOT NULL UNIQUE, #figure out what this will be. Is it varchar?
     `UUID`                BINARY(16)         NOT NULL UNIQUE,
     `UserType`            TINYINT(1)         NOT NULL DEFAULT (1) CHECK ( UserType >= 1 && UserType <= 2 ),
     `UserVerified`        BOOLEAN            NOT NULL DEFAULT (FALSE),
@@ -43,10 +43,11 @@ CREATE TABLE IF NOT EXISTS `UserMetadata`
 #Table stores verification codes for user. Ex: email verification
 CREATE TABLE `VerificationCodes`
 (
-    `UserId` MEDIUMINT UNSIGNED,
+    `UserId`           MEDIUMINT UNSIGNED,
     `ConfirmationCode` VARCHAR(10) NOT NULL,
+    `Expiration`       DATETIME,
     PRIMARY KEY (UserId),
-    FOREIGN KEY (UserId) REFERENCES User(UserId)
+    FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
 
 
