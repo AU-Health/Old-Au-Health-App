@@ -5,9 +5,9 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input, Header, Text, Divider, Button, Label } from 'react-native-elements';
 import _ from 'lodash';
-import connect from 'react-redux';
+import { connect } from "react-redux";
 import {onUserLogin, onFetchProduct} from '../redux';
-import { onFetchProduct } from '../redux';
+//import { onFetchProduct } from '../redux';
 
 
 class Login extends React.Component {
@@ -72,7 +72,7 @@ class Login extends React.Component {
 
 
 const mapStateToProps = state => ({
-	myReducer: state.myReducer,
+	//myReducer: state.myReducer,
 	// reviews: state.reviews.items,
 	// reviewsError: state.reviews.error,
 	// reviewsLoading: state.reviews.loading,

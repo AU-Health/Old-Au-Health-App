@@ -28,7 +28,7 @@ export const onFetchProduct = () =>{
 			dispatch({type: 'FETCH_PRODUCTS', payload: response.data});
 		}
 		catch (error){
-			dispatch({type: 'ON_ERROR'}, payload: error)
+			dispatch({type: 'ON_ERROR', payload: error})
 		}
 	};
 };
