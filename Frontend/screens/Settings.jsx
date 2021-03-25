@@ -6,32 +6,39 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StackNavigator } from 'react-navigation';
 
+import ProfileTrackers from '../components/ProfileTrackers';
+
 
 const Stack = createStackNavigator();
 
 let settingList = [
     {
-        name: 'Setting1',
+        name: 'Profile',
         icon: 'av-timer',
         route: 'Test'
     },
     {
-        name: 'Setting2',
+        name: 'Resources',
         icon: 'av-timer',
         route: 'Test1'
     },
     {
-        name: 'Setting3',
+        name: 'Notifications',
         icon: 'av-timer',
         route: 'Test1'
     },
     {
-        name: 'Setting4',
+        name: 'Contact',
         icon: 'av-timer',
         route: 'Test1'
     },
     {
-        name: 'Setting5',
+        name: 'About',
+        icon: 'av-timer',
+        route: 'Test1'
+    },
+    {
+        name: 'Logout',
         icon: 'av-timer',
         route: 'Test1'
     },
@@ -95,16 +102,41 @@ function SettingsHome({ navigation }) {
 }
 
 //here are different setting option screens as functions
-
-function tab1() {
+//flex: 1, justifyContent: 'center', alignItems: 'center'
+function Profile() {
     return(
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text> Hello World 1 screen </Text>
-        </View>
+        <ScrollView>
+            <View style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}>
+                <Avatar
+                    size="xlarge"
+                    rounded
+                    icon={{name: 'user', type: 'font-awesome'}}
+                    onPress={() => console.log("Works!")}
+                    activeOpacity={0.7}
+                    containerStyle={{flex: 2, }}
+                />
+            <Text style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                fontSize: 24,
+                //fontWeight: 'bold',
+            }}> Username </Text>
+            </View>
+            <View style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                }}>
+                <ProfileTrackers></ProfileTrackers>
+
+            </View>
+        </ScrollView>
     );
 }
 
-function tab2() {
+function Resources() {
     return(
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text> Hello World 2 screen </Text>
@@ -112,7 +144,7 @@ function tab2() {
     );
 }
 
-function tab3() {
+function Notifications() {
     return(
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text> Hello World 3 screen </Text>
@@ -120,7 +152,7 @@ function tab3() {
     );
 }
 
-function tab4() {
+function Contact() {
     return(
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text> Hello World 4 screen </Text>
@@ -128,10 +160,18 @@ function tab4() {
     );
 }
 
-function tab5() {
+function About() {
     return(
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text> Hello World 5 screen </Text>
+        </View>
+    );
+}
+
+function Logout() {
+    return(
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text> Hello World 6 screen </Text>
         </View>
     );
 }
@@ -144,11 +184,12 @@ export default class Settings extends Component {
         <NavigationContainer independent={true}>
             <Stack.Navigator>
                 <Stack.Screen name='SettingsHome' component={SettingsHome}/>
-                <Stack.Screen name='Setting1' component={tab1}/>
-                <Stack.Screen name='Setting2' component={tab2}/>
-                <Stack.Screen name='Setting3' component={tab3}/>
-                <Stack.Screen name='Setting4' component={tab4}/>
-                <Stack.Screen name='Setting5' component={tab5}/>
+                <Stack.Screen name='Profile' component={Profile}/>
+                <Stack.Screen name='Resources' component={Resources}/>
+                <Stack.Screen name='Notifications' component={Notifications}/>
+                <Stack.Screen name='Contact' component={Contact}/>
+                <Stack.Screen name='About' component={About}/>
+                <Stack.Screen name='Logout' component={Logout}/>
             </Stack.Navigator>
         </NavigationContainer>
 
