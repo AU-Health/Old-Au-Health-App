@@ -1,48 +1,60 @@
-#Welcome to AU Cares Database
+# Welcome to AU Cares Database
 
-<h1>Setup</h1>
+# SETUP
+Will need to setup MySQL,DataGrip(kinda optional) and PHPMyAdmin
+
+## Setting up XAAMP with PHPMyAdmin and MySQL
+
+1. Click on the link [here](https://www.apachefriends.org/index.html)
+1. Download XAAMP for your OS 
+    * (For Mac) If you have errors downloading the file above, go to https://sourceforge.net/projects/xampp/files/ or https://www.apachefriends.org/download.html          -> "More Downloads." Click on “XAMPP Mac OS X” folder. Download the latest one (folder on the top). Click and download “xampp-ox-#-installer.dmg” NOT the            “xampp-ox-#-vm.dmg”
+1. Open file which was downloaded
+1. (For Windows) If warning pops up for Windows with UAC and msConfig,
+    1. Click on Windows Search bar and type "Run"
+    1. Enter "msconfig" and click "OK"
+    1. Select the "Tools" tab
+    1. Select "Change UAC Settings" and click "Launch"
+    1. Move slide bar to "Never Notify" and press "OK"
+    1. Click "OK" in the window.
+    1. Select "OK" for where the warning popped up
+    
+1. In window for things to download, only keep checkmarks for:
+    * Apache
+    * MySQL
+    * PHP
+    * phpMyAdmin
+        *(For Mac) Click the check box with “XAMPP Core Files” only. 
+1. Click "Next"
+1. Select location to save your XAAMP and click "Next"
+1. Select "English" for language and click "Next"
+1. Remove checkmark to "Learn more about Bitnami for XAAMP" and click next. (XAAMP will be installing)
+1. Upon installing: go to xaamp->phpMyAdmin-> open "config.inc"
+1. Set blowfish_secret on line 6 from "xaamp" to something else by one of the two options:
+    * Do this command in node: require('crypto').randomBytes(32).toString('hex')
+    * Use my secret which is '174258d118d15909cb5568a13479d53dedfe2fad3fb5299bb1e3b882e026f59a'
+
+1. Go to next steps with "Setting password for MySQL"
 
 
+## Setting password for MySQL
 
-<ol>
-    <li>Download MySql
-        <ul>
-            <li>Apple</li>
-            <ol>
-                <li>Step 1</li>
-            </ol>
-            <li>Windows (reference: https://www.youtube.com/watch?v=GIRcpjg-3Eg)</li>
-            <ol>
-                <li>Go to <a href="https://dev.mysql.com/downloads/installer/">MySql windows installer</a></li>
-                <li> Select "Download" button for the smaller size file (Web version) by clicking download</li>
-                <li>Select "No thanks, just start my download." at the bottom the new screen --- Download of MySql starts after clicking</li>
-                <li>Open MySql installer which was downloaded</li>
-                <li>(Setup)Select "Developer Default" and click next</li>
-                <li>(Downloads) Download what is asked and click execute. Keep clicking "Try Again" on those that fail</li>
-                <li>(Installation) Go through installation .... might take some time</li>
-                <li>(Product Configuration) All should be ready to configure. Just click next</li>
-                <li>(Type and networking) Ensure config type is "Development Computer" and port 3306. Leave defaults and Click next</li>
-                <li>(Authentication Method) Select User Strong password and click next</li>
-                <li>(Accounts and Roles) MySQL pass: "AuHealthApp123987$%^" .... I might need to add people?</li>
-                <li>(Windows Service) Remove checkmark for "Start the MySQL Server at System Startup". Click next</li>
-                <li>(Apply configuration steps) Click execute</li>
-                <li>(Product configuration) Click next</li>
-                <li>(Connect to server) At the bottom, leave user as root and put password from earlier step. Click check. After this step server should be connected. Click next</li>
-                <li>(Apply configuration) Click execute</li>
-                <li>(Installation complete) Click finish</li>
-            </ol>
-        </ul>
-    </li>
-    <li>Set up database with DataGrip (reference https://www.jetbrains.com/help/datagrip/connecting-to-a-database.html#connect-to-mysql-database)</li>
-    <ol>
-        <li>Download Datagrip</li>
-        <li>In the project folder, go to File-> New Project ->Datasource -> MySQL</li>
-        <ul>
-            <li>Leave all as default and add comment if you would like</li>
-            <li>For user, put "root"</li>
-            <li>For pass: put password from earlier</li>
-            <li>Click test connection. Download needed drivers</li>
-            <li>Click OK -- datagrip should connect with server</li>
-        </ul>
-    </ol>
-</ol>
+1. Open "XAAMP Control Panel"
+1. In the row with MySQL, click "Start" (starts MySQL)
+1. In the row with MySQL, click "Admin" (Open phpMyAdmin)
+1. Select "User Accounts" tab at the top bar
+1. In the row with hostname "127.0.0.1", click "Edit priviledges"
+1. Click "change password"
+1. Type in and retype password. Save password somewhere
+1. Click "Go"
+
+# Starting the Database
+
+### Starting Apache, MySQL, and PHPMyAdmin
+1. Open "XAAMP Control Panel"
+1. In the row with Apache, click "Start" (Starts Apache)
+1. In the row with MySQL, click "Start (Starts MySQL)"
+1. In the row with MySQL, click "Admin". (Starts phpMyAdmin)
+
+### Setting up the Database
+
+

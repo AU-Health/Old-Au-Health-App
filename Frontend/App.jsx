@@ -1,9 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { StackNavigator } from 'react-navigation';
 //https://stackoverflow.com/questions/36795819/when-should-i-use-curly-braces-for-es6-import/36796281#36796281 << super cool explanation on imports
 //importing the different screens
 import HomeScreen from './screens/Home';
@@ -17,12 +19,76 @@ import AppStyle from './AppStyle';
 import {Provider} from 'react-redux';
 import {store} from './redux'
 
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-//App
-export default function App() {
+
+//Onboarding screens
+function Onboarding_1({ navigation }) {
+    return(
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text> 1st Onboarding screen </Text>
+        <TouchableOpacity
+            onPress={() => {
+                navigation.navigate("Onboarding_2");
+            }} style={styles.onboardingBtnContainer}>
+        <Text style={styles.onboardingBtn}>Continue</Text>
+        </TouchableOpacity>
+      </View>
+    );
+}
+
+function Onboarding_2({ navigation }) {
+    return(
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text> 2nd Onboarding screen </Text>
+        <View style={styles.BtnViewContainer}>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate("Onboarding_1");
+                }} style={styles.onboardingBtnContainer}>
+            <Text style={styles.onboardingBtn}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate("Questions");
+                }} style={styles.onboardingBtnContainer}>
+            <Text style={styles.onboardingBtn}>Continue</Text>
+            </TouchableOpacity>
+        </View>
+      </View>
+    );
+}
+
+//Questionaire Screen
+function Questions({ navigation }) {
+    return(
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text> Questionaire screen </Text>
+        <View style={styles.BtnViewContainer}>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate("Onboarding_2");
+                }} style={styles.onboardingBtnContainer}>
+            <Text style={styles.onboardingBtn}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate("HomeApp");
+                }} style={styles.onboardingBtnContainer}>
+            <Text style={styles.onboardingBtn}>Continue</Text>
+            </TouchableOpacity>
+        </View>
+      </View>
+    );
+}
+
+//App Home Screen
+const Tab = createBottomTabNavigator();
+function HomeApp({ navigation }) {
     return (
       <Provider store={store}>
-        <NavigationContainer>
+        {/* <NavigationContainer> */}
+        <NavigationContainer independent={true}>
               <Tab.Navigator
               screenOptions={( { route }) => ({
                   tabBarIcon: ({ color, size }) => {
@@ -60,7 +126,23 @@ export default function App() {
     );
 }
 
-const Tab = createBottomTabNavigator();
+//App
+export default function App() {
+    return (
+        <NavigationContainer>
+            <Stack.Navigator screenOptions={{
+                    header: ()=>null
+                }}>
+                <Stack.Screen name='Onboarding_1' component={Onboarding_1}/>
+                <Stack.Screen name='Onboarding_2' component={Onboarding_2}/>
+                <Stack.Screen name='Questions' component={Questions}/>
+                <Stack.Screen name='HomeApp' component={HomeApp}/>
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+}
+
+const Stack = createStackNavigator();
 
 const styles = StyleSheet.create({
   container: {
@@ -68,5 +150,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  onboardingBtn: {
+    fontSize: 18,
+    color: '#fafafa',
+    fontWeight: "bold",
+    alignSelf: "center",
+  },
+  onboardingBtnContainer: {
+    elevation: 8,
+    backgroundColor: "#009688",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+  },
+  BtnViewContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      position: 'absolute',
+      bottom:0,
   },
 });
