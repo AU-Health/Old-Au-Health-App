@@ -12,7 +12,12 @@ import HomeScreen from './screens/Home';
 import ChallengeScreen from './screens/Challenges';
 import ProgressScreen from './screens/Progress';
 import Settings from './screens/Settings';
+//import { MaterialCommunityIcons } from '@expo/vector-icons'
+// import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {useDimensions} from '@react-native-community/hooks';
 import AppStyle from './AppStyle';
+import {Provider} from 'react-redux';
+import {store} from './redux'
 
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
@@ -81,6 +86,8 @@ function Questions({ navigation }) {
 const Tab = createBottomTabNavigator();
 function HomeApp({ navigation }) {
     return (
+      <Provider store={store}>
+        {/* <NavigationContainer> */}
         <NavigationContainer independent={true}>
               <Tab.Navigator
               screenOptions={( { route }) => ({
@@ -115,6 +122,7 @@ function HomeApp({ navigation }) {
                 <Tab.Screen name="Settings" component={Settings} />
               </Tab.Navigator>
         </NavigationContainer>
+        </Provider>
     );
 }
 
