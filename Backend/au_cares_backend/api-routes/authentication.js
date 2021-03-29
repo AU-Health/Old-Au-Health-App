@@ -25,7 +25,7 @@ router.post('/login', middleware.authenticateUserAccount, async(req, res) => {
     let loginUserInfo = await authentication.login(email, password);
 
     res.status(200).json({
-        status: "success",
+        status: "ok",
         access_token: loginUserInfo[1],
         uuid: loginUserInfo[0]
     })
@@ -37,7 +37,7 @@ router.post('/verifyAccount', (req, res) => {
     let accountVerified = authentication.verifyUserAccount(uuid, verificationCode);
     if (accountVerified) {
         res.status(200).json({
-            status: "success",
+            status: "ok",
             info: "Account verified"
         })
     } else {
