@@ -11,24 +11,7 @@ const Task = ({ title }) => {
 
     return (
         <View
-            style={{
-                justifyContent: 'center',
-                width: deviceWidth * 90 / 100,
-                borderLeftWidth: 4,
-                borderRadius: 4,
-                borderColor: '#000080',
-                height: '15%',
-                marginTop: 10,
-                backgroundColor: '#FBFAF5',
-                shadowColor: '#c4c4c4',
-                shadowOffset: {
-                    width: 3,
-                    height: 2,
-                },
-                shadowRadius: 4,
-                shadowOpacity: 1.0,
-            }}
-        >
+            style={styles.taskContainer}>
             <View style={{position: 'absolute', left: 0}}>
                 <Text style={{ paddingLeft: 8,}}> task title </Text>
             </View>
@@ -57,6 +40,23 @@ const styles = StyleSheet.create({
     },
     checkbox: {
       alignSelf: "center",
+    },
+    taskContainer: {
+        justifyContent: 'center',
+        width: deviceWidth * 90 / 100,
+        borderLeftWidth: 4,
+        borderRadius: 4,
+        borderColor: '#000080',
+        height: '15%',
+        marginTop: 10,
+        backgroundColor: '#FBFAF5',
+        shadowColor: '#c4c4c4',
+        shadowOffset: {
+            width: 3,
+            height: 2,
+        },
+        shadowRadius: 4,
+        shadowOpacity: 1.0,
     },
 });
 
