@@ -9,7 +9,7 @@ POST http://localhost:3000/authentication/user_create
 Content-Type: application/json
 
 {
-    "email": "ab1111wwdfdsfdfsddfw2a@student.american.edu",
+    "email": "happy@american.edu",
     "password" : "Passwordhere123",
     "isAdmin" : false
 }
@@ -20,5 +20,5 @@ Content-Type: application/json
 
 {
     "email": "ab1111a@student.american.edu",
-    "password" : "Psswordhere123"
+    "password" : "Passwordhere123"
 }

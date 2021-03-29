@@ -1,6 +1,7 @@
 /*File will have all of the methods for database querying*/
 const mysql = require('mysql');
 
+//Create a new user in DB
 function createNewUserInDB(hashedEmail, hashedPassword, isAdmin) {
     return new Promise((resolve, reject) => {
         const mySqlConnection = mysql.createConnection({
@@ -22,24 +23,13 @@ function createNewUserInDB(hashedEmail, hashedPassword, isAdmin) {
     });
 }
 
+//Get User Information from user based on Email
 function getUserInfoFromEmail(hashedEmail) {
-    return new Promise((resolve, reject) => {
-        const mySqlConnection = mysql.createConnection({
-            host: process.env.DB_HOST,
-            user: "root",
-            // password: process.env.DB_PASS,
-            database: "au_cares_db"
-        });
-        mySqlConnection.connect(function(err) {
-            if (err) throw err;
-            let sqlQuery = `SELECT UuidFromBin(UUID) UUID,UserType,UserVerified,ConsentFormSigned,UserAccountDisabled FROM User WHERE UserEmail='${hashedEmail}'`;
-            mySqlConnection.query(sqlQuery, function(err, result, fields) {
-                if (err) reject(error);
-
-                resolve(result[0]);
-            });
-        });
-    });
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = `SELECT UuidFromBin(UUID) UUID,UserType,UserVerified,ConsentFormSigned,UserAccountDisabled FROM User WHERE UserEmail='${hashedEmail}'`;
+    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
+        return resolve;
+    })
 }
 
 function getUserHashedPasswordFromEmail(hashedEmail) {
@@ -49,6 +39,7 @@ function getUserHashedPasswordFromEmail(hashedEmail) {
         return resolve;
     })
 }
+
 
 
 /**************************Shortcuts to create connection************/
@@ -67,7 +58,8 @@ function queryViaMySqlConnection(sqlConnection, sqlQuery) {
             if (err) reject(err);
             sqlConnection.query(sqlQuery, function(err, result, fields) {
                 if (err) reject(err);
-                resolve(result[0]);
+                else if (!result[0]) resolve(undefined)
+                else resolve(result[0]);
             });
         });
     });

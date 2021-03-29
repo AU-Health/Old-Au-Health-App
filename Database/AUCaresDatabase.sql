@@ -5,8 +5,8 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `User`
 (
     `UserId`              MEDIUMINT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    `UserEmail`           VARCHAR(100)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar
-    `Password`            VARCHAR(100)        NOT NULL UNIQUE, #figure out what this will be. Is it varchar?
+    `UserEmail`           VARCHAR(100)       NOT NULL UNIQUE, #figure out what this will be. Is it varchar
+    `Password`            VARCHAR(100)       NOT NULL UNIQUE, #figure out what this will be. Is it varchar?
     `UUID`                BINARY(16)         NOT NULL UNIQUE,
     `UserType`            TINYINT(1)         NOT NULL DEFAULT (1) CHECK ( UserType >= 1 && UserType <= 2 ),
     `UserVerified`        BOOLEAN            NOT NULL DEFAULT (FALSE),
@@ -39,6 +39,16 @@ CREATE TABLE IF NOT EXISTS `UserMetadata`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_unicode_ci;
+
+#Table stores verification codes for user. Ex: email verification
+CREATE TABLE `VerificationCodes`
+(
+    `UserId`           MEDIUMINT UNSIGNED,
+    `ConfirmationCode` VARCHAR(10) NOT NULL,
+    `Expiration`       DATETIME,
+    PRIMARY KEY (UserId),
+    FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
+);
 
 
 #Table for User Base Questionnaire History Responses
@@ -327,6 +337,20 @@ VALUES (2, 'Failed to Complete');
 INSERT INTO ActivityCompletedTypes(ActivityCompletedTypeId, ActivityCompletedTypeName)
 VALUES (3, 'No Attempt');
 
+CREATE TABLE `QuestionTypes`
+(
+    `QuestionTypeId` TINYINT(1),
+    `QuestionType`   VARCHAR(30),
+    PRIMARY KEY (QuestionTypeId)
+);
+INSERT INTO QuestionTypes(QuestionTypeId, QuestionType)
+VALUES (1, 'Multiple Choice');
+INSERT INTO QuestionTypes(QuestionTypeId, QuestionType)
+VALUES (2, 'Checkmark');
+INSERT INTO QuestionTypes(QuestionTypeId, QuestionType)
+VALUES (1, 'Text');
+
+
 
 ##########################################TruthsDaresQuestions######################
 
@@ -362,6 +386,8 @@ CREATE TABLE IF NOT EXISTS `Dares`
 CREATE TABLE IF NOT EXISTS `Questions`
 (
     `QuestionId`      SMALLINT UNSIGNED   NOT NULL UNIQUE AUTO_INCREMENT,
+    `QuestionTitle`   VARCHAR(50),
+    `QuestionTypeId`    TINYINT(1),
     `Question`        VARCHAR(500) UNIQUE NOT NULL,
     `Points`          TINYINT UNSIGNED    NOT NULL CHECK ( Points > 0 ),
     `CategoryId`      TINYINT(1)          NOT NULL,
@@ -369,7 +395,29 @@ CREATE TABLE IF NOT EXISTS `Questions`
     `HoursToComplete` DECIMAL(5, 1)       NOT NULL CHECK ( HoursToComplete > 0 ),
     `SentNum`         MEDIUMINT UNSIGNED  NOT NULL CHECK (SentNum >= 0),
     `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL CHECK ( CompleteNum >= 0 ),
-    PRIMARY KEY (QuestionId)
+    PRIMARY KEY (QuestionId),
+    FOREIGN KEY (QuestionTypeId) REFERENCES QuestionTypes (QuestionTypeId)
+);
+
+#Table to store response choices, for multiple choice, checkmarks
+CREATE TABLE `QuestionResponseChoices`
+(
+    `ResponseChoiceId` MEDIUMINT UNSIGNED,
+    `QuestionId`       SMALLINT UNSIGNED NOT NULL UNIQUE,
+    `ResponseChoice`   VARCHAR(50),
+    PRIMARY KEY (ResponseChoiceId),
+    FOREIGN KEY (QuestionId) REFERENCES Questions (QuestionId) ON DELETE CASCADE
+);
+
+#Table to store the answers to the choices
+CREATE TABLE `QuestionResponseAnswer`
+(
+    `ResponseAnswerId`        MEDIUMINT UNSIGNED,
+    `QuestionId`              SMALLINT UNSIGNED NOT NULL UNIQUE,
+    `CorrectResponseChoiceId` MEDIUMINT UNSIGNED,
+    PRIMARY KEY (ResponseAnswerId),
+    FOREIGN KEY (QuestionId) REFERENCES Questions (QuestionId),
+    FOREIGN KEY (QuestionId) REFERENCES Questions (QuestionId)
 );
 
 #All Truth Responses
