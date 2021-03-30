@@ -51,7 +51,6 @@ async function logout(uuid) {
 
 
 
-
 async function accountExists(info, parameter) {
     if (parameter === "email") {
         const hashAlgo = crypto.createHash('sha256');
@@ -78,8 +77,7 @@ async function isPasswordCorrectForAccount(email, password) {
 
 async function isRefreshTokenCorrectForAccount(uuid, refreshToken) {
     let queryResult = await dbConnection.getUserRefreshTokenFromUUID(uuid);
-    let refreshTokenInDB = queryResult['RefreshToken'];
-    return refreshTokenInDB === refreshToken;
+    return queryResult && queryResult['RefreshToken'] === refreshToken;
 }
 
 //methods to change password, email, or other things

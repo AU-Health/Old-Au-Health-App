@@ -7,6 +7,8 @@ const express = require("express"); //import express
 const { notStrictEqual } = require('assert');
 const router = express.Router(); //used to set up an express server
 
+
+/*Create a new user*/
 router.post('/user_create', middleware.ensureEmailAndPass, async(req, res) => {
     let userEmail = req.body.email;
     let userPass = req.body.password;
@@ -19,6 +21,7 @@ router.post('/user_create', middleware.ensureEmailAndPass, async(req, res) => {
     });
 });
 
+/*Login a user*/
 router.post('/login', middleware.authenticateUserAccount, async(req, res) => {
     let email = req.body.email;
     let password = req.body.password;

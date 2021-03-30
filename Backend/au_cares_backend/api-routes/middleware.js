@@ -1,5 +1,5 @@
 //MIDDLEWARE methods
-const { json } = require("express");
+const { json, response } = require("express");
 const jwt = require('jsonwebtoken');
 const authentication = require("../services/authentication");
 
@@ -138,8 +138,20 @@ function authenticateRefreshToken(req, res, next) {
             error: "Refresh token invalid"
         })
         req.body.uuid = decoded['uuid'];
+
+        authentication.isRefreshTokenCorrectForAccount(req.body.uuid, refreshToken).then(isCorrect => {
+            if (!isCorrect) {
+                return res.status(403).json({
+                    status: "error",
+                    error: "Refresh token does not exist for account"
+                })
+            }
+        })
+
         next();
     })
+
+
 }
 
 
