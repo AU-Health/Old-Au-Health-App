@@ -12,81 +12,28 @@ import HomeScreen from './screens/Home';
 import ChallengeScreen from './screens/Challenges';
 import ProgressScreen from './screens/Progress';
 import Settings from './screens/Settings';
+import Login from './screens/Login';
+import Onboarding_1 from './screens/onboarding/Onboarding_1';
+import Onboarding_2 from './screens/onboarding/Onboarding_2';
+import Questionaire from './screens/onboarding/Questionaire';
+//import { MaterialCommunityIcons } from '@expo/vector-icons'
+// import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {useDimensions} from '@react-native-community/hooks';
 import AppStyle from './AppStyle';
+import {Provider} from 'react-redux';
+import {store} from './redux'
 
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-
-
-//Onboarding screens
-function Onboarding_1({ navigation }) {
-    return(
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text> 1st Onboarding screen </Text>
-        <TouchableOpacity
-            onPress={() => {
-                navigation.navigate("Onboarding_2");
-            }} style={styles.onboardingBtnContainer}>
-        <Text style={styles.onboardingBtn}>Continue</Text>
-        </TouchableOpacity>
-      </View>
-    );
-}
-
-function Onboarding_2({ navigation }) {
-    return(
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text> 2nd Onboarding screen </Text>
-        <View style={styles.BtnViewContainer}>
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.navigate("Onboarding_1");
-                }} style={styles.onboardingBtnContainer}>
-            <Text style={styles.onboardingBtn}>Back</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.navigate("Questions");
-                }} style={styles.onboardingBtnContainer}>
-            <Text style={styles.onboardingBtn}>Continue</Text>
-            </TouchableOpacity>
-        </View>
-      </View>
-    );
-}
-
-//Questionaire Screen
-function Questions({ navigation }) {
-    return(
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text> Questionaire screen </Text>
-        <View style={styles.BtnViewContainer}>
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.navigate("Onboarding_2");
-                }} style={styles.onboardingBtnContainer}>
-            <Text style={styles.onboardingBtn}>Back</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.navigate("HomeApp");
-                }} style={styles.onboardingBtnContainer}>
-            <Text style={styles.onboardingBtn}>Continue</Text>
-            </TouchableOpacity>
-        </View>
-      </View>
-    );
-}
 
 //App Home Screen
 const Tab = createBottomTabNavigator();
 function HomeApp({ navigation }) {
     return (
+      <Provider store={store}>
         <NavigationContainer independent={true}>
               <Tab.Navigator
               screenOptions={( { route }) => ({
                   tabBarIcon: ({ color, size }) => {
-                      //icons found using this webiste: https://oblador.github.io/react-native-vector-icons/
-                      //scroll down to the material community tab cause that's what I imported
                       const icons = {
                           Home: 'home',
                           Progress: 'progress-clock',
@@ -102,7 +49,7 @@ function HomeApp({ navigation }) {
                         />
                       );
                   },
-                  //headerStyle: { backgroundColor: '#000000'}, //trying to set the color of the navi bar
+
               })}
               tabBarOptions={{
                   activeTintColor: '#1b998b',
@@ -115,6 +62,7 @@ function HomeApp({ navigation }) {
                 <Tab.Screen name="Settings" component={Settings} />
               </Tab.Navigator>
         </NavigationContainer>
+        </Provider>
     );
 }
 
@@ -122,12 +70,10 @@ function HomeApp({ navigation }) {
 export default function App() {
     return (
         <NavigationContainer>
-            <Stack.Navigator screenOptions={{
-                    header: ()=>null
-                }}>
+            <Stack.Navigator screenOptions={{ header: ()=>null }}>
                 <Stack.Screen name='Onboarding_1' component={Onboarding_1}/>
                 <Stack.Screen name='Onboarding_2' component={Onboarding_2}/>
-                <Stack.Screen name='Questions' component={Questions}/>
+                <Stack.Screen name='Questions' component={Questionaire}/>
                 <Stack.Screen name='HomeApp' component={HomeApp}/>
             </Stack.Navigator>
         </NavigationContainer>
@@ -164,3 +110,14 @@ const styles = StyleSheet.create({
       bottom:0,
   },
 });
+
+/*
+<Text style={{color: 'blue', textDecoration: 'none'}}
+    onPress={() => Linking.openURL('http://google.com')}>
+    Forgot your password?
+</Text>
+
+ //headerStyle: { backgroundColor: '#000000'}, //trying to set the color of the navi bar
+//icons found using this webiste: https://oblador.github.io/react-native-vector-icons/
+//scroll down to the material community tab cause that's what I imported
+*/
