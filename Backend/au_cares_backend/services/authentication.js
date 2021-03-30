@@ -22,7 +22,7 @@ async function createUserAccount(email, password, isAdmin) {
         await dbConnection.createNewUserInDB(hashedEmail, hashedPassword, isAdmin);
         let queryResult = await dbConnection.getUserInfoFromEmail(hashedEmail);
         let uuid = queryResult["UUID"].toString();
-        return [uuid, createNewJwt(uuid)];
+        return [uuid, generateAccessToken(uuid)];
     } catch (e) {
         console.log(e);
         return "error";
@@ -32,19 +32,37 @@ async function createUserAccount(email, password, isAdmin) {
 
 //login user. Returns user's UUID and JWT token
 async function login(email) {
-    emailer.sendEmail("antonbaron10@gmail.com", "HELLO", "<p>HI!!!</p>");
+    // emailer.sendEmail("antonbaron10@gmail.com", "HELLO", "<p>HI!!!</p>");
     const hashAlgo = crypto.createHash('sha256');
     const hashedEmail = hashAlgo.update(email).digest('hex');
     let queryResult = await dbConnection.getUserInfoFromEmail(hashedEmail);
     let uuid = queryResult["UUID"].toString();
-    return [uuid, createNewJwt(uuid)];
+    let accessToken = generateAccessToken(uuid);
+    let refreshToken = await generateAndStoreRefreshToken(uuid);
+    return [uuid, accessToken, refreshToken];
 }
 
-async function accountExists(email) {
-    const hashAlgo = crypto.createHash('sha256');
-    const hashedEmail = hashAlgo.update(email).digest('hex');
-    return await dbConnection.getUserInfoFromEmail(hashedEmail) !== undefined;
+
+//logout uer by deleting the refresh token
+async function logout(uuid) {
+    let queryResult = await dbConnection.removeRefreshTokenForUser(uuid);
+    return queryResult ? "error" : "ok";
 }
+
+
+
+
+async function accountExists(info, parameter) {
+    if (parameter === "email") {
+        const hashAlgo = crypto.createHash('sha256');
+        const hashedEmail = hashAlgo.update(info).digest('hex');
+        return await dbConnection.getUserInfoFromEmail(hashedEmail) !== undefined;
+    } else if (parameter === "UUID") {
+        return await dbConnection.getUserInfoFromUUID(info) !== undefined;
+    }
+
+}
+
 
 //returns whether a password is correct for an account
 async function isPasswordCorrectForAccount(email, password) {
@@ -58,38 +76,39 @@ async function isPasswordCorrectForAccount(email, password) {
 
 }
 
+async function isRefreshTokenCorrectForAccount(uuid, refreshToken) {
+    let queryResult = await dbConnection.getUserRefreshTokenFromUUID(uuid);
+    let refreshTokenInDB = queryResult['RefreshToken'];
+    return refreshTokenInDB === refreshToken;
+}
+
 //methods to change password, email, or other things
 
 //create a new JWT for the user
-function createNewJwt(uuid) {
+function generateAccessToken(uuid) {
     let jwtPayload = {};
     jwtPayload["uuid"] = uuid;
     // jwtPayload["userType"] = isAdmin ? 2 : 1;
     // jwtPayload["isVerified"] = false;
     // jwtPayload["isConsent"] = false;
     // jwtPayload["isAccountDisabled"] = false;
-    return jwt.sign(jwtPayload, 'shhhhh', { expiresIn: '30m' });
+    return jwt.sign(jwtPayload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 }
 
-function createVerificationCode() {
-    let values = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*?/"
-    let verificationCode = "";
-    for (let i = 0; i < 8; i++) {
-        let randomCharVal = parseInt(Math.random() * values.length);
-        verificationCode += values.charAt(randomCharVal);
-    }
-    return verificationCode;
-}
-
-//function will be used to verify whether user verification code is correct
-function verifyUserAccount(uuid, verificationCode) {
-
+//create a refresh token for user
+async function generateAndStoreRefreshToken(uuid) {
+    let refreshToken = jwt.sign({ "uuid": uuid }, process.env.REFRESH_TOKEN_SECRET);
+    dbConnection.storeRefreshTokenForUser(uuid, refreshToken, { expiresIn: '7d' });
+    return refreshToken;
 }
 
 
 //exporting functions
 module.exports.login = login;
+module.exports.logout = logout;
 module.exports.createUserAccount = createUserAccount;
 module.exports.getUserUUID = getUserUUID;
 module.exports.accountExists = accountExists;
+module.exports.generateAccessToken = generateAccessToken;
 module.exports.isPasswordCorrectForAccount = isPasswordCorrectForAccount;
+module.exports.isRefreshTokenCorrectForAccount = isRefreshTokenCorrectForAccount;

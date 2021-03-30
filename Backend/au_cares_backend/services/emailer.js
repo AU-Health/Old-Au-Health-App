@@ -6,10 +6,9 @@ async function sendEmail(emailTo, subject, bodyHTML) {
         port: 465,
         secure: true,
         auth: {
-            type: 'OAuth2',
+            // type: 'OAuth2',
             user: process.env.emailAccount,
-
-
+            pass: process.env.emailPassword
         }
     })
 

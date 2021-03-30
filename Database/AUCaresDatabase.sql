@@ -191,10 +191,9 @@ CREATE TABLE `UserReminders`
 #User Refresh Tokens for all Users
 CREATE TABLE `UserRefreshTokens`
 (
-    `RefreshTokenId` INT UNSIGNED       NOT NULL UNIQUE,
     `UserId`         MEDIUMINT UNSIGNED NOT NULL,
-    `RefreshToken`   VARCHAR(20), #change this based on what actual
-    PRIMARY KEY (RefreshTokenId),
+    `RefreshToken`   VARCHAR(200), #change this based on what actual
+    PRIMARY KEY (UserId),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
 
@@ -363,8 +362,8 @@ CREATE TABLE IF NOT EXISTS `Truths`
     `CategoryId`      TINYINT(1)          NOT NULL,
     `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded > 0 ),
     `HoursToComplete` DECIMAL(5, 1)       NOT NULL CHECK ( HoursToComplete > 0 ),
-    `SentNum`         MEDIUMINT UNSIGNED  NOT NULL CHECK (SentNum >= 0),
-    `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL CHECK ( CompleteNum >= 0 ),
+    `SentNum`         MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK (SentNum >= 0),
+    `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK ( CompleteNum >= 0 ),
     PRIMARY KEY (TruthId)
 );
 
@@ -377,8 +376,8 @@ CREATE TABLE IF NOT EXISTS `Dares`
     `CategoryId`      TINYINT(1)          NOT NULL,
     `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded > 0 ),
     `HoursToComplete` DECIMAL(5, 1)       NOT NULL CHECK ( HoursToComplete > 0 ),
-    `SentNum`         MEDIUMINT UNSIGNED  NOT NULL CHECK (SentNum >= 0),
-    `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL CHECK ( CompleteNum >= 0 ),
+    `SentNum`         MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK (SentNum >= 0),
+    `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK ( CompleteNum >= 0 ),
     PRIMARY KEY (DareId)
 );
 
@@ -387,14 +386,14 @@ CREATE TABLE IF NOT EXISTS `Questions`
 (
     `QuestionId`      SMALLINT UNSIGNED   NOT NULL UNIQUE AUTO_INCREMENT,
     `QuestionTitle`   VARCHAR(50),
-    `QuestionTypeId`    TINYINT(1),
+    `QuestionTypeId`  TINYINT(1),
     `Question`        VARCHAR(500) UNIQUE NOT NULL,
     `Points`          TINYINT UNSIGNED    NOT NULL CHECK ( Points > 0 ),
     `CategoryId`      TINYINT(1)          NOT NULL,
     `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded > 0 ),
     `HoursToComplete` DECIMAL(5, 1)       NOT NULL CHECK ( HoursToComplete > 0 ),
-    `SentNum`         MEDIUMINT UNSIGNED  NOT NULL CHECK (SentNum >= 0),
-    `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL CHECK ( CompleteNum >= 0 ),
+    `SentNum`         MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK (SentNum >= 0),
+    `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK ( CompleteNum >= 0 ),
     PRIMARY KEY (QuestionId),
     FOREIGN KEY (QuestionTypeId) REFERENCES QuestionTypes (QuestionTypeId)
 );
