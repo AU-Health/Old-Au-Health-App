@@ -7,6 +7,8 @@ const express = require("express"); //import express
 const { notStrictEqual } = require('assert');
 const router = express.Router(); //used to set up an express server
 
+
+/*Create a new user*/
 router.post('/user_create', middleware.ensureEmailAndPass, async(req, res) => {
     let userEmail = req.body.email;
     let userPass = req.body.password;
@@ -19,6 +21,7 @@ router.post('/user_create', middleware.ensureEmailAndPass, async(req, res) => {
     });
 });
 
+/*Login a user*/
 router.post('/login', middleware.authenticateUserAccount, async(req, res) => {
     let email = req.body.email;
     let password = req.body.password;
@@ -26,10 +29,41 @@ router.post('/login', middleware.authenticateUserAccount, async(req, res) => {
 
     res.status(200).json({
         status: "ok",
+        uuid: loginUserInfo[0],
         access_token: loginUserInfo[1],
-        uuid: loginUserInfo[0]
+        refresh_token: loginUserInfo[2]
     })
 });
+
+router.put('/logout', middleware.ensureUUIDExists, async(req, res) => {
+    let uuid = req.body.uuid;
+    let result = await authentication.logout(uuid);
+    if (result == "error") {
+        res.status(500).json({
+            status: "error",
+            error: "Didnt logout"
+        })
+    }
+    res.status(201).json({
+        status: "ok",
+        message: "User logout success"
+    })
+
+})
+
+
+router.post('/token', middleware.authenticateRefreshToken, middleware.ensureUUIDExists, (req, res) => {
+    let uuid = req.body.uuid;
+    let newAccessToken = authentication.generateAccessToken(uuid);
+
+    res.status(201).json({
+        access_token: newAccessToken
+    })
+
+
+})
+
+
 
 router.post('/verifyAccount', (req, res) => {
     let uuid = req.body.uuid;

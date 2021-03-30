@@ -1,4 +1,5 @@
 /*File will have all of the methods for database querying*/
+const { response } = require('express');
 const mysql = require('mysql');
 
 //Create a new user in DB
@@ -12,11 +13,9 @@ function createNewUserInDB(hashedEmail, hashedPassword, isAdmin) {
         });
         mySqlConnection.connect(function(err) {
             if (err) reject(err);
-            console.log("Connected!");
             let sqlQuery = `INSERT INTO User(UserEmail,Password,UUID,UserType) VALUES ("${hashedEmail}","${hashedPassword}",UuidToBin(UUID()),${isAdmin?2:1})`;
             mySqlConnection.query(sqlQuery, function(err, result) {
                 if (err) throw err;
-                console.log("1 record inserted");
                 resolve("success");
             });
         });
@@ -32,6 +31,16 @@ function getUserInfoFromEmail(hashedEmail) {
     })
 }
 
+//Get user info from UUID
+function getUserInfoFromUUID(uuid) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = `SELECT * FROM User WHERE UUID=UuidToBin('${uuid}')`;
+    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
+        return resolve;
+    })
+}
+
+
 function getUserHashedPasswordFromEmail(hashedEmail) {
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = `SELECT Password FROM User WHERE UserEmail = '${hashedEmail}'`;
@@ -40,13 +49,39 @@ function getUserHashedPasswordFromEmail(hashedEmail) {
     })
 }
 
+function storeRefreshTokenForUser(uuid, refreshToken) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = `INSERT INTO UserRefreshTokens SELECT UserId,"${refreshToken}" FROM User WHERE UUID=UuidToBin("${uuid}")` //worry alter about already having  key existing
+    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then(response => {
+        return response;
+    })
+}
+
+function removeRefreshTokenForUser(uuid) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = `DELETE FROM UserRefreshTokens WHERE UserId = (SELECT UserId FROM User WHERE UUID=UuidToBin("${uuid}"))`
+    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((response, reject) => {
+        return response;
+    })
+}
+
+function getUserRefreshTokenFromUUID(uuid) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = `SELECT RefreshToken FROM UserRefreshTokens WHERE UserId = (SELECT UserId FROM User WHERE UUID=UuidToBin("${uuid}"))`
+    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((response => {
+        return response;
+    }))
+
+}
+
+
 
 
 /**************************Shortcuts to create connection************/
 function createMySqlConnection() {
     return mysql.createConnection({
         host: process.env.DB_HOST,
-        user: "root",
+        user: process.env.DB_USER,
         // password: process.env.DB_PASS,
         database: "au_cares_db"
     });
@@ -68,3 +103,7 @@ function queryViaMySqlConnection(sqlConnection, sqlQuery) {
 module.exports.createNewUserInDB = createNewUserInDB;
 module.exports.getUserInfoFromEmail = getUserInfoFromEmail;
 module.exports.getUserHashedPasswordFromEmail = getUserHashedPasswordFromEmail;
+module.exports.storeRefreshTokenForUser = storeRefreshTokenForUser;
+module.exports.getUserRefreshTokenFromUUID = getUserRefreshTokenFromUUID;
+module.exports.getUserInfoFromUUID = getUserInfoFromUUID;
+module.exports.removeRefreshTokenForUser = removeRefreshTokenForUser;

@@ -3,13 +3,16 @@
 ###Ping Request to see whether connecting to server. Should return pong
 GET http://localhost:3000/ping
 
+###Check access to server with UUID
+GET http://localhost:3000/protected_ping
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiYTM1ZDQwYzEtOTBlMC0xMWViLWE2NjctMjA0NzQ3ZDMyZjk3IiwiaWF0IjoxNjE3MDY0MTQ2LCJleHAiOjE2MTcwNjQxNzZ9.lYC9rClEvmPJt8jmLZBPMBy6dYR-ybVbwOo5LDCUo08
 ###############################AUTHENTICATION##########################
 ###Create a new user
 POST http://localhost:3000/authentication/user_create
 Content-Type: application/json
 
 {
-    "email": "happy@american.edu",
+    "email": "testing1@american.edu",
     "password" : "Passwordhere123",
     "isAdmin" : false
 }
@@ -19,6 +22,8 @@ POST http://localhost:3000/authentication/login
 Content-Type: application/json
 
 {
-    "email": "ab1111a@student.american.edu",
+    "email": "testing1@american.edu",
     "password" : "Passwordhere123"
 }
+
+

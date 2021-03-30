@@ -1,4 +1,6 @@
 //MIDDLEWARE methods
+const { json, response } = require("express");
+const jwt = require('jsonwebtoken');
 const authentication = require("../services/authentication");
 
 //Ensure email and password are valid to create a new account
@@ -12,7 +14,7 @@ async function ensureEmailAndPass(req, res, next) {
         return;
     }
     //check if email already exists in the system
-    if (await authentication.accountExists(email)) {
+    if (await authentication.accountExists(email, "email")) {
         jsonError["error"] = "Account under email already exists"
         res.status(401).json(jsonError);
         return;
@@ -62,28 +64,99 @@ async function ensureEmailAndPass(req, res, next) {
     }
 }
 
+
+//ensures uuid exists
+async function ensureUUIDExists(req, res, next) {
+    let uuid = req.body.uuid;
+    if (!await authentication.accountExists(uuid, "UUID")) {
+        return res.status(401).json({
+            status: "error",
+            error: "No account with UUID"
+        })
+    }
+    next();
+}
+
+
+
 //Authenticate user account, ensuring account is correct
 async function authenticateUserAccount(req, res, next) {
     let email = req.body.email;
     let password = req.body.password;
-
-    if (!await authentication.accountExists(email)) {
-        res.status(401).json({
+    if (!await authentication.accountExists(email, "email")) {
+        return res.status(401).json({
             status: "error",
             error: "Account with email does not exist"
         });
-        return;
     }
     let isPasswordCorrect = await authentication.isPasswordCorrectForAccount(email, password);
     if (!isPasswordCorrect) {
-        res.status(403).json({
+        return res.status(403).json({
             status: "error",
             error: "Incorrect password"
         })
-        return;
     }
     next();
 };
 
+//authenticate token of the user
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; //will get us token since it is BEARER TOKEN
+
+    if (!token) {
+        return res.status(401).json({
+            status: "error",
+            error: "No token given"
+        })
+    }
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({
+                status: "error",
+                error: err,
+            })
+        } else {
+            req.user = decoded;
+        }
+        next();
+    })
+
+}
+
+function authenticateRefreshToken(req, res, next) {
+    let refreshToken = req.body.refreshToken;
+    if (!refreshToken) return res.status(401).json({
+        status: "error",
+        error: "No refresh token given"
+    })
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+        if (err) return res.status(403).json({
+            status: "error",
+            error: "Refresh token invalid"
+        })
+        req.body.uuid = decoded['uuid'];
+
+        authentication.isRefreshTokenCorrectForAccount(req.body.uuid, refreshToken).then(isCorrect => {
+            if (!isCorrect) {
+                return res.status(403).json({
+                    status: "error",
+                    error: "Refresh token does not exist for account"
+                })
+            }
+        })
+
+        next();
+    })
+
+
+}
+
+
 module.exports.ensureEmailAndPass = ensureEmailAndPass;
 module.exports.authenticateUserAccount = authenticateUserAccount;
+module.exports.authenticateToken = authenticateToken;
+module.exports.authenticateRefreshToken = authenticateRefreshToken;
+module.exports.ensureUUIDExists = ensureUUIDExists;
