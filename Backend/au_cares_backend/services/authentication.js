@@ -43,10 +43,13 @@ async function login(email) {
 }
 
 
-//logout uer by deleting the refresh token
+//logout uer by deleting the refresh token ... returns undefined if error, otherwise num rows deletd
 async function logout(uuid) {
     let queryResult = await dbConnection.removeRefreshTokenForUser(uuid);
-    return queryResult ? "error" : "ok";
+    if (!queryResult) {
+        return undefined;
+    }
+    return queryResult.affectedRows;
 }
 
 

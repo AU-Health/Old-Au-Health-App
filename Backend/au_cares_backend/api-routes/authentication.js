@@ -16,8 +16,8 @@ router.post('/user_create', middleware.ensureEmailAndPass, async(req, res) => {
     let createdUserInfo = await authentication.createUserAccount(userEmail, userPass, isAdmin);
     res.status(200).json({
         status: "ok",
-        access_token: createdUserInfo[1],
-        uuid: createdUserInfo[0]
+        uuid: createdUserInfo[0],
+        access_token: createdUserInfo[1]
     });
 });
 
@@ -38,10 +38,16 @@ router.post('/login', middleware.authenticateUserAccount, async(req, res) => {
 router.put('/logout', middleware.ensureUUIDExists, async(req, res) => {
     let uuid = req.body.uuid;
     let result = await authentication.logout(uuid);
-    if (result == "error") {
-        res.status(500).json({
+    if (result === undefined) {
+        return res.status(500).json({
             status: "error",
-            error: "Didnt logout"
+            error: "Server error. Did not logout"
+        })
+    }
+    if (result == 0) {
+        return res.status(401).json({
+            status: "error",
+            error: "Already logged out"
         })
     }
     res.status(201).json({

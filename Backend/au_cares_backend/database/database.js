@@ -51,7 +51,7 @@ function getUserHashedPasswordFromEmail(hashedEmail) {
 
 function storeRefreshTokenForUser(uuid, refreshToken) {
     let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `INSERT INTO UserRefreshTokens SELECT UserId,"${refreshToken}" FROM User WHERE UUID=UuidToBin("${uuid}")` //worry alter about already having  key existing
+    let sqlQuery = `REPLACE INTO UserRefreshTokens SELECT UserId,"${refreshToken}" FROM User WHERE UUID=UuidToBin("${uuid}")` //worry alter about already having  key existing
     return queryViaMySqlConnection(mySqlConnection, sqlQuery).then(response => {
         return response;
     })
@@ -60,9 +60,17 @@ function storeRefreshTokenForUser(uuid, refreshToken) {
 function removeRefreshTokenForUser(uuid) {
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = `DELETE FROM UserRefreshTokens WHERE UserId = (SELECT UserId FROM User WHERE UUID=UuidToBin("${uuid}"))`
-    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((response, reject) => {
-        return response;
-    })
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect(function(err) {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, function(err, result, fields) {
+                if (err) reject(err);
+                else {
+                    resolve(result);
+                }
+            });
+        });
+    });
 }
 
 function getUserRefreshTokenFromUUID(uuid) {
@@ -81,7 +89,7 @@ function getUserRefreshTokenFromUUID(uuid) {
 function createMySqlConnection() {
     return mysql.createConnection({
         host: process.env.DB_HOST,
-        user: process.env.DB_USER,
+        user: 'root', //process.env.DB_USER,
         // password: process.env.DB_PASS,
         database: "au_cares_db"
     });
