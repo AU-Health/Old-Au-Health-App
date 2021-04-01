@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn add @react-navigation
+  /usr/local/bin/node /usr/local/bin/yarn add @react-native-progress
 
 PATH: 
   /Users/natesmac/Documents/FLUTTER/flutter/bin:/usr/local/opt/mysql-client/bin:/usr/local/mysql/bin/:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/anaconda2/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@react-navigation: Request "https://registry.yarnpkg.com/@react-navigation" returned a 405
+  Error: https://registry.yarnpkg.com/@react-native-progress: Request "https://registry.yarnpkg.com/@react-native-progress" returned a 405
       at Request.params.callback [as _callback] (/usr/local/lib/node_modules/yarn/lib/cli.js:66997:18)
       at Request.self.callback (/usr/local/lib/node_modules/yarn/lib/cli.js:140662:22)
       at Request.emit (node:events:378:20)
