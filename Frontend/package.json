@@ -16,6 +16,7 @@
     "@react-navigation/native": "^5.9.2",
     "@react-navigation/stack": "^5.14.3",
     "axios": "^0.21.1",
+    "d3": "^3.5.17",
     "expo": "^40.0.1",
     "expo-status-bar": "~1.0.3",
     "lodash": "^4.17.21",
@@ -29,8 +30,10 @@
     "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "~2.15.2",
     "react-native-web": "~0.13.12",
+    "react-native-wheel-of-fortune": "^1.5.4",
     "react-navigation": "^4.4.4",
     "react-redux": "^7.2.2",
+    "react-spinning-wheel": "^2.1.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0"
   },
