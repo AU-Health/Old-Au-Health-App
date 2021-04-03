@@ -4,7 +4,6 @@ const middleware = require("./middleware");
 
 //this will be the class for the routes
 const express = require("express"); //import express
-const { notStrictEqual } = require('assert');
 const router = express.Router(); //used to set up an express server
 
 
@@ -29,14 +28,16 @@ router.post('/login', middleware.authenticateUserAccount, async(req, res) => {
 
     res.status(200).json({
         status: "ok",
+        isVerified: loginUserInfo[1],
         uuid: loginUserInfo[0],
-        access_token: loginUserInfo[1],
-        refresh_token: loginUserInfo[2]
+        access_token: loginUserInfo[2],
+        refresh_token: loginUserInfo[3]
     })
 });
 
-router.put('/logout', middleware.ensureUUIDExists, async(req, res) => {
-    let uuid = req.body.uuid;
+/*Logout user by removing their refresh token*/
+router.put('/logout', middleware.authenticateToken, async(req, res) => {
+    let uuid = req.user.uuid;
     let result = await authentication.logout(uuid);
     if (result === undefined) {
         return res.status(500).json({
@@ -50,6 +51,7 @@ router.put('/logout', middleware.ensureUUIDExists, async(req, res) => {
             error: "Already logged out"
         })
     }
+
     res.status(201).json({
         status: "ok",
         message: "User logout success"
@@ -57,9 +59,9 @@ router.put('/logout', middleware.ensureUUIDExists, async(req, res) => {
 
 })
 
-
-router.post('/token', middleware.authenticateRefreshToken, middleware.ensureUUIDExists, (req, res) => {
-    let uuid = req.body.uuid;
+/*Gives user a new access token upon given a good refresh token*/
+router.post('/token', middleware.authenticateRefreshToken, (req, res) => {
+    let uuid = req.user.uuid;
     let newAccessToken = authentication.generateAccessToken(uuid);
 
     res.status(201).json({
@@ -69,21 +71,21 @@ router.post('/token', middleware.authenticateRefreshToken, middleware.ensureUUID
 
 })
 
-
-
-router.post('/verifyAccount', (req, res) => {
-    let uuid = req.body.uuid;
+//verify email of account
+router.put('/verifyAccount', middleware.authenticateToken, async(req, res) => {
+    let uuid = req.user.uuid;
     let verificationCode = req.body.verificationCode;
-    let accountVerified = authentication.verifyUserAccount(uuid, verificationCode);
-    if (accountVerified) {
+    let accountVerifiedInfo = await authentication.verifyUserAccount(uuid, verificationCode);
+    if (accountVerifiedInfo[0]) {
         res.status(200).json({
             status: "ok",
-            info: "Account verified"
+            info: accountVerifiedInfo[1],
+            refreshToken: accountVerifiedInfo[2]
         })
     } else {
         res.status(403).json({
             status: "error",
-            info: "Account not verified"
+            error: accountVerifiedInfo[1]
         })
     }
 })

@@ -10,8 +10,32 @@ Tools to be installed: Node.JS, some IDE for backend, Insomnia (for testing API)
 ## Setting up IDE and Backend
 
 1. Download preferred IDE. I recommend VS Code
-1. Open the au_cares_backend folder in terminal. Install the required packages by typing: *npm install express jsonwebtoken dotenv nodemon nodemailer mysql bcrypt crypto*
-1. In config/dot.env, change your DB_HOST,DB_USER, and DB_PASS to the credentials of your database
+1. Open the au_cares_backend folder in terminal. Install the required packages by typing: *npm install express jsonwebtoken dotenv nodemon nodemailer mysql bcrypt crypto moment*
+1. Create a config folder, and create a *dot.env* file.
+1. Setup the dot.env file
+    1. Create the following template in your file dot.env file
+
+    ```env
+    #Will hold various API keys in here and DB
+
+    #DB pass
+    DB_HOST=
+    DB_USER=
+    DB_PASS=
+
+
+    #JWT SECRETS
+    ACCESS_TOKEN_SECRET =
+    REFRESH_TOKEN_SECRET =
+    ```
+
+    1. Update your DB_HOST,DB_USER, and DB_PASS to the credentials of your database. For example, **DB_HOST=127.0.0.1** for localhost
+    1. To create your ACCESS_TOKEN_SECRET and REFRESH_TOKEN_SECRET, 
+        1. open terminal
+        1. Type "node" to start node in your terminal.
+        1. Type *require('crypto').randomBytes(32).toString('hex')*
+        1. Copy the result to be your ACCESS_TOKEN_SECRET.
+        1. Do the same thing for REFRESH_TOKEN_SECRET.
 1. Start the server by running *nodemon app.js* or *npm devStart* in the terminal. You should see some yellow and green text in the terminal, but no red text/ errors when doing so.
 1. Test your connection to backend by testing the *ping* route and connection to backend and database by testing the *user_create* in Insomnia or some API tester. If responses are showing up, it works!
 
