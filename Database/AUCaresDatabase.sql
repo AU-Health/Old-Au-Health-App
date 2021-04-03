@@ -443,6 +443,16 @@ CREATE TABLE `QuestionsResponses`
     PRIMARY KEY (`QuestionResponseId`)
 );
 
+
+###############################Feedback#####################
+CREATE TABLE `ApplicationFeedback`(
+    `ApplicationFeedbackId` MEDIUMINT UNSIGNED AUTO_INCREMENT,
+    `Subject` VARCHAR(100),
+    `Feedback` VARCHAR(300),
+    PRIMARY KEY (ApplicationFeedbackId)
+);
+
+
 ######################FUNCTIONS##############################
 CREATE FUNCTION UuidToBin(_uuid BINARY(36))
     RETURNS BINARY(16)
