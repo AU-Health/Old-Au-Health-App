@@ -1,46 +1,36 @@
 import React, { useState } from 'react';
-import { View, Text, Dimensions, Input, StyleSheet, CheckBox } from 'react-native';
+import { View, Text, Dimensions, Input, StyleSheet, CheckBox, Pressable } from 'react-native';
+
+import TasksModals from './TasksModals';
 
 var deviceWidth = Dimensions.get("window").width;
 var deviceHeight = Dimensions.get("window").height;
-//<Text> {title} </Text>
-//height: deviceHeight * 10/ 100,
+let modal;
+let name;
+//<Pressable onPress={toggleModal}>
+const Task = ({ title, info }) => {
 
-const Task = ({ title }) => {
-    const [isSelected, setSelection] = [false, false];
+    const [isModalVisible, setModalVisible] = useState(false);
+
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+        //name = title;
+    };
+
+    modal = <TasksModals title={title} info={info} isModalVisible={isModalVisible} setModalVisible={setModalVisible}/>
 
     return (
-        <View
-            style={styles.taskContainer}>
-            <View style={{position: 'absolute', left: 0}}>
-                <Text style={{ paddingLeft: 8,}}> task title </Text>
+        <Pressable onPress={toggleModal} style={styles.taskContainer}>
+            <View style={styles.textContainer}>
+                <Text style={styles.textTitle}> {title} </Text>
             </View>
-            <View style={styles.checkboxContainer}>
-                <CheckBox
-                    value={isSelected}
-                    onValueChange={setSelection}
-                    style={styles.checkbox}
-                />
-            </View>
-        </View>
+            {modal}
+        </Pressable>
 
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    checkboxContainer: {
-      position: 'absolute',
-      right: 10,
-      marginBottom: 20,
-    },
-    checkbox: {
-      alignSelf: "center",
-    },
     taskContainer: {
         justifyContent: 'center',
         width: deviceWidth * 90 / 100,
@@ -58,6 +48,15 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         shadowOpacity: 1.0,
     },
+    textContainer: {
+        position: 'absolute',
+        left: 0,
+    },
+    textTitle: {
+        paddingLeft: 8,
+        marginBottom: 10,
+        fontSize: 15,
+    }
 });
 
 export default Task;

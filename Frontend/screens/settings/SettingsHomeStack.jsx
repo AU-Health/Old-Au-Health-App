@@ -1,13 +1,20 @@
-import React from 'react';
-import { Text, View, ScrollView, Image, StyleSheet, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, ScrollView, Image, StyleSheet, Dimensions, Button } from 'react-native';
 import { Avatar, ListItem, Icon } from 'react-native-elements';
 import { Component, useRef} from 'react';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StackNavigator } from 'react-navigation';
+import { LinearGradient } from 'expo-linear-gradient';
+import Modal from 'react-native-modal';
+
+import LogoutModals from '../../components/LogoutModal';
 
 var deviceWidth = Dimensions.get("window").width;
 var deviceHeight = Dimensions.get("window").height;
+
+var h = deviceHeight * 25 / 100;
+var w = deviceWidth * 80 / 100;
 
 let settingList = [
     {
@@ -42,7 +49,18 @@ let settingList = [
     },
  ]
 
+
+
 const SettingsHomeStack = ({ navigation }) => {
+    const [isSelected, setSelection] = useState(false);
+    const [isModalVisible, setModalVisible] = useState(false);
+
+    let modal = <LogoutModals isModalVisible={isModalVisible} setModalVisible={setModalVisible} />
+
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+    };
+
     return (
         <ScrollView>
           <View style={{
@@ -70,18 +88,19 @@ const SettingsHomeStack = ({ navigation }) => {
                       }}> User Name </Text>
               </View>
           </View>
-
+                {modal}
           <View style={{
               flex: 3,
           }}>
 
               {settingList.map((item, i) => (
                       <ListItem key={i} bottomDivider onPress={() => {
+                              if(item.name != 'Logout') {
+                                  navigation.navigate(item.name)
+                              } else {
+                                  toggleModal()
+                              }
 
-                              //console.log("work works!")
-                              //const navigation = useNavigation();
-                              //this.props.navigation.navigate('RootStack', { screen: item.name })
-                              navigation.navigate(item.name)
                           }}>
                           <Icon name={item.icon} />
                           <ListItem.Content>
@@ -91,7 +110,6 @@ const SettingsHomeStack = ({ navigation }) => {
                       </ListItem>
               ))
               }
-
           </View>
         </ScrollView>
     );
@@ -103,6 +121,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+
 });
 
 export default SettingsHomeStack;
