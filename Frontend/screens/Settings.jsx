@@ -1,10 +1,12 @@
-import React from 'react';
-import { Text, View, ScrollView, Image, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, ScrollView, Image, StyleSheet, Dimensions } from 'react-native';
 import { Avatar, ListItem, Icon } from 'react-native-elements';
 import { Component, useRef} from 'react';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StackNavigator } from 'react-navigation';
+import { LinearGradient } from 'expo-linear-gradient';
+import Modal from 'react-native-modal';
 
 //importing the different setting options
 import Profile from './settings/Profile';
@@ -17,6 +19,12 @@ import SettingsHomeStack from './settings/SettingsHomeStack';
 import SettingsBackBtn from '../components/SettingsBackBtn';
 
 const Stack = createStackNavigator();
+
+var deviceWidth = Dimensions.get("window").width;
+var deviceHeight = Dimensions.get("window").height;
+
+var h = deviceHeight * 25 / 100;
+var w = deviceWidth * 80 / 100;
 
 function Logout({navigation}) {
   return(
@@ -39,18 +47,18 @@ export default class Settings extends Component {
                 <Stack.Screen name='Notifications' component={Notifications}/>
                 <Stack.Screen name='Feedback' component={Feedback}/>
                 <Stack.Screen name='About' component={About}/>
-                <Stack.Screen name='Logout' component={Logout}/>
             </Stack.Navigator>
         </NavigationContainer>
 
     );
   }
 }
-
+    /*<Stack.Screen name='Logout' component={Logout}/>*/
 const styles = StyleSheet.create({
     logoutContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     },
+
 });

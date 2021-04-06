@@ -1,14 +1,86 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { ProgressChart } from "react-native-chart-kit";
+
+var deviceWidth = Dimensions.get("window").width;
+var deviceHeight = Dimensions.get("window").height;
+
+let data = {
+  labels: ["Sleep", "Activity", "Hydration"],
+  data: [0.4, 0.6, 0.8]
+};
+
+let chartConfig={
+    backgroundGradientFrom: "#F2F2F2",
+    backgroundGradientTo: "#F2F2F2",
+    decimalPlaces: 2,
+    color: (opacity = 1) => `rgba(46, 49, 49, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(46, 49, 49, ${opacity})`,
+    style: {
+        borderRadius: 16
+    },
+    propsForDots: {
+        r: "6",
+        strokeWidth: "2",
+    }
+};
 
 export default class ProgressScreen extends React.Component {
+
   render() {
     return(
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text> This the Progress screen </Text>
-      </View>
+        <View style={styles.screenContainer}>
+          <View style={styles.titleContainer}>
+              <Text style={styles.titleText}> Your Progress </Text>
+          </View>
+
+          <View style={styles.body}>
+              <View style={styles.legend}>
+                  <Text>
+
+                  </Text>
+              </View>
+              <ProgressChart
+                  data={data}
+                  width={deviceWidth}
+                  height={220}
+                  strokeWidth={16}
+                  radius={32}
+                  chartConfig={chartConfig}
+                  hideLegend={true}/>
+          </View>
+        </View>
     );
   }
 }
+
+
+const styles = StyleSheet.create({
+    titleContainer: {
+        width: deviceWidth,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    titleText: {
+        fontWeight: 'bold',
+        fontSize: 24,
+        paddingBottom: 5,
+    },
+    screenContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    body: {
+        height: '80%',
+        width: deviceWidth * 90 / 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    legend: {
+        width: deviceWidth * 90 / 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+});
