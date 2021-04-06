@@ -17,7 +17,7 @@ class Login extends React.Component {
 		password: '',
 		signup: false,
 		loginLink: 'Login',
-		
+
 
 	}
 
@@ -34,7 +34,7 @@ class Login extends React.Component {
 		let usernameFinal = this.state.username;
 		let passwordFinal = this.state.password;
 		//once you login we want redux to remember your username and take you to the home page
-		
+
 	}
 	handleSignUpPress = () =>{
 		console.log('you sign up');
@@ -48,12 +48,12 @@ class Login extends React.Component {
 					<Image style={{ width: 150, height: 150 }} source={require('../assets/eaglelogo.png')} />
 					<br />
 					<Text h5><b>{this.state.loginLink}</b> or <b><a href='#' onClick={()=>{this.setState({signup: true}), this.setState({loginLink: <a href='#'>login</a>})}}>Sign-up</a></b></Text>
-					{this.state.signup ? 
+					{this.state.signup ?
 
 					//signup
 					<View>
 					<br />
-					<Text h4>Sign-up</Text>	
+					<Text h4>Sign-up</Text>
 					<br />
 					<Text style={{ alignSelf: 'baseline' }}>Username</Text>
 					<TextInput
@@ -77,7 +77,7 @@ class Login extends React.Component {
 					<br/>
 					<a href='#' style={{ textDecoration: 'none' }}>Forgot your password?</a>
 					</View>
-					
+
 					:
 
 
@@ -108,7 +108,7 @@ class Login extends React.Component {
 					<br/>
 					<a href='www.google.com' style={{ textDecoration: 'none' }}>Forgot your password?</a>
 					</View>}
-					
+
 				</View>
 			</SafeAreaView>
 		);
@@ -126,7 +126,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
 	return {
 		// fetchCompanies: () => dispatch(fetchProducts()),
-	
+
 	}
 }
 
@@ -134,4 +134,3 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(mapStateToProps, mapDispatchToProps)(Login)
 
 //https://www.youtube.com/watch?v=qdAzeYAfQlY&ab_channel=JGogoi
-
