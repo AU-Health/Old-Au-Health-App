@@ -347,7 +347,7 @@ VALUES (1, 'Multiple Choice');
 INSERT INTO QuestionTypes(QuestionTypeId, QuestionType)
 VALUES (2, 'Checkmark');
 INSERT INTO QuestionTypes(QuestionTypeId, QuestionType)
-VALUES (1, 'Text');
+VALUES (3, 'Text');
 
 
 
@@ -467,7 +467,7 @@ CREATE TABLE `OrgUserInfo`
 (
     `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
     `NumPoints`   MEDIUMINT UNSIGNED  NOT NULL CHECK (NumPoints >= 0),       
-    PRIMARY KEY (`UUID`)
+    PRIMARY KEY (`UserId`)
 );
 
 =======
