@@ -113,9 +113,9 @@ CREATE TABLE `CategoryPointsHistory`
 #Table for storing user's next spin and number of spins a day
 CREATE TABLE `UserSpins`
 (
-    `UserId`           MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `SpinsPerDay`      TINYINT(2)         NOT NULL DEFAULT (1),
-    `NextSpinDateTime` DATETIME                    DEFAULT CURRENT_TIMESTAMP,
+    `UserId`           MEDIUMINT UNSIGNED,
+    `SpinsPerDay`      TINYINT(2) NOT NULL DEFAULT (1),
+    `NextSpinDateTime` DATETIME            DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
@@ -123,12 +123,12 @@ CREATE TABLE `UserSpins`
 #Dare History for all Users... assuming dares cannot be repeated
 CREATE TABLE `DaresHistory`
 (
-    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL,
     `DareId`         SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the dare id in the other schema
     `DareResponseId` MEDIUMINT UNSIGNED NOT NULL UNIQUE,
     `Issued`         DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `Expiration`     DATETIME           NOT NULL,
-    `Completed`      TINYINT(1),
+    `Completed`      TINYINT(1)                  DEFAULT (3),
     PRIMARY KEY (UserId, DareId),
     FOREIGN KEY (UserId) REFERENCES User (UserId),       ##SHOULD i do cascade delete and maybe instead separately store how many of each was done so storage isnt used,
     FOREIGN KEY (DareId) REFERENCES Dares (DareId),
@@ -139,12 +139,12 @@ CREATE TABLE `DaresHistory`
 #Questions History for all Users ... assuming questions cannot be repeated
 CREATE TABLE `QuestionsHistory`
 (
-    `UserId`             MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `UserId`             MEDIUMINT UNSIGNED NOT NULL,
     `QuestionId`         SMALLINT UNSIGNED  NOT NULL UNIQUE,
     `Issued`             DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `Expiration`         DATETIME           NOT NULL,
     `QuestionResponseId` MEDIUMINT UNSIGNED NOT NULL UNIQUE, #decide whether to be int or medium INT.... maybe see if this reference even needed later
-    `Completed`          TINYINT(1)                  DEFAULT (NULL),
+    `Completed`          TINYINT(1)                  DEFAULT (3),
     PRIMARY KEY (UserId, QuestionId),
     FOREIGN KEY (UserId) REFERENCES User (UserId),
     FOREIGN KEY (QuestionId) REFERENCES Questions (QuestionId),
@@ -155,12 +155,12 @@ CREATE TABLE `QuestionsHistory`
 #Truths History for all Users... assuming dares cannot be repeated
 CREATE TABLE `TruthsHistory`
 (
-    `UserId`          MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `UserId`          MEDIUMINT UNSIGNED NOT NULL,
     `TruthId`         SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the truth  id in the other schema
     `Issued`          DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `Expiration`      DATETIME           NOT NULL,
     `TruthResponseId` MEDIUMINT UNSIGNED NOT NULL UNIQUE, #decide whether to have as INT or MEDIUMINT
-    `Completed`       TINYINT(1),
+    `Completed`       TINYINT(1)                  DEFAULT (3),
     PRIMARY KEY (UserId, TruthId),
     FOREIGN KEY (UserId) REFERENCES User (UserId),
     FOREIGN KEY (TruthId) REFERENCES Truths (TruthId),
@@ -172,7 +172,7 @@ CREATE TABLE `TruthsHistory`
 #Table of Organizations Users are a Part of for all Users
 CREATE TABLE `UserOrganizations`
 (
-    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL,
     `OrganizationId` SMALLINT UNSIGNED  NOT NULL, #will be id of communities which are created
     PRIMARY KEY (UserId, OrganizationId),
     FOREIGN KEY (UserId) REFERENCES User (UserId)
@@ -407,24 +407,24 @@ CREATE TABLE `QuestionResponseAnswer`
 #All Truth Responses
 CREATE TABLE `TruthsResponses`
 (
-    `TruthResponseId` MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `Data`            VARCHAR(250)       NOT NULL,
+    `TruthResponseId` MEDIUMINT UNSIGNED AUTO_INCREMENT,
+    `Data`            VARCHAR(250) NOT NULL,
     PRIMARY KEY (`TruthResponseId`)
 );
 
 #All Dares Responses
 CREATE TABLE `DaresResponses`
 (
-    `DareResponseId` MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `Data`           BOOLEAN            NOT NULL,
+    `DareResponseId` MEDIUMINT UNSIGNED AUTO_INCREMENT,
+    `Data`           BOOLEAN NOT NULL,
     PRIMARY KEY (`DareResponseId`)
 );
 
 #All Question Responses
 CREATE TABLE `QuestionsResponses`
 (
-    `QuestionResponseId` MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `Data`               VARCHAR(250)       NOT NULL,
+    `QuestionResponseId` MEDIUMINT UNSIGNED AUTO_INCREMENT,
+    `Data`               VARCHAR(250) NOT NULL,
     PRIMARY KEY (`QuestionResponseId`)
 );
 
@@ -432,8 +432,8 @@ CREATE TABLE `QuestionsResponses`
 
 CREATE TABLE IF NOT EXISTS `Organization`
 (
-    `OrganizationName` VARCHAR(250) NOT NULL,
-    `OrgID`            MEDIUMINT UNSIGNED NOT NULL UNIQUE,                 
+    `OrganizationName` VARCHAR(250)       NOT NULL,
+    `OrgID`            MEDIUMINT UNSIGNED NOT NULL UNIQUE,
     PRIMARY KEY (OrgID)
 );
 
@@ -441,16 +441,16 @@ CREATE TABLE IF NOT EXISTS `Organization`
 #Organization - Current Leaders
 CREATE TABLE `CurrentLeaders`
 (
-    `CurrentLeaderName`  VARCHAR(250) NOT NULL,
-    `CurrentLeaderID`    MEDIUMINT UNSIGNED NOT NULL UNIQUE,          
+    `CurrentLeaderName` VARCHAR(250)       NOT NULL,
+    `CurrentLeaderID`   MEDIUMINT UNSIGNED NOT NULL UNIQUE,
     PRIMARY KEY (`CurrentLeaderID`)
 );
 
 #Organization - User Info
 CREATE TABLE `OrgUserInfo`
 (
-    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `NumPoints`   MEDIUMINT UNSIGNED  NOT NULL CHECK (NumPoints >= 0),       
+    `UserId`    MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `NumPoints` MEDIUMINT UNSIGNED NOT NULL CHECK (NumPoints >= 0),
     PRIMARY KEY (`UserId`)
 );
 
