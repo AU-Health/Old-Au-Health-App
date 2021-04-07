@@ -15,6 +15,7 @@ router.get('/truths/:id?', middleware.authenticateToken, middleware.authenticate
         uuid = req.body.uuid;
     }
 
+
 });
 
 

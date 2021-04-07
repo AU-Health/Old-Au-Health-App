@@ -86,6 +86,7 @@ async function getUserInformationFromEmail(email, isHashed) {
 }
 
 async function isRefreshTokenCorrectForAccount(uuid, refreshToken) {
+    let queryResult = await dbConnection.getUserVerificationCode(uuid);
     return queryResult && queryResult['RefreshToken'] === refreshToken;
 }
 
