@@ -5,17 +5,16 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `User`
 (
     `UserId`              MEDIUMINT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    `UserEmail`           VARCHAR(100)       NOT NULL UNIQUE, #figure out what this will be. Is it varchar
-    `Password`            VARCHAR(100)       NOT NULL UNIQUE, #figure out what this will be. Is it varchar?
+    `UserEmail`           VARCHAR(150)       NOT NULL UNIQUE,
+    `Password`            VARCHAR(150)       NOT NULL,
     `UUID`                BINARY(16)         NOT NULL UNIQUE,
-    `UserType`            TINYINT(1)         NOT NULL DEFAULT (1) CHECK ( UserType >= 1 && UserType <= 2 ),
+    `IsAdmin`             BOOLEAN            NOT NULL DEFAULT (FALSE),
     `UserVerified`        BOOLEAN            NOT NULL DEFAULT (FALSE),
     `ConsentFormSigned`   BOOLEAN            NOT NULL DEFAULT (FALSE),
     `UserAccountDisabled` BOOLEAN            NOT NULL DEFAULT (FALSE),
     `CreatedDate`         DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `LastAccessDate`      DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (UserId),
-    FOREIGN KEY (UserType) REFERENCES UserTypes (UserTypeId)
+    PRIMARY KEY (UserId)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_unicode_ci;
@@ -191,8 +190,8 @@ CREATE TABLE `UserReminders`
 #User Refresh Tokens for all Users
 CREATE TABLE `UserRefreshTokens`
 (
-    `UserId`         MEDIUMINT UNSIGNED NOT NULL,
-    `RefreshToken`   VARCHAR(200), #change this based on what actual
+    `UserId`       MEDIUMINT UNSIGNED NOT NULL,
+    `RefreshToken` VARCHAR(200), #change this based on what actual
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
@@ -232,20 +231,6 @@ INSERT INTO CategoryTypes(CategoryId, CategoryName)
 VALUES (6, 'Sleep');
 INSERT INTO CategoryTypes(CategoryId, CategoryName)
 VALUES (7, 'Water Consumption');
-
-
-#Store user types
-CREATE TABLE `UserTypes`
-(
-    `UserTypeId`   TINYINT(1) UNIQUE  NOT NULL,
-    `UserTypeName` VARCHAR(15) UNIQUE NOT NULL,
-    PRIMARY KEY (UserTypeId)
-);
-
-INSERT INTO UserTypes(UserTypeId, UserTypeName)
-VALUES (1, 'Normal User');
-INSERT INTO UserTypes(UserTypeId, UserTypeName)
-VALUES (2, 'Admin');
 
 #User year in university
 CREATE TABLE `UniversityYear`
@@ -473,10 +458,11 @@ CREATE TABLE `OrgUserInfo`
 =======
 
 ###############################Feedback#####################
-CREATE TABLE `ApplicationFeedback`(
+CREATE TABLE `ApplicationFeedback`
+(
     `ApplicationFeedbackId` MEDIUMINT UNSIGNED AUTO_INCREMENT,
-    `Subject` VARCHAR(100),
-    `Feedback` VARCHAR(300),
+    `Subject`               VARCHAR(100),
+    `Feedback`              VARCHAR(300),
     PRIMARY KEY (ApplicationFeedbackId)
 );
 
