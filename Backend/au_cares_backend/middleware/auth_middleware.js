@@ -1,28 +1,30 @@
 //MIDDLEWARE methods
 const jwt = require('jsonwebtoken');
 const authentication = require("../services/authentication");
+const bcrypt = require('bcrypt');
 
 //Ensure email and password are valid to create a new account
 async function ensureEmailAndPass(req, res, next) {
-    let jsonError = { status: "error" }
     let email = req.body.email;
     let password = req.body.password;
     if (!(email.length >= 14 && email.match(/[a-z0-9]+@(student.)?american.edu$/))) {
-        jsonError["error"] = "Email not AU"
-        res.status(401).json(jsonError);
-        return;
+        return res.status(401).json({
+            status: "error",
+            error: "Email not AU"
+        });
     }
     //check if email already exists in the system
-    if (await authentication.accountExists(email, "email")) {
-        jsonError["error"] = "Account under email already exists"
-        res.status(401).json(jsonError);
-        return;
+    if (await authentication.getUserInformationFromEmail(email, false)) {
+        return res.status(401).json({
+            status: "error",
+            error: "Account under email already exists"
+        });
     }
-
     if (!(password.length >= 8)) {
-        jsonError["error"] = "Password too short";
-        res.status(401).json(jsonError);
-        return;
+        return res.status(401).json({
+            status: "error",
+            error: "Password too short"
+        });
     }
     let countUpperCase = 0;
     let countLowerCase = 0;
@@ -37,19 +39,22 @@ async function ensureEmailAndPass(req, res, next) {
         }
     }
     if (!countUpperCase >= 1) {
-        jsonError["error"] = "Not enough capital letters. Need at least 1 uppercase";
-        res.status(401).json(jsonError);
-        return;
+        return res.status(401).json({
+            status: "error",
+            error: "Not enough capital letters. Need at least 1 uppercase"
+        });
     }
     if (!countLowerCase >= 1) {
-        jsonError["error"] = "Not enough lowercase letters. Need at least 1 lowercase";
-        res.status(401).json(jsonError);
-        return;
+        return res.status(401).json({
+            status: "error",
+            error: "Not enough lowercase letters. Need at least 1 lowercase"
+        });
     }
     if (!countNonChars >= 1) {
-        jsonError["error"] = "Not enough non-characters. Need at least 1";
-        res.status(401).json(jsonError);
-        return;
+        return res.status(401).json({
+            status: "error",
+            error: "Not enough non-characters. Need at least 1"
+        });
     }
     next();
 
@@ -64,43 +69,35 @@ async function ensureEmailAndPass(req, res, next) {
 }
 
 
-//ensures uuid exists
-async function ensureUUIDExists(req, res, next) {
-    let uuid = req.body.uuid;
-    if (!await authentication.accountExists(uuid, "UUID")) {
-        return res.status(401).json({
-            status: "error",
-            error: "No account with UUID"
-        })
-    } else {
-        next();
-    }
 
-}
-
-
-
-//Authenticate user account, ensuring account is correct
+//Authenticate user account, ensuring account is correct. Adds user's uuid and whether verified to request
 async function authenticateUserAccount(req, res, next) {
     let email = req.body.email;
     let password = req.body.password;
-    if (!await authentication.accountExists(email, "email")) {
+
+    let queryResult = await authentication.getUserInformationFromEmail(email, false);
+
+    if (!queryResult) {
         return res.status(401).json({
             status: "error",
             error: "Account with email does not exist"
         });
     }
-    let isPasswordCorrect = await authentication.isPasswordCorrectForAccount(email, password);
-    if (!isPasswordCorrect) {
+    let hashedPassword = queryResult["Password"];
+
+    if (!await bcrypt.compare(password, hashedPassword)) {
         return res.status(403).json({
             status: "error",
             error: "Incorrect password"
         })
     }
+    req.user = {};
+    req.user.uuid = queryResult["UuidFromBin(UUID)"].toString();
+    req.user.isVerified = !!queryResult["UserVerified"];
     next();
 };
 
-//authenticate token of the user
+//authenticate token of the user ---adds user information to req.user
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; //will get us token since it is BEARER TOKEN
@@ -155,9 +152,22 @@ function authenticateRefreshToken(req, res, next) {
 
 }
 
+//Authenticates user is an admin
+function authenticateAdministrator(req, res, next) {
+    let isAdmin = req.user.isAdmin;
+
+    if (!isAdmin) {
+        return res.status(403).json({
+            status: "error",
+            error: "Access restricted to admins only"
+        })
+    }
+    next();
+}
+
 
 module.exports.ensureEmailAndPass = ensureEmailAndPass;
 module.exports.authenticateUserAccount = authenticateUserAccount;
 module.exports.authenticateToken = authenticateToken;
 module.exports.authenticateRefreshToken = authenticateRefreshToken;
-module.exports.ensureUUIDExists = ensureUUIDExists;
+module.exports.authenticateAdministrator = authenticateAdministrator;

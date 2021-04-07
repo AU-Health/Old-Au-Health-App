@@ -5,14 +5,6 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const emailer = require('./emailer');
 
-
-async function getUserUUID(email) {
-    const hashAlgo = crypto.createHash('sha256');
-    const hashedEmail = hashAlgo.update(email).digest('hex');
-    return await dbConnection.getUserUUID(hashedEmail);
-}
-
-
 //method to create an account
 async function createUserAccount(email, password, isAdmin) {
     try {
@@ -25,7 +17,10 @@ async function createUserAccount(email, password, isAdmin) {
         await dbConnection.createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCode);
         let queryResult = await dbConnection.getUserInfoFromEmail(hashedEmail);
         let uuid = queryResult["UUID"].toString();
-        return [uuid, generateAccessToken(uuid)];
+        return {
+            uuid: uuid,
+            accessToken: await generateAccessToken(uuid)
+        }
     } catch (e) {
         console.log(e);
         return "error";
@@ -34,23 +29,24 @@ async function createUserAccount(email, password, isAdmin) {
 }
 
 //login user. Returns user's UUID and JWT token
-async function login(email) {
-    const hashAlgo = crypto.createHash('sha256');
-    const hashedEmail = hashAlgo.update(email).digest('hex');
-    let queryResult = await dbConnection.getUserInfoFromEmail(hashedEmail);
-    let uuid = queryResult["UUID"].toString();
-    let isVerified = queryResult["UserVerified"];
-    let accessToken = generateAccessToken(uuid);
+async function login(uuid, isVerified) {
+    let accessToken = await generateAccessToken(uuid);
     let refreshToken = null;
 
     if (isVerified) {
         refreshToken = generateAndStoreRefreshToken(uuid);
     }
-    return [uuid, !!isVerified, accessToken, refreshToken];
+
+    return {
+        uuid: uuid,
+        isVerified: !!isVerified,
+        accessToken: accessToken,
+        refreshToken: refreshToken
+    }
 }
 
 
-//logout uer by deleting the refresh token ... returns undefined if error, otherwise num rows deletd
+//logout user by deleting the refresh token ... returns undefined if error, otherwise num rows deletd
 async function logout(uuid) {
     let queryResult = await dbConnection.removeRefreshTokenForUser(uuid);
     if (!queryResult) {
@@ -83,48 +79,41 @@ async function verifyUserAccount(uuid, verificationCode) {
     }
 }
 
-
-
-async function accountExists(info, parameter) {
-    if (parameter === "email") {
-        const hashAlgo = crypto.createHash('sha256');
-        const hashedEmail = hashAlgo.update(info).digest('hex');
-        return await dbConnection.getUserInfoFromEmail(hashedEmail) !== undefined;
-    } else if (parameter === "UUID") {
-        return await dbConnection.getUserInfoFromUUID(info) !== undefined;
-    }
-
+//get user information from UUID
+async function getUserInformationFromUUID(uuid) {
+    return await dbConnection.getUserRefreshTokenFromUUID(uuid);
 }
 
-
-//returns whether a password is correct for an account
-async function isPasswordCorrectForAccount(email, password) {
-    const hashAlgo = crypto.createHash('sha256');
-    const hashedEmail = hashAlgo.update(email).digest('hex');
-    let queryResult = await dbConnection.getUserHashedPasswordFromEmail(hashedEmail);
-    let hashedPassword = queryResult["Password"];
-    return bcrypt.compare(password, hashedPassword).then(response => {
-        return response;
-    })
-
+//get user information from email
+async function getUserInformationFromEmail(email, isHashed) {
+    if (!isHashed) {
+        const hashAlgo = crypto.createHash('sha256');
+        email = hashAlgo.update(email).digest('hex');
+    }
+    return await dbConnection.getUserInfoFromEmail(email);
 }
 
 async function isRefreshTokenCorrectForAccount(uuid, refreshToken) {
-    let queryResult = await dbConnection.getUserRefreshTokenFromUUID(uuid);
     return queryResult && queryResult['RefreshToken'] === refreshToken;
 }
 
 //methods to change password, email, or other things
 
-//create a new JWT for the user
-function generateAccessToken(uuid) {
-    let jwtPayload = {};
-    jwtPayload["uuid"] = uuid;
-    // jwtPayload["userType"] = isAdmin ? 2 : 1;
-    // jwtPayload["isVerified"] = false;
-    // jwtPayload["isConsent"] = false;
-    // jwtPayload["isAccountDisabled"] = false;
-    return jwt.sign(jwtPayload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+//create a new JWT for the user --- maybe add points per category?
+async function generateAccessToken(uuid) {
+    return dbConnection.getUserInfoFromUUID(uuid).then(response => {
+            let jwtPayload = {};
+            jwtPayload["binaryUuid"] = response["UuidFromBin(UUID)"];
+            jwtPayload["userType"] = response.userType;
+            jwtPayload["isVerified"] = response.UserVerified;
+            jwtPayload["consentSigned"] = response.ConsentFormSigned;
+            jwtPayload["isAccountDisabled"] = response.UserAccountDisabled;
+            return jwt.sign(jwtPayload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+        })
+        .catch(err => {
+            console.log("ERROR");
+            console.log(err);
+        })
 }
 
 //create a refresh token for user
@@ -139,9 +128,7 @@ function generateAndStoreRefreshToken(uuid) {
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.createUserAccount = createUserAccount;
-module.exports.getUserUUID = getUserUUID;
-module.exports.accountExists = accountExists;
 module.exports.generateAccessToken = generateAccessToken;
-module.exports.isPasswordCorrectForAccount = isPasswordCorrectForAccount;
 module.exports.isRefreshTokenCorrectForAccount = isRefreshTokenCorrectForAccount;
 module.exports.verifyUserAccount = verifyUserAccount;
+module.exports.getUserInformationFromEmail = getUserInformationFromEmail;

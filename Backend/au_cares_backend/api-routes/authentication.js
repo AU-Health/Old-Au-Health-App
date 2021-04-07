@@ -1,6 +1,6 @@
 /*File will have all of the authentication routes*/
 const authentication = require('../services/authentication');
-const middleware = require("./middleware");
+const middleware = require("../middleware/auth_middleware");
 
 //this will be the class for the routes
 const express = require("express"); //import express
@@ -15,23 +15,23 @@ router.post('/user_create', middleware.ensureEmailAndPass, async(req, res) => {
     let createdUserInfo = await authentication.createUserAccount(userEmail, userPass, isAdmin);
     res.status(200).json({
         status: "ok",
-        uuid: createdUserInfo[0],
-        access_token: createdUserInfo[1]
+        uuid: createdUserInfo.uuid,
+        access_token: createdUserInfo.accessToken
     });
 });
 
 /*Login a user*/
 router.post('/login', middleware.authenticateUserAccount, async(req, res) => {
-    let email = req.body.email;
-    let password = req.body.password;
-    let loginUserInfo = await authentication.login(email, password);
+    let uuid = req.user.uuid;
+    let isVerified = req.user.isVerified;
+    let loginUserInfo = await authentication.login(uuid, isVerified);
 
     res.status(200).json({
         status: "ok",
-        isVerified: loginUserInfo[1],
-        uuid: loginUserInfo[0],
-        access_token: loginUserInfo[2],
-        refresh_token: loginUserInfo[3]
+        isVerified: loginUserInfo.isVerified,
+        uuid: loginUserInfo.uuid,
+        access_token: loginUserInfo.accessToken,
+        refresh_token: loginUserInfo.refreshToken
     })
 });
 
@@ -60,9 +60,9 @@ router.put('/logout', middleware.authenticateToken, async(req, res) => {
 })
 
 /*Gives user a new access token upon given a good refresh token*/
-router.post('/token', middleware.authenticateRefreshToken, (req, res) => {
+router.post('/token', middleware.authenticateRefreshToken, async(req, res) => {
     let uuid = req.user.uuid;
-    let newAccessToken = authentication.generateAccessToken(uuid);
+    let newAccessToken = await authentication.generateAccessToken(uuid);
 
     res.status(201).json({
         access_token: newAccessToken

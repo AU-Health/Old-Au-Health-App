@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 
-async function sendEmail(emailTo, subject, bodyHTML) {
-    let transporter = createTransport({
+function sendEmail(emailTo, subject, bodyHTML) {
+    let transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
         secure: true,
@@ -12,15 +12,15 @@ async function sendEmail(emailTo, subject, bodyHTML) {
         }
     })
 
-    let sendingInfo = await transporter.sendMail({
+    transporter.sendMail({
         from: `"${process.env.emailSenderName}" <${process.env.emailAccount}>`,
         to: emailTo,
         subject: subject,
         html: bodyHTML,
-    });
-
-    console.log("WITH INFO!!!");
-    console.log(sendingInfo);
+    }).then(sendingInfo => {
+        console.log("WITH INFO!!!");
+        console.log(sendingInfo);
+    })
 }
 
-const _sendEmail = sendEmail;
+module.exports.sendEmail = sendEmail;
