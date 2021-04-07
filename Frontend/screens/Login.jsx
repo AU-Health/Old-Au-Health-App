@@ -46,35 +46,34 @@ class Login extends React.Component {
 			<SafeAreaView>
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 					<Image style={{ width: 150, height: 150 }} source={require('../assets/eaglelogo.png')} />
-					<br />
+				
 					<Text h5><b>{this.state.loginLink}</b> or <b><a href='#' onClick={()=>{this.setState({signup: true}), this.setState({loginLink: <a href='#'>login</a>})}}>Sign-up</a></b></Text>
 					{this.state.signup ? 
 
 					//signup
 					<View>
-					<br />
+					
 					<Text h4>Sign-up</Text>	
-					<br />
+					
 					<Text style={{ alignSelf: 'baseline' }}>Username</Text>
 					<TextInput
 						style={{ height: 40, borderColor: 'black', borderWidth: 2, borderRadius: 2 }}
 						onChangeText={text => this.handleUsernameChange(text)}
 					/>
-					<br />
+					
 					<Text style={{ alignSelf: 'baseline' }}>Password</Text>
 					<TextInput
 						style={{ height: 40, borderColor: 'black', borderWidth: 2, borderRadius: 2 }}
 						label='password'
 						onChangeText={text => this.handlePasswordChange(text)}
 					/>
-					<br />
-					<br />
+				
 					<Button
 					style={{ float: 'left', width: '10em' }}
 						onPress = {this.handleSignUpPress()}
 						title="Signup"
 					/>
-					<br/>
+					
 					<a href='#' style={{ textDecoration: 'none' }}>Forgot your password?</a>
 					</View>
 					
