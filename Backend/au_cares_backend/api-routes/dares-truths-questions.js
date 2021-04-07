@@ -1,4 +1,5 @@
 import { response } from 'express';
+import { getUserInfoFromEmail } from '../database/database';
 import middleware from '../middleware/auth_middleware';
 
 //For Express

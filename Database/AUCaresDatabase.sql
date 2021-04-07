@@ -345,7 +345,7 @@ CREATE TABLE IF NOT EXISTS `Truths`
     `Truth`           VARCHAR(500) UNIQUE NOT NULL,
     `Points`          TINYINT UNSIGNED    NOT NULL CHECK ( Points > 0 ),
     `CategoryId`      TINYINT(1)          NOT NULL,
-    `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded > 0 ),
+    `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded >= 0 ),
     `HoursToComplete` DECIMAL(5, 1)       NOT NULL CHECK ( HoursToComplete > 0 ),
     `SentNum`         MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK (SentNum >= 0),
     `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK ( CompleteNum >= 0 ),
@@ -359,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `Dares`
     `Dare`            VARCHAR(500) UNIQUE NOT NULL,
     `Points`          TINYINT UNSIGNED    NOT NULL CHECK ( Points > 0 ),
     `CategoryId`      TINYINT(1)          NOT NULL,
-    `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded > 0 ),
+    `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded >= 0 ),
     `HoursToComplete` DECIMAL(5, 1)       NOT NULL CHECK ( HoursToComplete > 0 ),
     `SentNum`         MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK (SentNum >= 0),
     `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK ( CompleteNum >= 0 ),
@@ -375,7 +375,7 @@ CREATE TABLE IF NOT EXISTS `Questions`
     `Question`        VARCHAR(500) UNIQUE NOT NULL,
     `Points`          TINYINT UNSIGNED    NOT NULL CHECK ( Points > 0 ),
     `CategoryId`      TINYINT(1)          NOT NULL,
-    `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded > 0 ),
+    `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded >= 0 ),
     `HoursToComplete` DECIMAL(5, 1)       NOT NULL CHECK ( HoursToComplete > 0 ),
     `SentNum`         MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK (SentNum >= 0),
     `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK ( CompleteNum >= 0 ),
@@ -428,7 +428,6 @@ CREATE TABLE `QuestionsResponses`
     PRIMARY KEY (`QuestionResponseId`)
 );
 
-<<<<<<< HEAD
 ##########################################Organization######################
 
 CREATE TABLE IF NOT EXISTS `Organization`
@@ -455,8 +454,6 @@ CREATE TABLE `OrgUserInfo`
     PRIMARY KEY (`UserId`)
 );
 
-=======
-
 ###############################Feedback#####################
 CREATE TABLE `ApplicationFeedback`
 (
@@ -467,7 +464,6 @@ CREATE TABLE `ApplicationFeedback`
 );
 
 
->>>>>>> antonbaron10
 ######################FUNCTIONS##############################
 CREATE FUNCTION UuidToBin(_uuid BINARY(36))
     RETURNS BINARY(16)
