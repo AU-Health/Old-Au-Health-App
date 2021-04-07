@@ -15,8 +15,8 @@ async function createUserAccount(email, password, isAdmin) {
         const verificationCode = '123';
 
         await dbConnection.createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCode);
-        let queryResult = await dbConnection.getUserInfoFromEmail(hashedEmail);
-        let uuid = queryResult["UUID"].toString();
+        let queryResult = await getUserInformationFromEmail(hashedEmail, true);
+        let uuid = queryResult["UuidFromBin(UUID)"].toString();
         return {
             uuid: uuid,
             accessToken: await generateAccessToken(uuid)
@@ -55,27 +55,19 @@ async function logout(uuid) {
     return queryResult.affectedRows;
 }
 
-//verify account
-async function verifyUserAccount(uuid, verificationCode) {
-    let queryResult = await dbConnection.getUserVerificationCode(uuid);
-    if (!queryResult) {
-        return [false, "No verification code or account has already been verified", null];
-    }
+async function getUserVerificationCode(uuid) {
+    return await dbConnection.getUserVerificationCode(uuid);
+}
 
-    let error = "";
-    let verificationCodeFromDB = queryResult["ConfirmationCode"];
-    let expirationDate = queryResult["expiration"];
 
-    if (expirationDate && expirationDate < Date.now())
-        error = "Expiration date expired"
-    else if (verificationCode != verificationCodeFromDB)
-        error = "Incorrect verification code"
+//service of what to do once we are aware account is verified
+async function updateAccountPostVerified(uuid) {
+    await dbConnection.updateUserInformation(uuid, "UserVerified", true, true);
+    //maybe send email saying user is now verified
 
-    if (error == "") {
-        dbConnection.updateUserInformation(uuid, "UserVerified", true, true);
-        return [true, "Account Verified", generateAndStoreRefreshToken(uuid)];
-    } else {
-        return [false, error, null];
+    return {
+        accessToken: await generateAccessToken(uuid),
+        refreshToken: generateAndStoreRefreshToken(uuid)
     }
 }
 
@@ -103,7 +95,7 @@ async function isRefreshTokenCorrectForAccount(uuid, refreshToken) {
 async function generateAccessToken(uuid) {
     return dbConnection.getUserInfoFromUUID(uuid).then(response => {
             let jwtPayload = {};
-            jwtPayload["binaryUuid"] = response["UuidFromBin(UUID)"];
+            jwtPayload["uuid"] = response["UuidFromBin(UUID)"].toString();
             jwtPayload["userType"] = response.userType;
             jwtPayload["isVerified"] = response.UserVerified;
             jwtPayload["consentSigned"] = response.ConsentFormSigned;
@@ -130,5 +122,6 @@ module.exports.logout = logout;
 module.exports.createUserAccount = createUserAccount;
 module.exports.generateAccessToken = generateAccessToken;
 module.exports.isRefreshTokenCorrectForAccount = isRefreshTokenCorrectForAccount;
-module.exports.verifyUserAccount = verifyUserAccount;
+module.exports.updateAccountPostVerified = updateAccountPostVerified;
 module.exports.getUserInformationFromEmail = getUserInformationFromEmail;
+module.exports.getUserVerificationCode = getUserVerificationCode;

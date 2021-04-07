@@ -36,22 +36,7 @@ router.post('/login', middleware.authenticateUserAccount, async(req, res) => {
 });
 
 /*Logout user by removing their refresh token*/
-router.put('/logout', middleware.authenticateToken, async(req, res) => {
-    let uuid = req.user.uuid;
-    let result = await authentication.logout(uuid);
-    if (result === undefined) {
-        return res.status(500).json({
-            status: "error",
-            error: "Server error. Did not logout"
-        })
-    }
-    if (result == 0) {
-        return res.status(401).json({
-            status: "error",
-            error: "Already logged out"
-        })
-    }
-
+router.put('/logout', middleware.authenticateToken, middleware.authenticateLogout, async(req, res) => {
     res.status(201).json({
         status: "ok",
         message: "User logout success"
@@ -72,22 +57,15 @@ router.post('/token', middleware.authenticateRefreshToken, async(req, res) => {
 })
 
 //verify email of account
-router.put('/verifyAccount', middleware.authenticateToken, async(req, res) => {
+router.put('/verifyAccount', middleware.authenticateToken, middleware.verifyVerificationCode, async(req, res) => {
     let uuid = req.user.uuid;
-    let verificationCode = req.body.verificationCode;
-    let accountVerifiedInfo = await authentication.verifyUserAccount(uuid, verificationCode);
-    if (accountVerifiedInfo[0]) {
-        res.status(200).json({
-            status: "ok",
-            info: accountVerifiedInfo[1],
-            refreshToken: accountVerifiedInfo[2]
-        })
-    } else {
-        res.status(403).json({
-            status: "error",
-            error: accountVerifiedInfo[1]
-        })
-    }
+    let verifiedInfo = await authentication.updateAccountPostVerified(uuid);
+    res.status(200).json({
+        status: "ok",
+        message: "Account Verified",
+        access_token: verifiedInfo.accessToken,
+        refresh_token: verifiedInfo.refreshToken
+    })
 })
 
 

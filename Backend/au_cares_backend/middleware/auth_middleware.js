@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const authentication = require("../services/authentication");
 const bcrypt = require('bcrypt');
 
+
 //Ensure email and password are valid to create a new account
 async function ensureEmailAndPass(req, res, next) {
     let email = req.body.email;
@@ -148,9 +149,57 @@ function authenticateRefreshToken(req, res, next) {
 
         next();
     })
-
-
 }
+
+//Verify user verification code
+async function verifyVerificationCode(req, res, next) {
+    let uuid = req.user.uuid;
+    let queryResult = await authentication.getUserVerificationCode(uuid);
+
+    if (!queryResult) {
+        return res.status(401).json({
+            status: "error",
+            error: "No verification code or account has already been verified"
+        })
+    }
+    let verificationCode = req.body.verificationCode;
+    let verificationCodeFromDB = queryResult["ConfirmationCode"];
+    let expirationDate = queryResult["Expiration"];
+
+    if (expirationDate && expirationDate < Date.now()) {
+        return res.status(401).json({
+            status: "error",
+            error: "Verification code expired"
+        })
+    }
+    if (verificationCode != verificationCodeFromDB) {
+        return res.status(401).json({
+            status: "error",
+            error: "Incorrect verification code"
+        })
+    }
+    next();
+}
+
+async function authenticateLogout(req, res, next) {
+    let uuid = req.user.uuid;
+    let queryResult = await authentication.logout(uuid);
+    if (queryResult === undefined) {
+        return res.status(500).json({
+            status: "error",
+            error: "Server error. Did not logout"
+        })
+    }
+    if (queryResult == 0) {
+        return res.status(401).json({
+            status: "error",
+            error: "Already logged out"
+        })
+    }
+    next();
+}
+
+
 
 //Authenticates user is an admin
 function authenticateAdministrator(req, res, next) {
@@ -171,3 +220,5 @@ module.exports.authenticateUserAccount = authenticateUserAccount;
 module.exports.authenticateToken = authenticateToken;
 module.exports.authenticateRefreshToken = authenticateRefreshToken;
 module.exports.authenticateAdministrator = authenticateAdministrator;
+module.exports.verifyVerificationCode = verifyVerificationCode;
+module.exports.authenticateLogout = authenticateLogout;
