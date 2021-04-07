@@ -332,7 +332,7 @@ VALUES (1, 'Multiple Choice');
 INSERT INTO QuestionTypes(QuestionTypeId, QuestionType)
 VALUES (2, 'Checkmark');
 INSERT INTO QuestionTypes(QuestionTypeId, QuestionType)
-VALUES (1, 'Text');
+VALUES (3, 'Text');
 
 
 
@@ -428,6 +428,34 @@ CREATE TABLE `QuestionsResponses`
     PRIMARY KEY (`QuestionResponseId`)
 );
 
+<<<<<<< HEAD
+##########################################Organization######################
+
+CREATE TABLE IF NOT EXISTS `Organization`
+(
+    `OrganizationName` VARCHAR(250) NOT NULL,
+    `OrgID`            MEDIUMINT UNSIGNED NOT NULL UNIQUE,                 
+    PRIMARY KEY (OrgID)
+);
+
+
+#Organization - Current Leaders
+CREATE TABLE `CurrentLeaders`
+(
+    `CurrentLeaderName`  VARCHAR(250) NOT NULL,
+    `CurrentLeaderID`    MEDIUMINT UNSIGNED NOT NULL UNIQUE,          
+    PRIMARY KEY (`CurrentLeaderID`)
+);
+
+#Organization - User Info
+CREATE TABLE `OrgUserInfo`
+(
+    `UserId`         MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `NumPoints`   MEDIUMINT UNSIGNED  NOT NULL CHECK (NumPoints >= 0),       
+    PRIMARY KEY (`UserId`)
+);
+
+=======
 
 ###############################Feedback#####################
 CREATE TABLE `ApplicationFeedback`
@@ -439,6 +467,7 @@ CREATE TABLE `ApplicationFeedback`
 );
 
 
+>>>>>>> antonbaron10
 ######################FUNCTIONS##############################
 CREATE FUNCTION UuidToBin(_uuid BINARY(36))
     RETURNS BINARY(16)

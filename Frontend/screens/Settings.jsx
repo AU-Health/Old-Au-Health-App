@@ -1,78 +1,64 @@
-import React from 'react';
-import { Text, View, ScrollView, Image } from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, ScrollView, Image, StyleSheet, Dimensions } from 'react-native';
 import { Avatar, ListItem, Icon } from 'react-native-elements';
 import { Component, useRef} from 'react';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { StackNavigator } from 'react-navigation';
+import { LinearGradient } from 'expo-linear-gradient';
+import Modal from 'react-native-modal';
 
-let settingList = [
-    {
-        name: 'Setting tab 1',
-        icon: 'av-timer'
-    },
-    {
-        name: 'Setting tab 2',
-        icon: 'av-timer'
-    },
-    {
-        name: 'Setting tab 3',
-        icon: 'av-timer'
-    },
-    {
-        name: 'Setting tab 4',
-        icon: 'av-timer'
-    },
-    {
-        name: 'Setting tab 5',
-        icon: 'av-timer'
-    },
-  ]
+//importing the different setting options
+import Profile from './settings/Profile';
+import Resources from './settings/Resources';
+import Notifications from './settings/Notifications';
+import Feedback from './settings/Feedback';
+import About from './settings/About';
+import SettingsHomeStack from './settings/SettingsHomeStack';
 
+import SettingsBackBtn from '../components/SettingsBackBtn';
+
+const Stack = createStackNavigator();
+
+var deviceWidth = Dimensions.get("window").width;
+var deviceHeight = Dimensions.get("window").height;
+
+var h = deviceHeight * 25 / 100;
+var w = deviceWidth * 80 / 100;
+
+function Logout({navigation}) {
+  return(
+      <View style={styles.logoutContainer}>
+          <SettingsBackBtn navigation={navigation}/>
+          <Text> Log out screen </Text>
+      </View>
+  );
+}
+
+//Main function for the settings tab. a navigation stack pointing to all the pages above.
 export default class Settings extends Component {
   render() {
     return(
-      <ScrollView>
-        <View style={{
-            flex: 1,
-            flexDirection: 'row',
-        }}>
-            <View style={{
-                //margin: 10,
-            }}>
-                <Avatar
-                    size="large"
-                    rounded
-                    icon={{name: 'user', type: 'font-awesome'}}
-                    onPress={() => console.log("Works!")}
-                    activeOpacity={0.7}
-                    containerStyle={{flex: 2, marginLeft: 20, marginTop: 60}}
-                />
-            </View>
-            <View style={{
-                marginTop: 86,
-            }}>
-                <Text style={{
-                    fontWeight: 'bold',
-                    fontSize: 28,
-                    }}> User Name </Text>
-            </View>
-        </View>
+        <NavigationContainer independent={true}>
+            <Stack.Navigator screenOptions={{ header: ()=>null }}>
+                <Stack.Screen name='SettingsHome' component={SettingsHomeStack}/>
+                <Stack.Screen name='Profile' component={Profile}/>
+                <Stack.Screen name='Resources' component={Resources}/>
+                <Stack.Screen name='Notifications' component={Notifications}/>
+                <Stack.Screen name='Feedback' component={Feedback}/>
+                <Stack.Screen name='About' component={About}/>
+            </Stack.Navigator>
+        </NavigationContainer>
 
-        <View style={{
-            flex: 3,
-        }}>
-          <div>
-            {settingList.map((item, i) => (
-                    <ListItem key={i} bottomDivider>
-                        <Icon name={item.icon} />
-                        <ListItem.Content>
-                            <ListItem.Title>{item.name}</ListItem.Title>
-                        </ListItem.Content>
-                        <ListItem.Chevron/> 
-                    </ListItem>
-            ))
-            }
-            </div>
-        </View>
-      </ScrollView>
     );
   }
 }
+    /*<Stack.Screen name='Logout' component={Logout}/>*/
+const styles = StyleSheet.create({
+    logoutContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+});

@@ -36,6 +36,7 @@ Tools to be installed: Node.JS, some IDE for backend, Insomnia (for testing API)
         1. Type *require('crypto').randomBytes(32).toString('hex')*
         1. Copy the result to be your ACCESS_TOKEN_SECRET.
         1. Do the same steps as above for REFRESH_TOKEN_SECRET. Both secrets have to be different
+    1. Add *.env* to  your gitignore
 1. Start the server by running *nodemon app.js* or *npm devStart* in the terminal. You should see some yellow and green text in the terminal, but no red text/ errors when doing so.
 1. Test your connection to backend by testing the *ping* route and connection to backend and database by testing the *user_create* in Insomnia or some API tester. If responses are showing up, it works!
 
