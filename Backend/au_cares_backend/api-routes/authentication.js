@@ -1,10 +1,9 @@
 /*File will have all of the authentication routes*/
 const authentication = require('../services/authentication');
-const middleware = require("./middleware");
+const middleware = require("../middleware/auth_middleware");
 
 //this will be the class for the routes
 const express = require("express"); //import express
-const { notStrictEqual } = require('assert');
 const router = express.Router(); //used to set up an express server
 
 
@@ -16,34 +15,28 @@ router.post('/user_create', middleware.ensureEmailAndPass, async(req, res) => {
     let createdUserInfo = await authentication.createUserAccount(userEmail, userPass, isAdmin);
     res.status(200).json({
         status: "ok",
-        access_token: createdUserInfo[1],
-        uuid: createdUserInfo[0]
+        uuid: createdUserInfo.uuid,
+        access_token: createdUserInfo.accessToken
     });
 });
 
 /*Login a user*/
 router.post('/login', middleware.authenticateUserAccount, async(req, res) => {
-    let email = req.body.email;
-    let password = req.body.password;
-    let loginUserInfo = await authentication.login(email, password);
+    let uuid = req.user.uuid;
+    let isVerified = req.user.isVerified;
+    let loginUserInfo = await authentication.login(uuid, isVerified);
 
     res.status(200).json({
         status: "ok",
-        uuid: loginUserInfo[0],
-        access_token: loginUserInfo[1],
-        refresh_token: loginUserInfo[2]
+        isVerified: loginUserInfo.isVerified,
+        uuid: loginUserInfo.uuid,
+        access_token: loginUserInfo.accessToken,
+        refresh_token: loginUserInfo.refreshToken
     })
 });
 
-router.put('/logout', middleware.ensureUUIDExists, async(req, res) => {
-    let uuid = req.body.uuid;
-    let result = await authentication.logout(uuid);
-    if (result == "error") {
-        res.status(500).json({
-            status: "error",
-            error: "Didnt logout"
-        })
-    }
+/*Logout user by removing their refresh token*/
+router.put('/logout', middleware.authenticateToken, middleware.authenticateLogout, async(req, res) => {
     res.status(201).json({
         status: "ok",
         message: "User logout success"
@@ -51,10 +44,10 @@ router.put('/logout', middleware.ensureUUIDExists, async(req, res) => {
 
 })
 
-
-router.post('/token', middleware.authenticateRefreshToken, middleware.ensureUUIDExists, (req, res) => {
-    let uuid = req.body.uuid;
-    let newAccessToken = authentication.generateAccessToken(uuid);
+/*Gives user a new access token upon given a good refresh token*/
+router.post('/token', middleware.authenticateRefreshToken, async(req, res) => {
+    let uuid = req.user.uuid;
+    let newAccessToken = await authentication.generateAccessToken(uuid);
 
     res.status(201).json({
         access_token: newAccessToken
@@ -63,23 +56,16 @@ router.post('/token', middleware.authenticateRefreshToken, middleware.ensureUUID
 
 })
 
-
-
-router.post('/verifyAccount', (req, res) => {
-    let uuid = req.body.uuid;
-    let verificationCode = req.body.verificationCode;
-    let accountVerified = authentication.verifyUserAccount(uuid, verificationCode);
-    if (accountVerified) {
-        res.status(200).json({
-            status: "ok",
-            info: "Account verified"
-        })
-    } else {
-        res.status(403).json({
-            status: "error",
-            info: "Account not verified"
-        })
-    }
+//verify email of account
+router.put('/verifyAccount', middleware.authenticateToken, middleware.verifyVerificationCode, async(req, res) => {
+    let uuid = req.user.uuid;
+    let verifiedInfo = await authentication.updateAccountPostVerified(uuid);
+    res.status(200).json({
+        status: "ok",
+        message: "Account Verified",
+        access_token: verifiedInfo.accessToken,
+        refresh_token: verifiedInfo.refreshToken
+    })
 })
 
 

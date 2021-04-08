@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, Dimensions, Input, StyleSheet, CheckBox, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { Avatar, ListItem, Icon } from 'react-native-elements';
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 import SettingsBackBtn from '../../components/SettingsBackBtn';
 
@@ -57,6 +59,30 @@ const Feedback = ({ navigation }) => {
                     </View>
                 </View>
 
+                <View style={styles.inputContainer}>
+                    <View style={styles.floatTextLeft}>
+                        <Text style={styles.labelText}> Message </Text>
+                    </View>
+                    <View style={styles.inputContainer2_message}>
+                        <TextInput placeholder="" />
+                    </View>
+                </View>
+
+                <View style={styles.BtnContainer}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            {/* submit form here */}
+                        }} style={styles.submitBtnContainer}>
+                        <LinearGradient
+                            colors={["#23cba7", "#2ecc71"]}
+                            style={styles.linearGradient}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}>
+                                <Text style={styles.submitBtn}> {'Submit'} </Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                </View>
+
             </View>
         </View>
     );
@@ -108,6 +134,13 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: '#DCDCDC',
     },
+    inputContainer2_message: {
+        left: 10,
+        width: 300,
+        height: 150,
+        borderRadius: 10,
+        backgroundColor: '#DCDCDC',
+    },
     labelText: {
         left: 0,
         fontSize: 14,
@@ -115,6 +148,27 @@ const styles = StyleSheet.create({
     },
     floatTextLeft: {
         left: 10,
+    },
+    BtnContainer:{
+        zIndex: 3,
+        marginTop: 10,
+        alignItems: 'center',
+    },
+    submitBtn: {
+      fontSize: 18,
+      color: 'white',
+      //fontWeight: "bold",
+    },
+    submitBtnContainer: {
+      elevation: 8,
+    },
+    linearGradient: {
+      marginTop: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 6,
+      width: 100,
+      height: 40,
     },
 });
 

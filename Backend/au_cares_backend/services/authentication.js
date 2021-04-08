@@ -5,13 +5,6 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const emailer = require('./emailer');
 
-async function getUserUUID(email) {
-    const hashAlgo = crypto.createHash('sha256');
-    const hashedEmail = hashAlgo.update(email).digest('hex');
-    return await dbConnection.getUserUUID(hashedEmail);
-}
-
-
 //method to create an account
 async function createUserAccount(email, password, isAdmin) {
     try {
@@ -19,84 +12,107 @@ async function createUserAccount(email, password, isAdmin) {
         const hashedEmail = hashAlgo.update(email).digest('hex');
         const passwordSalt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, passwordSalt); //hashes with salt
-        await dbConnection.createNewUserInDB(hashedEmail, hashedPassword, isAdmin);
-        let queryResult = await dbConnection.getUserInfoFromEmail(hashedEmail);
-        let uuid = queryResult["UUID"].toString();
-        return [uuid, generateAccessToken(uuid)];
+        const verificationCode = '123';
+
+        await dbConnection.createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCode);
+        let queryResult = await getUserInformationFromEmail(hashedEmail, true);
+        let uuid = queryResult["UuidFromBin(UUID)"].toString();
+        return {
+            uuid: uuid,
+            accessToken: await generateAccessToken(uuid)
+        }
     } catch (e) {
         console.log(e);
         return "error";
 
-    } //send email
+    }
 }
 
 //login user. Returns user's UUID and JWT token
-async function login(email) {
-    // emailer.sendEmail("antonbaron10@gmail.com", "HELLO", "<p>HI!!!</p>");
-    const hashAlgo = crypto.createHash('sha256');
-    const hashedEmail = hashAlgo.update(email).digest('hex');
-    let queryResult = await dbConnection.getUserInfoFromEmail(hashedEmail);
-    let uuid = queryResult["UUID"].toString();
-    let accessToken = generateAccessToken(uuid);
-    let refreshToken = await generateAndStoreRefreshToken(uuid);
-    return [uuid, accessToken, refreshToken];
-}
+async function login(uuid, isVerified) {
+    let accessToken = await generateAccessToken(uuid);
+    let refreshToken = null;
 
-
-//logout uer by deleting the refresh token
-async function logout(uuid) {
-    let queryResult = await dbConnection.removeRefreshTokenForUser(uuid);
-    return queryResult ? "error" : "ok";
-}
-
-
-
-async function accountExists(info, parameter) {
-    if (parameter === "email") {
-        const hashAlgo = crypto.createHash('sha256');
-        const hashedEmail = hashAlgo.update(info).digest('hex');
-        return await dbConnection.getUserInfoFromEmail(hashedEmail) !== undefined;
-    } else if (parameter === "UUID") {
-        return await dbConnection.getUserInfoFromUUID(info) !== undefined;
+    if (isVerified) {
+        refreshToken = generateAndStoreRefreshToken(uuid);
     }
 
+    return {
+        uuid: uuid,
+        isVerified: !!isVerified,
+        accessToken: accessToken,
+        refreshToken: refreshToken
+    }
 }
 
 
-//returns whether a password is correct for an account
-async function isPasswordCorrectForAccount(email, password) {
-    const hashAlgo = crypto.createHash('sha256');
-    const hashedEmail = hashAlgo.update(email).digest('hex');
-    let queryResult = await dbConnection.getUserHashedPasswordFromEmail(hashedEmail);
-    let hashedPassword = queryResult["Password"];
-    return bcrypt.compare(password, hashedPassword).then(response => {
-        return response;
-    })
+//logout user by deleting the refresh token ... returns undefined if error, otherwise num rows deletd
+async function logout(uuid) {
+    let queryResult = await dbConnection.removeRefreshTokenForUser(uuid);
+    if (!queryResult) {
+        return undefined;
+    }
+    return queryResult.affectedRows;
+}
 
+async function getUserVerificationCode(uuid) {
+    return await dbConnection.getUserVerificationCode(uuid);
+}
+
+
+//service of what to do once we are aware account is verified
+async function updateAccountPostVerified(uuid) {
+    await dbConnection.updateUserInformation(uuid, "UserVerified", true, true);
+    //maybe send email saying user is now verified
+
+    return {
+        accessToken: await generateAccessToken(uuid),
+        refreshToken: generateAndStoreRefreshToken(uuid)
+    }
+}
+
+//get user information from UUID
+async function getUserInformationFromUUID(uuid) {
+    return await dbConnection.getUserRefreshTokenFromUUID(uuid);
+}
+
+//get user information from email
+async function getUserInformationFromEmail(email, isHashed) {
+    if (!isHashed) {
+        const hashAlgo = crypto.createHash('sha256');
+        email = hashAlgo.update(email).digest('hex');
+    }
+    return await dbConnection.getUserInfoFromEmail(email);
 }
 
 async function isRefreshTokenCorrectForAccount(uuid, refreshToken) {
-    let queryResult = await dbConnection.getUserRefreshTokenFromUUID(uuid);
+    let queryResult = await dbConnection.getUserVerificationCode(uuid);
     return queryResult && queryResult['RefreshToken'] === refreshToken;
 }
 
 //methods to change password, email, or other things
 
-//create a new JWT for the user
-function generateAccessToken(uuid) {
-    let jwtPayload = {};
-    jwtPayload["uuid"] = uuid;
-    // jwtPayload["userType"] = isAdmin ? 2 : 1;
-    // jwtPayload["isVerified"] = false;
-    // jwtPayload["isConsent"] = false;
-    // jwtPayload["isAccountDisabled"] = false;
-    return jwt.sign(jwtPayload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+//create a new JWT for the user --- maybe add points per category?
+async function generateAccessToken(uuid) {
+    return dbConnection.getUserInfoFromUUID(uuid).then(response => {
+            let jwtPayload = {};
+            jwtPayload["uuid"] = response["UuidFromBin(UUID)"].toString();
+            jwtPayload["userType"] = response.userType;
+            jwtPayload["isVerified"] = response.UserVerified;
+            jwtPayload["consentSigned"] = response.ConsentFormSigned;
+            jwtPayload["isAccountDisabled"] = response.UserAccountDisabled;
+            return jwt.sign(jwtPayload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+        })
+        .catch(err => {
+            console.log("ERROR");
+            console.log(err);
+        })
 }
 
 //create a refresh token for user
-async function generateAndStoreRefreshToken(uuid) {
-    let refreshToken = jwt.sign({ "uuid": uuid }, process.env.REFRESH_TOKEN_SECRET);
-    dbConnection.storeRefreshTokenForUser(uuid, refreshToken, { expiresIn: '7d' });
+function generateAndStoreRefreshToken(uuid) {
+    let refreshToken = jwt.sign({ "uuid": uuid }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+    dbConnection.storeRefreshTokenForUser(uuid, refreshToken);
     return refreshToken;
 }
 
@@ -105,8 +121,8 @@ async function generateAndStoreRefreshToken(uuid) {
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.createUserAccount = createUserAccount;
-module.exports.getUserUUID = getUserUUID;
-module.exports.accountExists = accountExists;
 module.exports.generateAccessToken = generateAccessToken;
-module.exports.isPasswordCorrectForAccount = isPasswordCorrectForAccount;
 module.exports.isRefreshTokenCorrectForAccount = isRefreshTokenCorrectForAccount;
+module.exports.updateAccountPostVerified = updateAccountPostVerified;
+module.exports.getUserInformationFromEmail = getUserInformationFromEmail;
+module.exports.getUserVerificationCode = getUserVerificationCode;

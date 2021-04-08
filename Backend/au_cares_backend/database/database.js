@@ -1,9 +1,8 @@
 /*File will have all of the methods for database querying*/
-const { response } = require('express');
 const mysql = require('mysql');
 
-//Create a new user in DB
-function createNewUserInDB(hashedEmail, hashedPassword, isAdmin) {
+//Create a new user in DB and add verification
+function createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCode) {
     return new Promise((resolve, reject) => {
         const mySqlConnection = mysql.createConnection({
             host: process.env.DB_HOST,
@@ -13,19 +12,56 @@ function createNewUserInDB(hashedEmail, hashedPassword, isAdmin) {
         });
         mySqlConnection.connect(function(err) {
             if (err) reject(err);
-            let sqlQuery = `INSERT INTO User(UserEmail,Password,UUID,UserType) VALUES ("${hashedEmail}","${hashedPassword}",UuidToBin(UUID()),${isAdmin?2:1})`;
-            mySqlConnection.query(sqlQuery, function(err, result) {
-                if (err) throw err;
-                resolve("success");
-            });
+            let sqlQueryCreateUser = `INSERT INTO User(UserEmail,Password,UUID,IsAdmin) VALUES ("${hashedEmail}","${hashedPassword}",UuidToBin(UUID()),${isAdmin})`;
+            mySqlConnection.query(sqlQueryCreateUser, function(err, result) {
+                if (err) reject(err);
+                let userId = result.insertId;
+                let sqlQueryAddVerificationCode = `INSERT INTO VerificationCodes(UserId,ConfirmationCode) VALUES(${userId},'${verificationCode}')`;
+                mySqlConnection.query(sqlQueryAddVerificationCode, function(err, result) {
+                    if (err) reject(err);
+                    resolve("success");
+                    mySqlConnection.end();
+                })
+
+            })
         });
     });
+}
+
+async function getUserVerificationCode(uuid) {
+    let sqlConnection = createMySqlConnection();
+    let sqlQuery = `SELECT ConfirmationCode, Expiration FROM User,VerificationCodes WHERE User.UserId = VerificationCodes.UserId AND UUID = UuidToBin("${uuid}")`
+    return queryViaMySqlConnection(sqlConnection, sqlQuery).then(response => {
+        return response;
+    })
+}
+
+function updateUserInformation(uuid, infoToUpdate, newValue, requiredVerification) {
+    let sqlConnection = createMySqlConnection();
+    let sqlQueryUpdate = `UPDATE USER SET ${infoToUpdate} = ${newValue} WHERE UUID=UuidToBin("${uuid}")`
+    return new Promise((resolve, reject) => {
+        sqlConnection.connect((err) => {
+            if (err) reject(err);
+            sqlConnection.query(sqlQueryUpdate, (err, result) => {
+                if (err) reject(err);
+                let updateResult = result;
+
+                if (requiredVerification) {
+                    let sqlQueryDeleteVerificationCode = `DELETE FROM VerificationCodes WHERE UserId = (SELECT UserId FROM User WHERE UUID=UuidToBin("${uuid}"))`
+                    sqlConnection.query(sqlQueryDeleteVerificationCode, (err, result) => {
+                        if (err) reject(err);
+                    })
+                }
+                resolve(updateResult);
+            })
+        })
+    })
 }
 
 //Get User Information from user based on Email
 function getUserInfoFromEmail(hashedEmail) {
     let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `SELECT UuidFromBin(UUID) UUID,UserType,UserVerified,ConsentFormSigned,UserAccountDisabled FROM User WHERE UserEmail='${hashedEmail}'`;
+    let sqlQuery = `SELECT UserId,UserEmail,Password,UuidFromBin(UUID),IsAdmin,UserVerified,ConsentFormSigned,userAccountDisabled FROM User WHERE UserEmail='${hashedEmail}'`;
     return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
         return resolve;
     })
@@ -34,16 +70,7 @@ function getUserInfoFromEmail(hashedEmail) {
 //Get user info from UUID
 function getUserInfoFromUUID(uuid) {
     let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `SELECT * FROM User WHERE UUID=UuidToBin('${uuid}')`;
-    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
-        return resolve;
-    })
-}
-
-
-function getUserHashedPasswordFromEmail(hashedEmail) {
-    let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `SELECT Password FROM User WHERE UserEmail = '${hashedEmail}'`;
+    let sqlQuery = `SELECT UserId,UserEmail,Password,UuidFromBin(UUID),IsAdmin,UserVerified,ConsentFormSigned,userAccountDisabled FROM User WHERE UUID=UuidToBin('${uuid}')`;
     return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
         return resolve;
     })
@@ -51,7 +78,7 @@ function getUserHashedPasswordFromEmail(hashedEmail) {
 
 function storeRefreshTokenForUser(uuid, refreshToken) {
     let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `INSERT INTO UserRefreshTokens SELECT UserId,"${refreshToken}" FROM User WHERE UUID=UuidToBin("${uuid}")` //worry alter about already having  key existing
+    let sqlQuery = `REPLACE INTO UserRefreshTokens SELECT UserId,"${refreshToken}" FROM User WHERE UUID=UuidToBin("${uuid}")` //worry alter about already having  key existing
     return queryViaMySqlConnection(mySqlConnection, sqlQuery).then(response => {
         return response;
     })
@@ -60,9 +87,17 @@ function storeRefreshTokenForUser(uuid, refreshToken) {
 function removeRefreshTokenForUser(uuid) {
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = `DELETE FROM UserRefreshTokens WHERE UserId = (SELECT UserId FROM User WHERE UUID=UuidToBin("${uuid}"))`
-    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((response, reject) => {
-        return response;
-    })
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect(function(err) {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, function(err, result, fields) {
+                if (err) reject(err);
+                else {
+                    resolve(result);
+                }
+            });
+        });
+    });
 }
 
 function getUserRefreshTokenFromUUID(uuid) {
@@ -106,7 +141,7 @@ function createQuestions() {
 function createMySqlConnection() {
     return mysql.createConnection({
         host: process.env.DB_HOST,
-        user: process.env.DB_USER,
+        user: 'root', //process.env.DB_USER,
         // password: process.env.DB_PASS,
         database: "au_cares_db"
     });
@@ -120,6 +155,7 @@ function queryViaMySqlConnection(sqlConnection, sqlQuery) {
                 if (err) reject(err);
                 else if (!result[0]) resolve(undefined)
                 else resolve(result[0]);
+                sqlConnection.end();
             });
         });
     });
@@ -127,7 +163,6 @@ function queryViaMySqlConnection(sqlConnection, sqlQuery) {
 
 module.exports.createNewUserInDB = createNewUserInDB;
 module.exports.getUserInfoFromEmail = getUserInfoFromEmail;
-module.exports.getUserHashedPasswordFromEmail = getUserHashedPasswordFromEmail;
 module.exports.storeRefreshTokenForUser = storeRefreshTokenForUser;
 module.exports.getUserRefreshTokenFromUUID = getUserRefreshTokenFromUUID;
 module.exports.getUserInfoFromUUID = getUserInfoFromUUID;
@@ -135,3 +170,5 @@ module.exports.removeRefreshTokenForUser = removeRefreshTokenForUser;
 module.exports.createDare = createDare;
 module.exports.createTruths = createTruths;
 module.exports.createQuestions = createQuestions;
+module.exports.getUserVerificationCode = getUserVerificationCode;
+module.exports.updateUserInformation = updateUserInformation;

@@ -33,9 +33,9 @@ export default class ChallengeScreen extends React.Component {
                 <Text style={styles.tasksTitle}> Goals </Text>
             </View>
 
-            <Task></Task>
-            <Task></Task>
-            <Task></Task>
+            <Task title='Physical Activity' info='Run 2 miles today.'></Task>
+            <Task title='Hydration' info='Drink a full gallon of water before 9pm.'></Task>
+            <Task title='Sleep' info='Get 7 to 9 hours of sleep in one night.'></Task>
 
         </View>
         <View style={styles.tasksContainer}>
