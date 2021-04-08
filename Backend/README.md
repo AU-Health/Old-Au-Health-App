@@ -32,8 +32,8 @@ Tools to be installed: Node.JS, some IDE for backend, Insomnia (for testing API)
     1. Update your DB_HOST,DB_USER, and DB_PASS to the credentials of your database. For example, **DB_HOST=127.0.0.1** for localhost
     1. To create your ACCESS_TOKEN_SECRET and REFRESH_TOKEN_SECRET, 
         1. open terminal
-        1. Type "node" to start node in your terminal.
-        1. Type *require('crypto').randomBytes(32).toString('hex')*
+        1. Type "node" command to start node in your terminal.
+        1. Type *require('crypto').randomBytes(32).toString('hex')* command to create a secret
         1. Copy the result to be your ACCESS_TOKEN_SECRET.
         1. Do the same steps as above for REFRESH_TOKEN_SECRET. Both secrets have to be different
     1. Add *.env* to  your gitignore

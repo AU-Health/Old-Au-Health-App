@@ -14,7 +14,7 @@ const Onboarding_2 = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity
                   onPress={() => {
-                      navigation.navigate("Questions");
+                      navigation.navigate("Login");
                   }} style={styles.onboardingBtnContainer}>
               <Text style={styles.onboardingBtn}>Continue</Text>
               </TouchableOpacity>

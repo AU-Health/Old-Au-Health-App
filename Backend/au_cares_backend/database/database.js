@@ -1,7 +1,7 @@
 /*File will have all of the methods for database querying*/
 const mysql = require('mysql');
 
-//Create a new user in DB
+//Create a new user in DB and add verification
 function createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCode) {
     return new Promise((resolve, reject) => {
         const mySqlConnection = mysql.createConnection({
@@ -12,7 +12,7 @@ function createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCod
         });
         mySqlConnection.connect(function(err) {
             if (err) reject(err);
-            let sqlQueryCreateUser = `INSERT INTO User(UserEmail,Password,UUID,UserType) VALUES ("${hashedEmail}","${hashedPassword}",UuidToBin(UUID()),${isAdmin?2:1})`;
+            let sqlQueryCreateUser = `INSERT INTO User(UserEmail,Password,UUID,IsAdmin) VALUES ("${hashedEmail}","${hashedPassword}",UuidToBin(UUID()),${isAdmin})`;
             mySqlConnection.query(sqlQueryCreateUser, function(err, result) {
                 if (err) reject(err);
                 let userId = result.insertId;
@@ -61,7 +61,7 @@ function updateUserInformation(uuid, infoToUpdate, newValue, requiredVerificatio
 //Get User Information from user based on Email
 function getUserInfoFromEmail(hashedEmail) {
     let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `SELECT UuidFromBin(UUID) UUID,UserType,UserVerified,ConsentFormSigned,UserAccountDisabled FROM User WHERE UserEmail='${hashedEmail}'`;
+    let sqlQuery = `SELECT UserId,UserEmail,Password,UuidFromBin(UUID),IsAdmin,UserVerified,ConsentFormSigned,userAccountDisabled FROM User WHERE UserEmail='${hashedEmail}'`;
     return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
         return resolve;
     })
@@ -70,16 +70,7 @@ function getUserInfoFromEmail(hashedEmail) {
 //Get user info from UUID
 function getUserInfoFromUUID(uuid) {
     let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `SELECT * FROM User WHERE UUID=UuidToBin('${uuid}')`;
-    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
-        return resolve;
-    })
-}
-
-
-function getUserHashedPasswordFromEmail(hashedEmail) {
-    let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `SELECT Password FROM User WHERE UserEmail = '${hashedEmail}'`;
+    let sqlQuery = `SELECT UserId,UserEmail,Password,UuidFromBin(UUID),IsAdmin,UserVerified,ConsentFormSigned,userAccountDisabled FROM User WHERE UUID=UuidToBin('${uuid}')`;
     return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
         return resolve;
     })
@@ -172,7 +163,6 @@ function queryViaMySqlConnection(sqlConnection, sqlQuery) {
 
 module.exports.createNewUserInDB = createNewUserInDB;
 module.exports.getUserInfoFromEmail = getUserInfoFromEmail;
-module.exports.getUserHashedPasswordFromEmail = getUserHashedPasswordFromEmail;
 module.exports.storeRefreshTokenForUser = storeRefreshTokenForUser;
 module.exports.getUserRefreshTokenFromUUID = getUserRefreshTokenFromUUID;
 module.exports.getUserInfoFromUUID = getUserInfoFromUUID;
