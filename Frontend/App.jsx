@@ -12,10 +12,11 @@ import HomeScreen from './screens/Home';
 import ChallengeScreen from './screens/Challenges';
 import ProgressScreen from './screens/Progress';
 import Settings from './screens/Settings';
-import Login from './screens/Login';
+import preLogin from './screens/onboarding/preLogin';
 import Onboarding_1 from './screens/onboarding/Onboarding_1';
 import Onboarding_2 from './screens/onboarding/Onboarding_2';
 import Questionaire from './screens/onboarding/Questionaire';
+
 //import { MaterialCommunityIcons } from '@expo/vector-icons'
 // import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import {useDimensions} from '@react-native-community/hooks';
@@ -29,7 +30,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 const Tab = createBottomTabNavigator();
 function HomeApp({ navigation }) {
     return (
-      <Provider store={store}>
+     
         <NavigationContainer independent={true}>
               <Tab.Navigator
               screenOptions={( { route }) => ({
@@ -62,21 +63,25 @@ function HomeApp({ navigation }) {
                 <Tab.Screen name="Settings" component={Settings} />
               </Tab.Navigator>
         </NavigationContainer>
-        </Provider>
+        
     );
 }
 
 //App
 export default function App() {
     return (
+      <Provider store={store}>
         <NavigationContainer>
             <Stack.Navigator screenOptions={{ header: ()=>null }}>
                 <Stack.Screen name='Onboarding_1' component={Onboarding_1}/>
                 <Stack.Screen name='Onboarding_2' component={Onboarding_2}/>
+                <Stack.Screen name='Login' component={preLogin} />
                 <Stack.Screen name='Questions' component={Questionaire}/>
                 <Stack.Screen name='HomeApp' component={HomeApp}/>
+                
             </Stack.Navigator>
         </NavigationContainer>
+        </Provider>
     );
 }
 

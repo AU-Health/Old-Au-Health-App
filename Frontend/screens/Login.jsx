@@ -2,12 +2,12 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, View, Image, Button, TextInput, SafeAreaView } from 'react-native';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
-import { Input, Header, Text, Label, Icon } from 'react-native-elements';
+import { Input, Header, Text, Label, Icon} from 'react-native-elements';
 import _ from 'lodash';
 import { connect } from "react-redux";
 import { onUserLogin, onFetchProduct } from '../redux';
 //import { onFetchProduct } from '../redux';
-import { Divider } from 'react-native-paper';
+
 
 
 
@@ -46,7 +46,7 @@ class Login extends React.Component {
 			<SafeAreaView style={styles.container}>
 				<View style={{ flex: 1, justifyContent: 'center' }}>
 
-					<View style={{ flex: 2, alignItems: 'center', marginTop: '10%' }}>
+					<View style={{ flex: 2, alignItems: 'center', marginTop: '15%' }}>
 						<Image style={{ width: 150, height: 150 }} source={require('../assets/aucares.png')} />
 						<Text h3> Welcome!</Text>
 					</View>
@@ -83,7 +83,7 @@ class Login extends React.Component {
 								/>
 							</View>
 							<View style={{ flex: 2, justifyContent: 'center' }}>
-								<Text>Already have an account?</Text>
+								<Text style={{textAlign:'center'}}>Already have an account?</Text>
 								<Button raised={true} color='#f46036' title='Login' onPress={() => { this.setState({ signup: false }) }} />
 							</View>
 
@@ -123,10 +123,10 @@ class Login extends React.Component {
 							</View>
 
 							<View style={{ flex: 2, justifyContent: 'center' }}>
-								<Text>Don't have an account?</Text>
+								<Text style={{textAlign:'center'}}>Don't have an account?</Text>
 								<Button raised={true} color='#f46036' title='Sign-up' onPress={() => { this.setState({ signup: true }) }} />
-
-								<Text>Forgot password?</Text>
+							
+								<Text style={{textAlign: 'center'}}> {'\n'}Forgot password?</Text>
 								<Button raised={true} color='#f46036' title='Send email' />
 							</View>
 

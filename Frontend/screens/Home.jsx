@@ -25,6 +25,7 @@ export default class HomeScreen extends React.Component {
       winnerValue: null,
       winnerIndex: null,
       started: false,
+      tempIsLoggedIn: false,
     };
     this.child = null;
   }
@@ -51,9 +52,8 @@ export default class HomeScreen extends React.Component {
 
     return (
       <SafeAreaView style={styles.container}>
-
-        <Login />
-          {/* <View style={{flex: .9}}>
+        
+          <View style={{flex: .9}}>
           <Image style={{width: 105, height: 105, marginTop: '8%', marginLeft: '1%'}} source={require('../assets/aucares.png')} />
           </View>
           <View style={{flex: .1, justifyContent: 'center', alignItems: 'center'}}>
@@ -101,7 +101,7 @@ export default class HomeScreen extends React.Component {
               </TouchableOpacity>
             </View>
           )}
-        </View>   */}
+        </View>  
       </SafeAreaView>
     );
   }
