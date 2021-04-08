@@ -5,8 +5,7 @@ import { Feather as Icon } from '@expo/vector-icons';
 
 const Page = ({ backgroundColor, icon, title, desc }) => {
     return (
-        <View
-            style={styles.pageContainer}>
+        <View style={styles.pageContainer}>
             <Icon name={icon} size={16} color='white' />
             <View style={{ marginTop: 8 }}>
                 <Text style={styles.textTitle}>
