@@ -10,7 +10,7 @@ import WheelOfFortune from 'react-native-wheel-of-fortune'
 
 const participants = [
   // <img src='https://foleysfitnesscenter.com/files/2019/10/weightlifting.png' />,
-  'PA',
+  'Physical Activity',
   'Occupational Wellness',
   'Emotional Wellness',
   'Social Wellness',
@@ -42,7 +42,7 @@ export default class HomeScreen extends React.Component {
       innerRadius: 15,
       duration: 6000,
       // backgroundColor: 'transparent',
-      textAngle: 'vertical',
+      textAngle: 'horizontal',
       knobSource: require('../assets/tick11.png'),
       onRef: ref => (this.child = ref),
     };
@@ -51,7 +51,9 @@ export default class HomeScreen extends React.Component {
 
     return (
       <SafeAreaView style={styles.container}>
-          <View style={{flex: .9}}>
+
+        <Login />
+          {/* <View style={{flex: .9}}>
           <Image style={{width: 105, height: 105, marginTop: '8%', marginLeft: '1%'}} source={require('../assets/aucares.png')} />
           </View>
           <View style={{flex: .1, justifyContent: 'center', alignItems: 'center'}}>
@@ -99,7 +101,7 @@ export default class HomeScreen extends React.Component {
               </TouchableOpacity>
             </View>
           )}
-        </View>  
+        </View>   */}
       </SafeAreaView>
     );
   }
