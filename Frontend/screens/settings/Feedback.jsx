@@ -28,7 +28,7 @@ const Feedback = ({ navigation }) => {
                         <Text style={styles.labelText}> First Name </Text>
                     </View>
                     <View style={styles.inputContainer2}>
-                        <TextInput placeholder="First Name" />
+                        <TextInput placeholder="First Name" style={styles.textInput}/>
                     </View>
                 </View>
 
@@ -37,7 +37,7 @@ const Feedback = ({ navigation }) => {
                         <Text style={styles.labelText}> Last Name </Text>
                     </View>
                     <View style={styles.inputContainer2}>
-                        <TextInput placeholder="Last Name" />
+                        <TextInput placeholder="Last Name" style={styles.textInput}/>
                     </View>
                 </View>
 
@@ -46,7 +46,7 @@ const Feedback = ({ navigation }) => {
                         <Text style={styles.labelText}> Email </Text>
                     </View>
                     <View style={styles.inputContainer2}>
-                        <TextInput placeholder="Email" />
+                        <TextInput placeholder="Email" style={styles.textInput}/>
                     </View>
                 </View>
 
@@ -55,7 +55,7 @@ const Feedback = ({ navigation }) => {
                         <Text style={styles.labelText}> Subject </Text>
                     </View>
                     <View style={styles.inputContainer2}>
-                        <TextInput placeholder="Subject" />
+                        <TextInput placeholder="Subject" style={styles.textInput}/>
                     </View>
                 </View>
 
@@ -64,7 +64,7 @@ const Feedback = ({ navigation }) => {
                         <Text style={styles.labelText}> Message </Text>
                     </View>
                     <View style={styles.inputContainer2_message}>
-                        <TextInput placeholder="" />
+                        <TextInput placeholder="" style={styles.textInput}/>
                     </View>
                 </View>
 
@@ -169,6 +169,10 @@ const styles = StyleSheet.create({
       borderRadius: 6,
       width: 100,
       height: 40,
+    },
+    textInput: {
+        marginTop: 5,
+        marginLeft: 5,
     },
 });
 

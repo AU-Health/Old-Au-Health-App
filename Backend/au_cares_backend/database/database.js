@@ -8,7 +8,7 @@ function createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCod
             host: process.env.DB_HOST,
             user: "root",
             // password: process.env.DB_PASS,
-            database: "au_cares_db"
+            database: "AU_Cares"
         });
         mySqlConnection.connect(function(err) {
             if (err) reject(err);
@@ -143,7 +143,7 @@ function createMySqlConnection() {
         host: process.env.DB_HOST,
         user: 'root', //process.env.DB_USER,
         // password: process.env.DB_PASS,
-        database: "au_cares_db"
+        database: "AU_Cares"
     });
 }
 

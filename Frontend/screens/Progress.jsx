@@ -2,6 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { ProgressChart } from "react-native-chart-kit";
+import legend from '../components/Legend';
+import Legend from '../components/Legend';
 
 var deviceWidth = Dimensions.get("window").width;
 var deviceHeight = Dimensions.get("window").height;
@@ -36,10 +38,13 @@ export default class ProgressScreen extends React.Component {
           </View>
 
           <View style={styles.body}>
-              <View style={styles.legend}>
-                  <Text>
+                <View style={styles.legendTitle}>
+                    <Text style={styles.legendTitleText}> Outer </Text> 
+                    <Text style={styles.legendTitleText}> Inner </Text>
+                </View>
 
-                  </Text>
+                <View style={styles.legend}>
+                    <Legend data={data}/>
               </View>
               <ProgressChart
                   data={data}
@@ -68,19 +73,32 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
     },
     screenContainer: {
+        backgroundColor: '#f3f1ef',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     },
     body: {
+        //backgroundColor: '#f3f1ef',
         height: '80%',
-        width: deviceWidth * 90 / 100,
+        width: deviceWidth * 80 / 100,
         justifyContent: 'center',
         alignItems: 'center',
+        
     },
     legend: {
         width: deviceWidth * 90 / 100,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    legendTitle: {
+        marginBottom: 5,
+        width: deviceWidth * 70 / 100,
+        flexDirection: 'row', 
+        justifyContent: 'space-between',
+    },
+    legendTitleText: {
+        fontSize: 16,
+        fontWeight: '700',
     },
 });
