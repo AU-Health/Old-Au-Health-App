@@ -13,10 +13,77 @@ const progress = 0.3;
 const numberOfCompletedTasks = 2;
 const NumberOftasks = 5;
 
+let incompleteTasks = [
+    {
+        name: 'task2',
+        desc: 'drink 8 gallons a day',
+        type: 'dare',
+        completed: false,
+    },
+    {
+        name: 'task3',
+        desc: 'drink 8 gallons a day',
+        type: 'truth',
+        completed: false,
+    },
+    {
+        name: 'task4',
+        desc: 'drink 8 gallons a day',
+        type: 'question',
+        completed: false,
+    },
+    
+];
+
+let completedTasks = [
+    {
+        name: 'task5',
+        desc: 'drink 8 gallons a day',
+        type: 'dare',
+        completed: true,
+    },
+    {
+        name: 'task1',
+        desc: 'drink 8 gallons a day',
+        type: 'truth',
+        completed: true,
+    },
+];
+
+let test = [
+    {
+        title: 'title of the truth or dare',
+        desc: 'desc of the task',
+        type: 'truth or dare or question',
+        completed: true, 
+    }
+];
+
+let task, length;
+/*
+color options for differebt kinds of tasks
+//borderColor: '#A93226', //red color dare
+//borderColor: '#27AE60', //green color question
+//borderColor: '#F1C40F', //yellow color truth
+*/
 
 
 export default class ChallengeScreen extends React.Component {
   render() {
+
+    //function that updates the task lists when one is marked completed
+    const _updateTaskList = (taskName) => {
+        let tmp;
+        for(let i = 0; i < incompleteTasks.length; i++){
+            if(incompleteTasks['name'] == taskName) {
+                tmp = i;
+                incompleteTasks['completed'] = true;
+            }
+        }
+        completedTasks.push(incompleteTasks.splice(tmp))
+    };
+
+
     return(
       <View style={styles.screenContainer}>
         <View style={styles.progressBarContainer}>
@@ -33,9 +100,12 @@ export default class ChallengeScreen extends React.Component {
                 <Text style={styles.tasksTitle}> Goals </Text>
             </View>
 
-            <Task title='Physical Activity' info='Run 2 miles today.'></Task>
-            <Task title='Hydration' info='Drink a full gallon of water before 9pm.'></Task>
-            <Task title='Sleep' info='Get 7 to 9 hours of sleep in one night.'></Task>
+            {incompleteTasks.map((task) => {
+                    return (
+                        <Task title={task['name']} info={task['desc']}/>
+                    )
+                })
+            }
 
         </View>
         <View style={styles.tasksContainer}>
@@ -43,9 +113,12 @@ export default class ChallengeScreen extends React.Component {
                 <Text style={styles.tasksTitle}> Completed </Text>
             </View>
 
-            <Task></Task>
-            <Task></Task>
-            <Task></Task>
+            {completedTasks.map((task) => {
+                    return (
+                        <Task title={task.name} info={task.desc}/>
+                    )
+                })
+            }
 
         </View>
       </View>

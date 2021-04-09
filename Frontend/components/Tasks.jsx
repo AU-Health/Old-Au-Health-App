@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
         height: '15%',
         marginTop: 10,
         backgroundColor: '#FBFAF5',
+        //backgroundColor: '#A93226',
         shadowColor: '#c4c4c4',
         shadowOffset: {
             width: 3,
@@ -55,7 +56,8 @@ const styles = StyleSheet.create({
     textTitle: {
         paddingLeft: 8,
         marginBottom: 10,
-        fontSize: 15,
+        fontSize: 16,
+        fontWeight: '600',
     }
 });
 

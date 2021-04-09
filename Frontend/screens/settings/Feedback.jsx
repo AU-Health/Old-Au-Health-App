@@ -23,23 +23,6 @@ const Feedback = ({ navigation }) => {
             </View>
 
             <View style={styles.body}>
-                <View style={styles.inputContainer}>
-                    <View style={styles.floatTextLeft}>
-                        <Text style={styles.labelText}> First Name </Text>
-                    </View>
-                    <View style={styles.inputContainer2}>
-                        <TextInput placeholder="First Name" style={styles.textInput}/>
-                    </View>
-                </View>
-
-                <View style={styles.inputContainer}>
-                    <View style={styles.floatTextLeft}>
-                        <Text style={styles.labelText}> Last Name </Text>
-                    </View>
-                    <View style={styles.inputContainer2}>
-                        <TextInput placeholder="Last Name" style={styles.textInput}/>
-                    </View>
-                </View>
 
                 <View style={styles.inputContainer}>
                     <View style={styles.floatTextLeft}>
@@ -177,3 +160,24 @@ const styles = StyleSheet.create({
 });
 
 export default Feedback;
+
+/*
+                <View style={styles.inputContainer}>
+                    <View style={styles.floatTextLeft}>
+                        <Text style={styles.labelText}> First Name </Text>
+                    </View>
+                    <View style={styles.inputContainer2}>
+                        <TextInput placeholder="First Name" style={styles.textInput}/>
+                    </View>
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <View style={styles.floatTextLeft}>
+                        <Text style={styles.labelText}> Last Name </Text>
+                    </View>
+                    <View style={styles.inputContainer2}>
+                        <TextInput placeholder="Last Name" style={styles.textInput}/>
+                    </View>
+                </View>
+
+*/

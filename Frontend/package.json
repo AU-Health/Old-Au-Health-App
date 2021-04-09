@@ -10,8 +10,9 @@
   "dependencies": {
     "@react-icons/all-files": "^4.1.0",
     "@react-native-community/art": "^1.2.0",
+    "@react-native-community/blur": "^3.6.0",
     "@react-native-community/hooks": "^2.6.0",
-    "@react-native-community/masked-view": "0.1.10", 
+    "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/viewpager": "^4.2.0",
     "@react-navigation/bottom-tabs": "^5.11.7",
     "@react-navigation/native": "^5.9.2",

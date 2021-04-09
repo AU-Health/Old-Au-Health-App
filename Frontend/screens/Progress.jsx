@@ -17,7 +17,7 @@ let chartConfig={
     backgroundGradientFrom: "#F2F2F2",
     backgroundGradientTo: "#F2F2F2",
     decimalPlaces: 2,
-    color: (opacity = 1) => `rgba(46, 49, 49, ${opacity})`,
+    color: (opacity = 1) => `rgba(0, 0, 128, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(46, 49, 49, ${opacity})`,
     style: {
         borderRadius: 16

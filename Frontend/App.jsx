@@ -6,6 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { StackNavigator } from 'react-navigation';
+import { BlurView, VibrancyView } from "@react-native-community/blur";
+import { LinearGradient } from 'expo-linear-gradient';
 //https://stackoverflow.com/questions/36795819/when-should-i-use-curly-braces-for-es6-import/36796281#36796281 << super cool explanation on imports
 //importing the different screens
 import HomeScreen from './screens/Home';
@@ -37,9 +39,9 @@ function HomeApp({ navigation }) {
                   tabBarIcon: ({ color, size }) => {
                       const icons = {
                           Home: 'home',
-                          Progress: 'progress-clock',
-                          Challenges: 'ship-wheel',
-                          Settings: 'settings-helper',
+                          Progress: 'chart-donut-variant',
+                          Challenges: 'playlist-check',
+                          Settings: 'account-settings',
                       };
 
                       return (
@@ -53,8 +55,11 @@ function HomeApp({ navigation }) {
 
               })}
               tabBarOptions={{
-                  activeTintColor: '#1b998b',
+                  activeTintColor: '#000080',
                   inactiveTintColor: 'grey',
+                  style: {
+                    backgroundColor: 'rgba(250, 250, 248, .2)',
+                  }
               }}
               >
                 <Tab.Screen name="Home" component={HomeScreen} />
