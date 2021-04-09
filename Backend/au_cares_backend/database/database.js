@@ -136,6 +136,21 @@ function createQuestions() {
     })
 }
 
+async function postFeedback(subject, feedback) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = `INSERT INTO ApplicationFeedback(Subject,Feedback) VALUES ("${subject}","${feedback}")`
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect((err) => {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            })
+        })
+    })
+}
+
+
 
 /**************************Shortcuts to create connection************/
 function createMySqlConnection() {
@@ -172,3 +187,4 @@ module.exports.createTruths = createTruths;
 module.exports.createQuestions = createQuestions;
 module.exports.getUserVerificationCode = getUserVerificationCode;
 module.exports.updateUserInformation = updateUserInformation;
+module.exports.postFeedback = postFeedback;

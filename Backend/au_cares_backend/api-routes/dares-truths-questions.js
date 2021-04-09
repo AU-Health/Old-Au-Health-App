@@ -1,23 +1,38 @@
-import { response } from 'express';
-import { getUserInfoFromEmail } from '../database/database';
-import middleware from '../middleware/auth_middleware';
+const authMiddleware = require('../middleware/auth-middleware');
+const tokenMiddleware = require('../middleware/token-middleware');
 
 //For Express
 const express = require("express");
 const router = express.Router();
 
-router.get('/truths/:id?', middleware.authenticateToken, middleware.authenticateAdministrator, (req, res) => {
-    let uuid;
-    if (id) {
-        middleware.authenticateAdministrator(req, res, next);
-        uuid = req.params.id;
+router.get('/truthsHistory/current?/attempted?/topic?/:id?', tokenMiddleware.authenticateToken, (req, res) => {
+    let uuid = req.body.uuid;
+    if (req.params.id && req.params.id == uuid) {
+        //do for the user
     } else {
-        uuid = req.body.uuid;
+        authMiddleware.authenticateAdministrator(req, res, next);
     }
-
-
 });
 
+router.get('/daresHistory/current?/attempted?/topic?/:id?', tokenMiddleware.authenticateToken, (req, res) => {
+    let uuid = req.body.uuid;
+    if (req.params.id && req.params.id == uuid) {
+        //do for the user
+    } else {
+        middleware.authenticateAdministrator(req, res, next);
+    }
+});
+
+router.get('/questionsHistory/current?/attempted?/topic?/:id?', tokenMiddleware.authenticateToken, (req, res) => {
+    let uuidSearched;
+    if (req.params.id && req.params.id == req.user.uuid) {
+        uuidSearched = req.user.uuid;
+        //do for the user
+    } else {
+        middleware.authenticateAdministrator(req, res, next);
+        uuidSearched = req.params.id;
+    }
+});
 
 
 module.exports = router;
