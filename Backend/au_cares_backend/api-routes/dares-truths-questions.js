@@ -3,15 +3,19 @@ const tokenMiddleware = require('../middleware/token-middleware');
 
 //For Express
 const express = require("express");
+const { getTruthsHistory } = require('../services/dares-truths-questions');
 const router = express.Router();
 
-router.get('/truthsHistory/current?/attempted?/topic?/:id?', tokenMiddleware.authenticateToken, (req, res) => {
+router.get('/truthsHistory/current?/topic?/:id?', tokenMiddleware.authenticateToken, async(req, res) => {
     let uuid = req.body.uuid;
-    if (req.params.id && req.params.id == uuid) {
+    if (req.query.id && req.query.id == uuid) {
         //do for the user
     } else {
         authMiddleware.authenticateAdministrator(req, res, next);
     }
+    //send request with values
+    return await getTruthsHistory(req.query.current, req.query.topic, uuid);
+
 });
 
 router.get('/daresHistory/current?/attempted?/topic?/:id?', tokenMiddleware.authenticateToken, (req, res) => {

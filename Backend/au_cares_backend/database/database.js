@@ -12,12 +12,12 @@ function createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCod
         });
         mySqlConnection.connect(function(err) {
             if (err) reject(err);
-            let sqlQueryCreateUser = `INSERT INTO User(UserEmail,Password,UUID,IsAdmin) VALUES ("${hashedEmail}","${hashedPassword}",UuidToBin(UUID()),${isAdmin})`;
-            mySqlConnection.query(sqlQueryCreateUser, function(err, result) {
+            let sqlQueryCreateUser = 'INSERT INTO User(UserEmail,Password,UUID,IsAdmin) VALUES (?,?,UuidToBin(UUID()),?)';
+            mySqlConnection.query(sqlQueryCreateUser, [hashedEmail, hashedPassword, isAdmin], function(err, result) {
                 if (err) reject(err);
                 let userId = result.insertId;
-                let sqlQueryAddVerificationCode = `INSERT INTO VerificationCodes(UserId,ConfirmationCode) VALUES(${userId},'${verificationCode}')`;
-                mySqlConnection.query(sqlQueryAddVerificationCode, function(err, result) {
+                let sqlQueryAddVerificationCode = 'INSERT INTO VerificationCodes(UserId,ConfirmationCode) VALUES(?,?)';
+                mySqlConnection.query(sqlQueryAddVerificationCode, [userId, verificationCode], function(err, result) {
                     if (err) reject(err);
                     resolve("success");
                     mySqlConnection.end();
@@ -100,7 +100,7 @@ function removeRefreshTokenForUser(uuid) {
     });
 }
 
-function getUserRefreshTokenFromUUID(uuid) {
+async function getUserRefreshTokenFromUUID(uuid) {
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = `SELECT RefreshToken FROM UserRefreshTokens WHERE UserId = (SELECT UserId FROM User WHERE UUID=UuidToBin("${uuid}"))`
     return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((response => {
@@ -136,6 +136,16 @@ function createQuestions() {
     })
 }
 
+async function getTruthsHistory(isCurrent, topic, uuid) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = "SELECT truthshistory.* FROM User,TruthsHistory"
+
+    if (isCurrent || topic || uuid) {
+        sqlQuery = +" WHERE "
+    }
+
+}
+
 async function postFeedback(subject, feedback) {
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = `INSERT INTO ApplicationFeedback(Subject,Feedback) VALUES ("${subject}","${feedback}")`
@@ -149,6 +159,8 @@ async function postFeedback(subject, feedback) {
         })
     })
 }
+
+
 
 
 

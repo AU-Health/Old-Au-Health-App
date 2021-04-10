@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const authentication = require("../services/authentication");
 
 //authenticate token of the user ---adds user information to req.user
 function authenticateToken(req, res, next) {
@@ -40,16 +41,15 @@ function authenticateRefreshToken(req, res, next) {
         })
         req.user = decoded;
 
-        authentication.isRefreshTokenCorrectForAccount(req.body.uuid, refreshToken).then(isCorrect => {
+        authentication.isRefreshTokenCorrectForAccount(req.user.uuid, refreshToken).then(isCorrect => {
             if (!isCorrect) {
                 return res.status(403).json({
                     status: "error",
                     error: "Refresh token does not exist for account"
                 })
             }
+            next();
         })
-
-        next();
     })
 }
 
