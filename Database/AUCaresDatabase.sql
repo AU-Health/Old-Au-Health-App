@@ -123,14 +123,15 @@ CREATE TABLE `UserSpins`
 #Dare History for all Users... assuming dares cannot be repeated
 CREATE TABLE `DaresHistory`
 (
+    `DaresHistoryId` INT UNSIGNED AUTO_INCREMENT,
     `UserId`         MEDIUMINT UNSIGNED NOT NULL,
-    `DareId`         SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the dare id in the other schema
-    `DareResponseId` MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+    `DareId`         SMALLINT UNSIGNED  NOT NULL,
+    `DareResponseId` MEDIUMINT UNSIGNED          DEFAULT (NULL) UNIQUE,
     `Issued`         DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `Expiration`     DATETIME           NOT NULL,
+    `Expiration`     DATETIME,
     `Completed`      TINYINT(1)                  DEFAULT (3),
-    PRIMARY KEY (UserId, DareId),
-    FOREIGN KEY (UserId) REFERENCES User (UserId),       ##SHOULD i do cascade delete and maybe instead separately store how many of each was done so storage isnt used,
+    PRIMARY KEY (DaresHistoryId),
+    FOREIGN KEY (UserId) REFERENCES User (UserId), ##SHOULD i do cascade delete and maybe instead separately store how many of each was done so storage isnt used,
     FOREIGN KEY (DareId) REFERENCES Dares (DareId),
     FOREIGN KEY (DareResponseId) REFERENCES DaresResponses (DareResponseId),
     FOREIGN KEY (Completed) REFERENCES ActivityCompletedTypes (ActivityCompletedTypeId)
@@ -139,13 +140,14 @@ CREATE TABLE `DaresHistory`
 #Questions History for all Users ... assuming questions cannot be repeated
 CREATE TABLE `QuestionsHistory`
 (
+    `QuestionsHistoryId` INT UNSIGNED AUTO_INCREMENT,
     `UserId`             MEDIUMINT UNSIGNED NOT NULL,
-    `QuestionId`         SMALLINT UNSIGNED  NOT NULL UNIQUE,
+    `QuestionId`         SMALLINT UNSIGNED  NOT NULL,
     `Issued`             DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `Expiration`         DATETIME           NOT NULL,
-    `QuestionResponseId` MEDIUMINT UNSIGNED NOT NULL UNIQUE, #decide whether to be int or medium INT.... maybe see if this reference even needed later
+    `Expiration`         DATETIME,
+    `QuestionResponseId` MEDIUMINT UNSIGNED          DEFAULT (NULL) UNIQUE, #decide whether to be int or medium INT.... maybe see if this reference even needed later
     `Completed`          TINYINT(1)                  DEFAULT (3),
-    PRIMARY KEY (UserId, QuestionId),
+    PRIMARY KEY (QuestionsHistoryId),
     FOREIGN KEY (UserId) REFERENCES User (UserId),
     FOREIGN KEY (QuestionId) REFERENCES Questions (QuestionId),
     FOREIGN KEY (`QuestionResponseId`) REFERENCES QuestionsResponses (`QuestionResponseId`),
@@ -155,13 +157,14 @@ CREATE TABLE `QuestionsHistory`
 #Truths History for all Users... assuming dares cannot be repeated
 CREATE TABLE `TruthsHistory`
 (
+    `TruthHistoryId`  INT UNSIGNED AUTO_INCREMENT,
     `UserId`          MEDIUMINT UNSIGNED NOT NULL,
-    `TruthId`         SMALLINT UNSIGNED  NOT NULL UNIQUE, #will later reference the truth  id in the other schema
+    `TruthId`         SMALLINT UNSIGNED  NOT NULL,                       #will later reference the truth  id in the other schema
     `Issued`          DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `Expiration`      DATETIME           NOT NULL,
-    `TruthResponseId` MEDIUMINT UNSIGNED NOT NULL UNIQUE, #decide whether to have as INT or MEDIUMINT
+    `Expiration`      DATETIME,
+    `TruthResponseId` MEDIUMINT UNSIGNED          DEFAULT (NULL) UNIQUE, #decide whether to have as INT or MEDIUMINT
     `Completed`       TINYINT(1)                  DEFAULT (3),
-    PRIMARY KEY (UserId, TruthId),
+    PRIMARY KEY (TruthHistoryId),
     FOREIGN KEY (UserId) REFERENCES User (UserId),
     FOREIGN KEY (TruthId) REFERENCES Truths (TruthId),
     FOREIGN KEY (`TruthResponseId`) REFERENCES TruthsResponses (`TruthResponseId`),
@@ -342,7 +345,7 @@ VALUES (3, 'Text');
 CREATE TABLE IF NOT EXISTS `Truths`
 (
     `TruthId`         SMALLINT UNSIGNED   NOT NULL UNIQUE AUTO_INCREMENT,
-    `Truth`           VARCHAR(500) UNIQUE NOT NULL,
+    `Description`     VARCHAR(500) UNIQUE NOT NULL,
     `Points`          TINYINT UNSIGNED    NOT NULL CHECK ( Points > 0 ),
     `CategoryId`      TINYINT(1)          NOT NULL,
     `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded >= 0 ),
@@ -356,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `Truths`
 CREATE TABLE IF NOT EXISTS `Dares`
 (
     `DareId`          SMALLINT UNSIGNED   NOT NULL UNIQUE AUTO_INCREMENT,
-    `Dare`            VARCHAR(500) UNIQUE NOT NULL,
+    `Description`     VARCHAR(500) UNIQUE NOT NULL,
     `Points`          TINYINT UNSIGNED    NOT NULL CHECK ( Points > 0 ),
     `CategoryId`      TINYINT(1)          NOT NULL,
     `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded >= 0 ),
@@ -372,7 +375,7 @@ CREATE TABLE IF NOT EXISTS `Questions`
     `QuestionId`      SMALLINT UNSIGNED   NOT NULL UNIQUE AUTO_INCREMENT,
     `QuestionTitle`   VARCHAR(50),
     `QuestionTypeId`  TINYINT(1),
-    `Question`        VARCHAR(500) UNIQUE NOT NULL,
+    `Description`     VARCHAR(500) UNIQUE NOT NULL,
     `Points`          TINYINT UNSIGNED    NOT NULL CHECK ( Points > 0 ),
     `CategoryId`      TINYINT(1)          NOT NULL,
     `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded >= 0 ),
@@ -460,9 +463,9 @@ CREATE TABLE `ApplicationFeedback`
     `ApplicationFeedbackId` MEDIUMINT UNSIGNED AUTO_INCREMENT,
     `Subject`               VARCHAR(100),
     `Feedback`              VARCHAR(300),
+    `SubmissionDate`        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (ApplicationFeedbackId)
 );
-
 
 ######################FUNCTIONS##############################
 CREATE FUNCTION UuidToBin(_uuid BINARY(36))

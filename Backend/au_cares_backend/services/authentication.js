@@ -86,7 +86,7 @@ async function getUserInformationFromEmail(email, isHashed) {
 }
 
 async function isRefreshTokenCorrectForAccount(uuid, refreshToken) {
-    let queryResult = await dbConnection.getUserVerificationCode(uuid);
+    let queryResult = await dbConnection.getUserRefreshTokenFromUUID(uuid);
     return queryResult && queryResult['RefreshToken'] === refreshToken;
 }
 
@@ -98,6 +98,7 @@ async function generateAccessToken(uuid) {
             let jwtPayload = {};
             jwtPayload["uuid"] = response["UuidFromBin(UUID)"].toString();
             jwtPayload["userType"] = response.userType;
+            jwtPayload["isAdmin"] = !!response.IsAdmin;
             jwtPayload["isVerified"] = response.UserVerified;
             jwtPayload["consentSigned"] = response.ConsentFormSigned;
             jwtPayload["isAccountDisabled"] = response.UserAccountDisabled;

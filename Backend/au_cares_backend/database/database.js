@@ -12,12 +12,12 @@ function createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCod
         });
         mySqlConnection.connect(function(err) {
             if (err) reject(err);
-            let sqlQueryCreateUser = `INSERT INTO User(UserEmail,Password,UUID,IsAdmin) VALUES ("${hashedEmail}","${hashedPassword}",UuidToBin(UUID()),${isAdmin})`;
-            mySqlConnection.query(sqlQueryCreateUser, function(err, result) {
+            let sqlQueryCreateUser = 'INSERT INTO User(UserEmail,Password,UUID,IsAdmin) VALUES (?,?,UuidToBin(UUID()),?)';
+            mySqlConnection.query(sqlQueryCreateUser, [hashedEmail, hashedPassword, isAdmin], function(err, result) {
                 if (err) reject(err);
                 let userId = result.insertId;
-                let sqlQueryAddVerificationCode = `INSERT INTO VerificationCodes(UserId,ConfirmationCode) VALUES(${userId},'${verificationCode}')`;
-                mySqlConnection.query(sqlQueryAddVerificationCode, function(err, result) {
+                let sqlQueryAddVerificationCode = 'INSERT INTO VerificationCodes(UserId,ConfirmationCode) VALUES(?,?)';
+                mySqlConnection.query(sqlQueryAddVerificationCode, [userId, verificationCode], function(err, result) {
                     if (err) reject(err);
                     resolve("success");
                     mySqlConnection.end();
@@ -100,7 +100,7 @@ function removeRefreshTokenForUser(uuid) {
     });
 }
 
-function getUserRefreshTokenFromUUID(uuid) {
+async function getUserRefreshTokenFromUUID(uuid) {
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = `SELECT RefreshToken FROM UserRefreshTokens WHERE UserId = (SELECT UserId FROM User WHERE UUID=UuidToBin("${uuid}"))`
     return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((response => {
@@ -135,6 +135,57 @@ function createQuestions() {
         return resolve;
     })
 }
+
+//TODO: Need to fix with string variables being null
+async function getTruthsHistory(isCurrent, isComplete, category, uuid) {
+    isCurrent = isCurrent || isCurrent === false ? isCurrent : null;
+    isComplete = isComplete || isComplete === false ? isComplete : null;
+    category = category ? category : null;
+    uuid = uuid ? uuid : null;
+
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = `
+    SELECT th.TruthHistoryId,th.Issued,th.Expiration, t.Description, t.Points, c.CategoryName, act.ActivityCompletedTypeName, tr.Data, UuidFromBin(User.UUID)
+    FROM TruthsHistory AS th 
+    INNER JOIN Truths AS t ON th.TruthId = t.TruthId
+    INNER JOIN categorytypes AS c ON t.CategoryId = c.CategoryId
+    INNER JOIN ActivityCompletedTypes AS act ON th.Completed = act.ActivityCompletedTypeId
+    INNER JOIN User ON th.UserId = User.UserId 
+    LEFT JOIN TruthsResponses AS tr ON th.TruthResponseId= tr.TruthResponseId
+    WHERE (CASE WHEN ${isComplete} IS NULL THEN TRUE WHEN ${isComplete} = TRUE THEN act.ActivityCompletedTypeId=1 ELSE act.ActivityCompletedTypeId>1 END) 
+    AND (User.UUID = UuidToBin("${uuid}") OR "${uuid}" = "null")
+    AND (${category} = c.CategoryName OR "${category}" = "null")
+    AND (CASE WHEN ${isCurrent} IS NULL THEN TRUE WHEN ${isCurrent} = TRUE THEN NOW()<th.Expiration ELSE NOW()>th.Expiration END) 
+    ` //+ mySqlConnection.escape(isCurrent) + mySqlConnection.escape(category) + mySqlConnection.escape(uuid);
+
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect((err) => {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            })
+        })
+    });
+
+}
+
+async function postFeedback(subject, feedback) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = `INSERT INTO ApplicationFeedback(Subject,Feedback) VALUES ("${subject}","${feedback}")`
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect((err) => {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            })
+        })
+    })
+}
+
+
+
 
 
 /**************************Shortcuts to create connection************/
@@ -172,3 +223,5 @@ module.exports.createTruths = createTruths;
 module.exports.createQuestions = createQuestions;
 module.exports.getUserVerificationCode = getUserVerificationCode;
 module.exports.updateUserInformation = updateUserInformation;
+module.exports.postFeedback = postFeedback;
+module.exports.getTruthsHistory = getTruthsHistory;
