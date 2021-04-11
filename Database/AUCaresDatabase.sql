@@ -345,7 +345,7 @@ VALUES (3, 'Text');
 CREATE TABLE IF NOT EXISTS `Truths`
 (
     `TruthId`         SMALLINT UNSIGNED   NOT NULL UNIQUE AUTO_INCREMENT,
-    `Truth`           VARCHAR(500) UNIQUE NOT NULL,
+    `Description`     VARCHAR(500) UNIQUE NOT NULL,
     `Points`          TINYINT UNSIGNED    NOT NULL CHECK ( Points > 0 ),
     `CategoryId`      TINYINT(1)          NOT NULL,
     `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded >= 0 ),
@@ -359,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `Truths`
 CREATE TABLE IF NOT EXISTS `Dares`
 (
     `DareId`          SMALLINT UNSIGNED   NOT NULL UNIQUE AUTO_INCREMENT,
-    `Dare`            VARCHAR(500) UNIQUE NOT NULL,
+    `Description`     VARCHAR(500) UNIQUE NOT NULL,
     `Points`          TINYINT UNSIGNED    NOT NULL CHECK ( Points > 0 ),
     `CategoryId`      TINYINT(1)          NOT NULL,
     `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded >= 0 ),
@@ -375,7 +375,7 @@ CREATE TABLE IF NOT EXISTS `Questions`
     `QuestionId`      SMALLINT UNSIGNED   NOT NULL UNIQUE AUTO_INCREMENT,
     `QuestionTitle`   VARCHAR(50),
     `QuestionTypeId`  TINYINT(1),
-    `Question`        VARCHAR(500) UNIQUE NOT NULL,
+    `Description`     VARCHAR(500) UNIQUE NOT NULL,
     `Points`          TINYINT UNSIGNED    NOT NULL CHECK ( Points > 0 ),
     `CategoryId`      TINYINT(1)          NOT NULL,
     `MinPointsNeeded` SMALLINT            NOT NULL CHECK ( MinPointsNeeded >= 0 ),
@@ -463,7 +463,7 @@ CREATE TABLE `ApplicationFeedback`
     `ApplicationFeedbackId` MEDIUMINT UNSIGNED AUTO_INCREMENT,
     `Subject`               VARCHAR(100),
     `Feedback`              VARCHAR(300),
-    `SubmissionDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `SubmissionDate`        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (ApplicationFeedbackId)
 );
 

@@ -145,7 +145,7 @@ async function getTruthsHistory(isCurrent, isComplete, category, uuid) {
 
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = `
-    SELECT th.TruthHistoryId,th.Issued,th.Expiration, t.Truth, t.Points, c.CategoryName, act.ActivityCompletedTypeName, tr.Data, UuidFromBin(User.UUID)
+    SELECT th.TruthHistoryId,th.Issued,th.Expiration, t.Description, t.Points, c.CategoryName, act.ActivityCompletedTypeName, tr.Data, UuidFromBin(User.UUID)
     FROM TruthsHistory AS th 
     INNER JOIN Truths AS t ON th.TruthId = t.TruthId
     INNER JOIN categorytypes AS c ON t.CategoryId = c.CategoryId
