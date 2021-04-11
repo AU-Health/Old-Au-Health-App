@@ -98,6 +98,7 @@ async function generateAccessToken(uuid) {
             let jwtPayload = {};
             jwtPayload["uuid"] = response["UuidFromBin(UUID)"].toString();
             jwtPayload["userType"] = response.userType;
+            jwtPayload["isAdmin"] = !!response.IsAdmin;
             jwtPayload["isVerified"] = response.UserVerified;
             jwtPayload["consentSigned"] = response.ConsentFormSigned;
             jwtPayload["isAccountDisabled"] = response.UserAccountDisabled;

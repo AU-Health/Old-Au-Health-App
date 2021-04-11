@@ -136,13 +136,37 @@ function createQuestions() {
     })
 }
 
-async function getTruthsHistory(isCurrent, topic, uuid) {
-    let mySqlConnection = createMySqlConnection();
-    let sqlQuery = "SELECT truthshistory.* FROM User,TruthsHistory"
+//TODO: Need to fix with string variables being null
+async function getTruthsHistory(isCurrent, isComplete, category, uuid) {
+    isCurrent = isCurrent || isCurrent === false ? isCurrent : null;
+    isComplete = isComplete || isComplete === false ? isComplete : null;
+    category = category ? category : null;
+    uuid = uuid ? uuid : null;
 
-    if (isCurrent || topic || uuid) {
-        sqlQuery = +" WHERE "
-    }
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = `
+    SELECT th.TruthHistoryId,th.Issued,th.Expiration, t.Truth, t.Points, c.CategoryName, act.ActivityCompletedTypeName, tr.Data, UuidFromBin(User.UUID)
+    FROM TruthsHistory AS th 
+    INNER JOIN Truths AS t ON th.TruthId = t.TruthId
+    INNER JOIN categorytypes AS c ON t.CategoryId = c.CategoryId
+    INNER JOIN ActivityCompletedTypes AS act ON th.Completed = act.ActivityCompletedTypeId
+    INNER JOIN User ON th.UserId = User.UserId 
+    LEFT JOIN TruthsResponses AS tr ON th.TruthResponseId= tr.TruthResponseId
+    WHERE (CASE WHEN ${isComplete} IS NULL THEN TRUE WHEN ${isComplete} = TRUE THEN act.ActivityCompletedTypeId=1 ELSE act.ActivityCompletedTypeId>1 END) 
+    AND (User.UUID = UuidToBin("${uuid}") OR "${uuid}" = "null")
+    AND (${category} = c.CategoryName OR "${category}" = "null")
+    AND (CASE WHEN ${isCurrent} IS NULL THEN TRUE WHEN ${isCurrent} = TRUE THEN NOW()<th.Expiration ELSE NOW()>th.Expiration END) 
+    ` //+ mySqlConnection.escape(isCurrent) + mySqlConnection.escape(category) + mySqlConnection.escape(uuid);
+
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect((err) => {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            })
+        })
+    });
 
 }
 
@@ -200,3 +224,4 @@ module.exports.createQuestions = createQuestions;
 module.exports.getUserVerificationCode = getUserVerificationCode;
 module.exports.updateUserInformation = updateUserInformation;
 module.exports.postFeedback = postFeedback;
+module.exports.getTruthsHistory = getTruthsHistory;
