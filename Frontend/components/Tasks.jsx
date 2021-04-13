@@ -6,9 +6,11 @@ import TasksModals from './TasksModals';
 var deviceWidth = Dimensions.get("window").width;
 var deviceHeight = Dimensions.get("window").height;
 let modal;
-let name;
+
+var borderColor;
 //<Pressable onPress={toggleModal}>
-const Task = ({ title, info }) => {
+const Task = ({ title, info, color }) => {
+    borderColor = color;
 
     const [isModalVisible, setModalVisible] = useState(false);
 
@@ -36,7 +38,7 @@ const styles = StyleSheet.create({
         width: deviceWidth * 90 / 100,
         borderLeftWidth: 4,
         borderRadius: 4,
-        borderColor: '#000080',
+        borderColor: borderColor,
         height: '15%',
         marginTop: 10,
         backgroundColor: '#FBFAF5',

@@ -1,65 +1,87 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, FlatList } from 'react-native';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Task from '../components/Tasks';
 import * as Progress from 'react-native-progress';
+
+import truths from './data/truths.json';
+import dares from './data/dares.json';
+import questions from './data/questions.json';
 
 
 var deviceWidth = Dimensions.get("window").width;
 var deviceHeight = Dimensions.get("window").height;
 
-const progress = 0.3;
-const numberOfCompletedTasks = 2;
-const NumberOftasks = 5;
-
 let incompleteTasks = [
-    {
-        name: 'task2',
-        desc: 'drink 8 gallons a day',
-        type: 'dare',
-        completed: false,
-    },
-    {
-        name: 'task3',
-        desc: 'drink 8 gallons a day',
-        type: 'truth',
-        completed: false,
-    },
-    {
-        name: 'task4',
-        desc: 'drink 8 gallons a day',
-        type: 'question',
-        completed: false,
-    },
     
 ];
 
 let completedTasks = [
-    {
-        name: 'task5',
-        desc: 'drink 8 gallons a day',
-        type: 'dare',
-        completed: true,
-    },
-    {
-        name: 'task1',
-        desc: 'drink 8 gallons a day',
-        type: 'truth',
-        completed: true,
-    },
+    
 ];
 
-let test = [
-    {
-        title: 'title of the truth or dare',
-        desc: 'desc of the task',
-        type: 'truth or dare or question',
-        completed: true, 
+function TaskObj (title, info, color, completed) {
+    this.title = title;
+    this.info = info;
+    this.color = color;
+    this.completion = completed;
+}
+
+let url = '';
+//basic fetch function to retrieve data from the backend
+function _fetchData(url) {
+    fetch(url)
+    .then(response => response.json())
+    .then(data => _loadDataFromJson(data));
+}
+
+//function that takes in data in the form of a json and splits into correct array
+function _loadDataFromJson(data) {
+    //console.log(data)
+    //console.log(data[1].Truth);
+    for(let i = 0; i < Object.keys(data).length; i++) {
+        if(data[i].ActivityCompletedTypeName == 'Completed') {
+            completedTasks.push(new TaskObj(data[i].CategoryName, data[i].Description, _selectTaskColor(data[i].CategoryName)));
+        } else {
+            incompleteTasks.push(new TaskObj(data[i].CategoryName, data[i].Description, _selectTaskColor(data[i].CategoryName)));
+        }
     }
-];
+}
 
-let task, length;
+function _selectTaskColor(category) {
+    //console.log(category);
+
+    if(category == 'Social Health') {
+        return '#000080';
+
+    } else if(category == 'Emotional Health') {
+        return '#000080';
+
+    } else if(category == 'Sleep') {
+        return '#27AE60';
+
+    } else if(category == 'Physical Activity') {
+        return '#A93226';
+
+    } else if(category == 'Hydration') {
+        return '#F1C40F';
+
+    } else if(category == 'Fruits & Veggies') {
+        return '#000080';
+
+    } else if(category == 'Occupational Health') {
+        return '#000080';
+
+    } else {
+        return '#000080';
+    }
+}
+
+_loadDataFromJson(truths);
+_loadDataFromJson(dares);
+_loadDataFromJson(questions);
+
 /*
 color options for differebt kinds of tasks
 //borderColor: '#A93226', //red color dare
@@ -69,64 +91,74 @@ color options for differebt kinds of tasks
 
 
 export default class ChallengeScreen extends React.Component {
-  render() {
 
-    //function that updates the task lists when one is marked completed
-    const _updateTaskList = (taskName) => {
-        let tmp;
-        for(let i = 0; i < incompleteTasks.length; i++){
-            if(incompleteTasks['name'] == taskName) {
-                tmp = i;
-                incompleteTasks['completed'] = true;
+    renderListComponent = (task) => <Task title={task['item']['title']} info={task['item']['info']} color={task['item']['color']}/>
+    
+    render() {
+        let numberOfCompletedTasks = completedTasks.length;
+        let numberOfTasks = completedTasks.length + incompleteTasks.length;
+        let progress = (numberOfCompletedTasks / numberOfTasks);
+
+        console.log(numberOfCompletedTasks);
+
+        //function that updates the task lists when one is marked completed
+        //have not tested this yet
+        //may not work in the way it needs to.
+        const _updateTaskList = (taskName) => {
+            let tmp;
+            for(let i = 0; i < incompleteTasks.length; i++){
+                if(incompleteTasks['name'] == taskName) {
+                    tmp = i;
+                    incompleteTasks['completed'] = true;
+                }
             }
-        }
-        completedTasks.push(incompleteTasks.splice(tmp))
-    };
+            completedTasks.push(incompleteTasks.splice(tmp))
+        };
 
+        return(
+        <View style={styles.screenContainer}>
+            <View style={styles.progressBarContainer}>
+                <Text style={styles.textTitle}> Challenges </Text>
+                <View style={styles.Container}>
+                    <Text style={{ position: 'absolute', left: 0 }}> {numberOfCompletedTasks}/{numberOfTasks} </Text>
+                    <Text style={{ position: 'absolute', right: 0 }}> {progress * 100}% </Text>
+                </View>
+                <Progress.Bar progress={progress} width={deviceWidth * 80 / 100} />
 
-    return(
-      <View style={styles.screenContainer}>
-        <View style={styles.progressBarContainer}>
-            <Text style={{ fontWeight: 'bold', fontSize: 24, paddingBottom: 5 }}> Challenges </Text>
-            <View style={{ width: deviceWidth * 80 / 100, paddingBottom: 20, }}>
-                <Text style={{ position: 'absolute', left: 0 }}> {numberOfCompletedTasks}/{NumberOftasks} </Text>
-                <Text style={{ position: 'absolute', right: 0 }}> {progress * 100}% </Text>
             </View>
-            <Progress.Bar progress={progress} width={deviceWidth * 80 / 100} />
+            <View style={styles.tasksContainer}>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.tasksTitle}> Goals </Text>
+                </View>
 
-        </View>
-        <View style={styles.tasksContainer}>
-            <View style={styles.titleContainer}>
-                <Text style={styles.tasksTitle}> Goals </Text>
+                <FlatList 
+                    data={incompleteTasks}
+                    renderItem={item => this.renderListComponent(item)}
+                />
+
             </View>
+            <View style={styles.tasksContainer}>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.tasksTitle}> Completed </Text>
+                </View>
 
-            {incompleteTasks.map((task) => {
-                    return (
-                        <Task title={task['name']} info={task['desc']}/>
-                    )
-                })
-            }
+                <FlatList 
+                    data={completedTasks}
+                    renderItem={item => this.renderListComponent(item)}
+                />
 
-        </View>
-        <View style={styles.tasksContainer}>
-            <View style={styles.titleContainer}>
-                <Text style={styles.tasksTitle}> Completed </Text>
             </View>
-
-            {completedTasks.map((task) => {
-                    return (
-                        <Task title={task.name} info={task.desc}/>
-                    )
-                })
-            }
-
         </View>
-      </View>
-    );
-  }
+        );
+    }
 }
 
 const styles = StyleSheet.create({
+    textTitle: {
+        fontWeight: 'bold', 
+        fontSize: 24, 
+        paddingBottom: 5 
+    },
     progressBarContainer: {
         height: '20%',
         //flex: 1,
@@ -135,6 +167,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         //height: deviceHeight * 10 / 100,
+    },
+    Container: {
+        width: deviceWidth * 80 / 100, 
+        paddingBottom: 20,
     },
     tasksContainer: {
         height: '40%',
@@ -160,3 +196,13 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 });
+
+/*
+
+//define url at some point
+
+
+
+
+
+*/
