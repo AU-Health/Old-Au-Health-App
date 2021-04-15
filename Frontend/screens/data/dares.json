@@ -43,5 +43,16 @@
         "ActivityCompletedTypeName": "No Attempt",
         "Data": "I ran for 5 miles",
         "uuid": "2h34j234k23j4n2b342kj34k2"
+    },
+    {
+        "DareHistoryId": 4,
+        "Issued": "2021-04-09T23:51:40.000Z",
+        "Expiration": "2021-04-10T23:51:40.000Z",
+        "Description": "Do well on your performance review!",
+        "Points": 12,
+        "CategoryName": "Occupational Health",
+        "ActivityCompletedTypeName": "Complete",
+        "Data": "I ran for 5 miles",
+        "uuid": "2h34j234k23j4n2b342kj34k2"
     }
 ]
