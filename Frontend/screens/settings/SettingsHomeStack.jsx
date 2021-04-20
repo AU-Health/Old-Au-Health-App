@@ -29,7 +29,7 @@ let settingList = [
     },
     {
         name: 'Notifications',
-        icon: 'bell',
+        icon: 'assistant',
         route: 'Test1'
     },
     {
@@ -39,7 +39,7 @@ let settingList = [
     },
     {
         name: 'About',
-        icon: 'account-supervisor',
+        icon: 'brush',
         route: 'Test1'
     },
     {
