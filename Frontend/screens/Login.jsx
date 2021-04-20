@@ -22,24 +22,75 @@ class Login extends React.Component {
 	}
 
 	handleUsernameChange = (tu) => {
-		this.setState({ username: tu.value })
+		this.setState({ username: tu })
 	}
 	handlePasswordChange = (tp) => {
-		this.setState({ password: tp.value })
+		this.setState({ password: tp})
+
 	}
 	handleLoginPress = () => {
 		console.log('logging in');
 		//grab information from the username and password state. check the states against what is in database
 		//store the username in redux to remember the username
-		let usernameFinal = this.state.username;
-		let passwordFinal = this.state.password;
+		let userCreds = {
+			"email": this.state.username,
+			"password" : this.state.password,
+			}
+
+		let url = 'http://192.168.1.10:3000/authentication/login'
+		fetch(url, {
+			method: 'POST',
+			withCredentials: true,
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+        	},
+			body: JSON.stringify(userCreds)
+    	}).then(responseJson => {
+			console.log("SUCCESS");
+			responseJson.json().then(data=>{
+				console.log(data);
+			})
+    	})
+		.catch(error => {
+			console.log("ERROR!!"+error);
+		})
+
+
 		//once you login we want redux to remember your username and take you to the home page
 
 	}
+
+	//sign up the user
 	handleSignUpPress = () => {
-		console.log('you sign up');
-		//fetch call to database through redux to post
+			let userCreds = {
+			"email": this.state.username,
+			"password" : this.state.password,
+			"isAdmin" : true
+			}
+
+		let url = 'http://192.168.1.10:3000/authentication/user_create'
+		fetch(url, {
+			method: 'POST',
+			withCredentials: true,
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+        	},
+			body: JSON.stringify(userCreds)
+    	}).then(responseJson => {
+			console.log("SUCCESS");
+			responseJson.json().then(data=>{
+				console.log(data);
+			})
+    	})
+		.catch(error => {
+			console.log("ERROR!!"+error);
+		})
+
 	}
+
+
 	render() {
 
 		return (
@@ -78,7 +129,7 @@ class Login extends React.Component {
 								<Button
 									raised={true}
 									color='#f46036'
-									onPress={this.handleSignUpPress()}
+									onPress={this.handleSignUpPress}
 									title="Signup"
 								/>
 							</View>

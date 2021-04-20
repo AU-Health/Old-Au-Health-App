@@ -73,9 +73,9 @@ export default function App() {
       <Provider store={store}>
         <NavigationContainer>
             <Stack.Navigator screenOptions={{ header: ()=>null }}>
+                <Stack.Screen name='Login' component={preLogin} />
                 <Stack.Screen name='Onboarding_1' component={Onboarding_1}/>
                 <Stack.Screen name='Onboarding_2' component={Onboarding_2}/>
-                <Stack.Screen name='Login' component={preLogin} />
                 <Stack.Screen name='Questions' component={Questionaire}/>
                 <Stack.Screen name='HomeApp' component={HomeApp}/>
                 
