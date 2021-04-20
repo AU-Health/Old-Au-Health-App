@@ -352,7 +352,8 @@ CREATE TABLE IF NOT EXISTS `Truths`
     `HoursToComplete` DECIMAL(5, 1)       NOT NULL CHECK ( HoursToComplete > 0 ),
     `SentNum`         MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK (SentNum >= 0),
     `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK ( CompleteNum >= 0 ),
-    PRIMARY KEY (TruthId)
+    PRIMARY KEY (TruthId),
+    FOREIGN KEY (CategoryId) REFERENCES CategoryTypes (CategoryId)
 );
 
 #All dares in the dataset
@@ -366,7 +367,8 @@ CREATE TABLE IF NOT EXISTS `Dares`
     `HoursToComplete` DECIMAL(5, 1)       NOT NULL CHECK ( HoursToComplete > 0 ),
     `SentNum`         MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK (SentNum >= 0),
     `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK ( CompleteNum >= 0 ),
-    PRIMARY KEY (DareId)
+    PRIMARY KEY (DareId),
+    FOREIGN KEY (CategoryId) REFERENCES CategoryTypes (CategoryId)
 );
 
 #All questions in the dataset
@@ -383,7 +385,8 @@ CREATE TABLE IF NOT EXISTS `Questions`
     `SentNum`         MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK (SentNum >= 0),
     `CompleteNum`     MEDIUMINT UNSIGNED  NOT NULL DEFAULT (0) CHECK ( CompleteNum >= 0 ),
     PRIMARY KEY (QuestionId),
-    FOREIGN KEY (QuestionTypeId) REFERENCES QuestionTypes (QuestionTypeId)
+    FOREIGN KEY (QuestionTypeId) REFERENCES QuestionTypes (QuestionTypeId),
+    FOREIGN KEY (CategoryId) REFERENCES CategoryTypes (CategoryId)
 );
 
 #Table to store response choices, for multiple choice, checkmarks

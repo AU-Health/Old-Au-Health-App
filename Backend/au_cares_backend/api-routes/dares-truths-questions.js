@@ -53,12 +53,12 @@ router.put('/truthsHistory/:truthId', dtqMiddleware.authenticateTruthHistoryAcce
     let response = req.body.response;
 
     res.status(200).json({ arr: req.truthsHistory });
+})
 
 
-
-
-
-
+router.get('/task/:taskType/:category', async(req, res) => {
+    let taskType = req.params.taskType;
+    let category = req.params.category;
 
 })
 
