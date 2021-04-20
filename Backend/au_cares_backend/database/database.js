@@ -8,7 +8,7 @@ function createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCod
             host: process.env.DB_HOST,
             user: "root",
             // password: process.env.DB_PASS,
-            database: "AU_Cares"
+            database: "au_cares_db"
         });
         mySqlConnection.connect(function(err) {
             if (err) reject(err);
@@ -127,6 +127,22 @@ function createTruths() {
     })
 }
 
+function addTruthToDB(truthDescription, points, cateogryId, minPoints, hoursToComplete) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = 'INSERT INTO Truths(Description, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?)';
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect(function(err) {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, [truthDescription, points, cateogryId, minPoints, hoursToComplete], function(err, result) {
+                if (err) reject(err);
+                resolve(result);
+            })
+        })
+    })
+
+}
+
+
 //Insert Questions into table
 function createQuestions() {
     let mySqlConnection = createMySqlConnection();
@@ -170,6 +186,16 @@ async function getTruthsHistory(isCurrent, isComplete, category, uuid) {
 
 }
 
+//TODO: FINISH UPDATE TRUTH RESPONSE
+async function updateTruthResponse(truthId, response) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = '';
+    mySqlConnection.connect((err) => {
+        if (err) reject(err);
+    })
+
+}
+
 async function postFeedback(subject, feedback) {
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = `INSERT INTO ApplicationFeedback(Subject,Feedback) VALUES ("${subject}","${feedback}")`
@@ -194,7 +220,7 @@ function createMySqlConnection() {
         host: process.env.DB_HOST,
         user: 'root', //process.env.DB_USER,
         // password: process.env.DB_PASS,
-        database: "AU_Cares"
+        database: "au_cares_db"
     });
 }
 
@@ -225,3 +251,4 @@ module.exports.getUserVerificationCode = getUserVerificationCode;
 module.exports.updateUserInformation = updateUserInformation;
 module.exports.postFeedback = postFeedback;
 module.exports.getTruthsHistory = getTruthsHistory;
+module.exports.addTruthToDB = addTruthToDB;

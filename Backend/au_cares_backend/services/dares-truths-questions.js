@@ -16,4 +16,16 @@ async function getTruthsHistory(isCurrent, isComplete, category, uuid) {
     })
 }
 
+async function createTruth(truthDescription, points, categoryId, minPoints, hoursToComplete) {
+    return dbConnection.addTruthToDB(truthDescription, points, categoryId, minPoints, hoursToComplete).then(result => {
+        return result.affectedRows > 0;
+    })
+}
+
+
+
+//TODO: Finish update for truths
+async function updateTruthResponse(truthId, response) {}
+
 module.exports.getTruthsHistory = getTruthsHistory;
+module.exports.createTruth = createTruth;

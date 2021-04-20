@@ -4,10 +4,40 @@ const dtqMiddleware = require('../middleware/dares-truths-questions-middleware')
 
 //For Express
 const express = require("express");
-const { getTruthsHistory } = require('../services/dares-truths-questions');
+const { getTruthsHistory, createTruth } = require('../services/dares-truths-questions');
 const router = express.Router();
 
-router.get('/truthsHistory', tokenMiddleware.authenticateToken, dtqMiddleware.authenticateAccess, async(req, res) => {
+router.use(tokenMiddleware.authenticateToken); //use token authentication for all routes
+
+router.post('/create-truth', authMiddleware.authenticateAdministrator, (req, res) => {
+    let truthDescription = req.body.description;
+    let points = req.body.points;
+    let categoryId = req.body.categoryid;
+    let minPoints = req.body.minPoints;
+    let hoursToComplete = req.body.hoursToComplete;
+
+    //send response that truth added was ssuccess
+    createTruth(truthDescription, points, categoryId, minPoints, hoursToComplete).then(truthAdded => {
+        if (truthAdded) {
+            req.status(201).json({
+                status: "ok",
+                truth_added: {
+                    Description: truthDescription,
+                    Points: points,
+                    CategoryId: categoryId,
+                }
+            })
+        } else {
+            res.status(401).json({
+                status: "error",
+                error: " Truth not added"
+            })
+        }
+    })
+})
+
+
+router.get('/truthsHistory', dtqMiddleware.authenticateAccess, async(req, res) => {
     //send request with values
     let truthsHistoryArr = await getTruthsHistory(req.query.isCurrent, req.query.isComplete, req.query.category, req.query.uuid);
 
@@ -18,25 +48,19 @@ router.get('/truthsHistory', tokenMiddleware.authenticateToken, dtqMiddleware.au
 
 });
 
-router.get('/daresHistory/:current?/:attempted?/:topic?/:id?', tokenMiddleware.authenticateToken, (req, res) => {
-    let uuid = req.body.uuid;
-    if (req.query.id && req.query.id == uuid) {
-        //do for the user
-    } else {
-        middleware.authenticateAdministrator(req, res, next);
-    }
-});
+router.put('/truthsHistory/:truthId', dtqMiddleware.authenticateTruthHistoryAccess, async(req, res) => {
+    let truthId = req.params.truthId;
+    let response = req.body.response;
 
-router.get('/questionsHistory/current?/attempted?/topic?/:id?', tokenMiddleware.authenticateToken, (req, res) => {
-    let uuidSearched;
-    if (req.query.id && req.query.id == req.user.uuid) {
-        uuidSearched = req.user.uuid;
-        //do for the user
-    } else {
-        middleware.authenticateAdministrator(req, res, next);
-        uuidSearched = req.query.id;
-    }
-});
+    res.status(200).json({ arr: req.truthsHistory });
+
+
+
+
+
+
+
+})
 
 
 module.exports = router;

@@ -31,4 +31,10 @@ app.get('/protected_ping', tokenMiddleware.authenticateToken, (req, res) => {
     return res.status(200).send("protected pong");
 })
 
+app.get('/ping-json', (req, res) => {
+    res.status(200).json({
+        answer: 'pong'
+    });
+})
+
 app.listen(3000);
