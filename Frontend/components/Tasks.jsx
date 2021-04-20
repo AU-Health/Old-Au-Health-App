@@ -31,7 +31,7 @@ const Task = ({ title, info, color }) => {
             borderRadius: 4,
             borderColor: borderColor,
             height: '65%',
-            marginTop: 10,
+            margin: '5%',
             backgroundColor: '#FBFAF5',
             //backgroundColor: '#A93226',
             shadowColor: '#c4c4c4',
