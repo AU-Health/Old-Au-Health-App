@@ -162,16 +162,16 @@ async function getTruthsHistory(isCurrent, isComplete, category, uuid) {
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = `
     SELECT th.TruthHistoryId,th.Issued,th.Expiration, t.Description, t.Points, c.CategoryName, act.ActivityCompletedTypeName, tr.Data, UuidFromBin(User.UUID)
-    FROM TruthsHistory AS th 
+    FROM TruthsHistory AS th
     INNER JOIN Truths AS t ON th.TruthId = t.TruthId
     INNER JOIN categorytypes AS c ON t.CategoryId = c.CategoryId
     INNER JOIN ActivityCompletedTypes AS act ON th.Completed = act.ActivityCompletedTypeId
-    INNER JOIN User ON th.UserId = User.UserId 
+    INNER JOIN User ON th.UserId = User.UserId
     LEFT JOIN TruthsResponses AS tr ON th.TruthResponseId= tr.TruthResponseId
-    WHERE (CASE WHEN ${isComplete} IS NULL THEN TRUE WHEN ${isComplete} = TRUE THEN act.ActivityCompletedTypeId=1 ELSE act.ActivityCompletedTypeId>1 END) 
+    WHERE (CASE WHEN ${isComplete} IS NULL THEN TRUE WHEN ${isComplete} = TRUE THEN act.ActivityCompletedTypeId=1 ELSE act.ActivityCompletedTypeId>1 END)
     AND (User.UUID = UuidToBin("${uuid}") OR "${uuid}" = "null")
     AND (${category} = c.CategoryName OR "${category}" = "null")
-    AND (CASE WHEN ${isCurrent} IS NULL THEN TRUE WHEN ${isCurrent} = TRUE THEN NOW()<th.Expiration ELSE NOW()>th.Expiration END) 
+    AND (CASE WHEN ${isCurrent} IS NULL THEN TRUE WHEN ${isCurrent} = TRUE THEN NOW()<th.Expiration ELSE NOW()>th.Expiration END)
     ` //+ mySqlConnection.escape(isCurrent) + mySqlConnection.escape(category) + mySqlConnection.escape(uuid);
 
     return new Promise((resolve, reject) => {

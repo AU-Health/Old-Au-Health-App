@@ -18,11 +18,11 @@ const About = ({ navigation }) => {
                 </View>
             </View>
 
-            <View style={styles.body}>
+            <ScrollView style={styles.body}>
                 <AboutCard desc='short description of the authors / creators or somebody else, idk.'/>
                 <AboutCard desc='short description of the authors / creators or somebody else, idk.'/>
                 <AboutCard desc='short description of the authors / creators or somebody else, idk.'/>
-            </View>
+            </ScrollView>
         </View>
     );
 };
