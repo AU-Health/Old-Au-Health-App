@@ -187,13 +187,25 @@ async function getTruthsHistory(isCurrent, isComplete, category, uuid) {
 }
 
 //TODO: FINISH UPDATE TRUTH RESPONSE
-async function updateTruthResponse(truthId, response) {
+async function updateTruthResponse(truthId, truthResponse) {
     let mySqlConnection = createMySqlConnection();
-    let sqlQuery = '';
-    mySqlConnection.connect((err) => {
-        if (err) reject(err);
-    })
+    let sqlQueryCreateNewTruthResponse = 'INSERT INTO TruthsResponses(Data) VALUES(?)';
+    let sqlQueryAddTruthResponseId = 'UPDATE TruthsHistory SET TruthResponseId =?, Completed = 1 WHERE TruthHistoryId =?';
 
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect((err) => {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQueryCreateNewTruthResponse, [truthResponse], (err, result) => {
+                if (err) reject(err);
+
+                mySqlConnection.query(sqlQueryAddTruthResponseId, [result.insertId, truthId], (err, resultFinal) => {
+                    if (err) reject(err);
+                    resolve(resultFinal);
+                })
+
+            })
+        })
+    })
 }
 
 async function postFeedback(subject, feedback) {
@@ -252,3 +264,4 @@ module.exports.updateUserInformation = updateUserInformation;
 module.exports.postFeedback = postFeedback;
 module.exports.getTruthsHistory = getTruthsHistory;
 module.exports.addTruthToDB = addTruthToDB;
+module.exports.updateTruthResponse = updateTruthResponse;

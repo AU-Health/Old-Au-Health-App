@@ -4,7 +4,7 @@ const dtqMiddleware = require('../middleware/dares-truths-questions-middleware')
 
 //For Express
 const express = require("express");
-const { getTruthsHistory, createTruth } = require('../services/dares-truths-questions');
+const { getTruthsHistory, createTruth, addTruthResponse } = require('../services/dares-truths-questions');
 const router = express.Router();
 
 router.use(tokenMiddleware.authenticateToken); //use token authentication for all routes
@@ -48,11 +48,23 @@ router.get('/truthsHistory', dtqMiddleware.authenticateAccess, async(req, res) =
 
 });
 
-router.put('/truthsHistory/:truthId', dtqMiddleware.authenticateTruthHistoryAccess, async(req, res) => {
-    let truthId = req.params.truthId;
-    let response = req.body.response;
+//update or add answer to a truth
+router.put('/truthsHistory/:id', dtqMiddleware.authenticateTruthHistoryAccess, dtqMiddleware.ensureBodyHasResponse, async(req, res) => {
+    addTruthResponse(req.params.id, req.body.response).then(truthResponseAdded => {
+        if (truthResponseAdded) {
+            return res.status(200).json({
+                status: "ok",
+                truthResponseAdded: req.body.response
+            })
+        } else {
+            return res.status(401).json({
+                status: "error",
+                error: "Truth response not added"
+            })
+        }
+    })
 
-    res.status(200).json({ arr: req.truthsHistory });
+
 })
 
 
