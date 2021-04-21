@@ -102,7 +102,7 @@ async function generateAccessToken(uuid) {
             jwtPayload["isVerified"] = response.UserVerified;
             jwtPayload["consentSigned"] = response.ConsentFormSigned;
             jwtPayload["isAccountDisabled"] = response.UserAccountDisabled;
-            return jwt.sign(jwtPayload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+            return jwt.sign(jwtPayload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '3h' });
         })
         .catch(err => {
             console.log("ERROR");

@@ -12,14 +12,14 @@ router.use(tokenMiddleware.authenticateToken); //use token authentication for al
 router.post('/create-truth', authMiddleware.authenticateAdministrator, (req, res) => {
     let truthDescription = req.body.description;
     let points = req.body.points;
-    let categoryId = req.body.categoryid;
+    let categoryId = req.body.categoryId;
     let minPoints = req.body.minPoints;
     let hoursToComplete = req.body.hoursToComplete;
 
     //send response that truth added was ssuccess
     createTruth(truthDescription, points, categoryId, minPoints, hoursToComplete).then(truthAdded => {
         if (truthAdded) {
-            req.status(201).json({
+            res.status(201).json({
                 status: "ok",
                 truth_added: {
                     Description: truthDescription,
