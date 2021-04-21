@@ -4,7 +4,7 @@ const dtqMiddleware = require('../middleware/dares-truths-questions-middleware')
 
 //For Express
 const express = require("express");
-const { getTruthsHistory, createTruth } = require('../services/dares-truths-questions');
+const { getTruthsHistory, createTruth, createDare, createQuestion } = require('../services/dares-truths-questions');
 const router = express.Router();
 
 router.use(tokenMiddleware.authenticateToken); //use token authentication for all routes
@@ -36,6 +36,60 @@ router.post('/create-truth', authMiddleware.authenticateAdministrator, (req, res
     })
 })
 
+router.post('/create-dare', authMiddleware.authenticateAdministrator, (req, res) => {
+    let dareDescription = req.body.description;
+    let points = req.body.points;
+    let categoryId = req.body.categoryid;
+    let minPoints = req.body.minPoints;
+    let hoursToComplete = req.body.hoursToComplete;
+
+    //send response that truth added was success
+    createDare(dareDescription, points, categoryId, minPoints, hoursToComplete).then(dareAdded => {
+        if (dareAdded) {
+            res.status(201).json({
+                status: "ok",
+                dare_added: {
+                    Description: dareDescription,
+                    Points: points,
+                    CategoryId: categoryId,
+                }
+            })
+        } else {
+            res.status(401).json({
+                status: "error",
+                error: " Dare not added"
+            })
+        }
+    })
+})
+
+router.post('/create-questions', authMiddleware.authenticateAdministrator, (req, res) => {
+    let questionTitle = req.body.title;
+    let question = req.body.question;
+    let points = req.body.points;
+    let categoryId = req.body.categoryid;
+    let minPoints = req.body.minPoints;
+    let hoursToComplete = req.body.hoursToComplete;
+
+    //send response that truth added was success
+    createQuestion(questionTitle, question, points, categoryId, minPoints, hoursToComplete).then(dareAdded => {
+        if (dareAdded) {
+            res.status(201).json({
+                status: "ok",
+                dare_added: {
+                    Question: question,
+                    Points: points,
+                    CategoryId: categoryId,
+                }
+            })
+        } else {
+            res.status(401).json({
+                status: "error",
+                error: " Question not added"
+            })
+        }
+    })
+})
 
 router.get('/truthsHistory', dtqMiddleware.authenticateAccess, async(req, res) => {
     //send request with values
