@@ -139,13 +139,13 @@ function addDareToDB(dareDescription, points, cateogryId, minPoints, hoursToComp
 
 }
 
-function addQuestionToDB(questionTitle, question, points, cateogryId, minPoints, hoursToComplete) {
+function addQuestionToDB(questionTitle, questionDescription, points, cateogryId, minPoints, hoursToComplete) {
     let mySqlConnection = createMySqlConnection();
-    let sqlQuery = 'INSERT INTO Questions(QuestionTitle, Question, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?,?)';
+    let sqlQuery = 'INSERT INTO Questions(QuestionTitle, Description, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?,?)';
     return new Promise((resolve, reject) => {
         mySqlConnection.connect(function(err) {
             if (err) reject(err);
-            mySqlConnection.query(sqlQuery, [questionTitle, question, points, cateogryId, minPoints, hoursToComplete], function(err, result) {
+            mySqlConnection.query(sqlQuery, [questionTitle, questionDescription, points, cateogryId, minPoints, hoursToComplete], function(err, result) {
                 if (err) reject(err);
                 resolve(result);
             })
