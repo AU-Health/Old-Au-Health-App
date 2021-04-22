@@ -22,10 +22,22 @@ async function createTruth(truthDescription, points, categoryId, minPoints, hour
     })
 }
 
+async function createDare(dareDescription, points, categoryId, minPoints, hoursToComplete) {
+    return dbConnection.addDareToDB(dareDescription, points, categoryId, minPoints, hoursToComplete).then(result => {
+        return result.affectedRows > 0;
+    })
+}
 
+async function createQuestion(questionTitle, questionDescription, points, categoryId, minPoints, hoursToComplete) {
+    return dbConnection.addQuestionToDB(questionTitle, questionDescription, points, categoryId, minPoints, hoursToComplete).then(result => {
+        return result.affectedRows > 0;
+    })
+}
 
 //TODO: Finish update for truths
 async function updateTruthResponse(truthId, response) {}
 
 module.exports.getTruthsHistory = getTruthsHistory;
 module.exports.createTruth = createTruth;
+module.exports.createDare = createDare;
+module.exports.createQuestion = createQuestion;

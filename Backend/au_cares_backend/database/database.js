@@ -109,24 +109,6 @@ async function getUserRefreshTokenFromUUID(uuid) {
 
 }
 
-//Insert Dares into table
-function createDare() {
-    let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `INSERT INTO Dares(Dare, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES ("Dare", 5, 5, 2, 2)`;
-    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
-        return resolve;
-    })
-}
-
-//Insert Truths into table
-function createTruths() {
-    let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `INSERT INTO Truths(Truth, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES ("Truth", 1, 2, 3, 4)`;
-    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
-        return resolve;
-    })
-}
-
 function addTruthToDB(truthDescription, points, cateogryId, minPoints, hoursToComplete) {
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = 'INSERT INTO Truths(Description, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?)';
@@ -142,15 +124,36 @@ function addTruthToDB(truthDescription, points, cateogryId, minPoints, hoursToCo
 
 }
 
-
-//Insert Questions into table
-function createQuestions() {
+function addDareToDB(dareDescription, points, cateogryId, minPoints, hoursToComplete) {
     let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `INSERT INTO Questions(QuestionTitle, Question, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES ("Questions", "What is your name?", 2, 1, 10, 2)`;
-    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
-        return resolve;
+    let sqlQuery = 'INSERT INTO Dares(Description, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?)';
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect(function(err) {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, [dareDescription, points, cateogryId, minPoints, hoursToComplete], function(err, result) {
+                if (err) reject(err);
+                resolve(result);
+            })
+        })
     })
+
 }
+
+function addQuestionToDB(questionTitle, questionDescription, points, cateogryId, minPoints, hoursToComplete) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = 'INSERT INTO Questions(QuestionTitle, Description, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?,?)';
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect(function(err) {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, [questionTitle, questionDescription, points, cateogryId, minPoints, hoursToComplete], function(err, result) {
+                if (err) reject(err);
+                resolve(result);
+            })
+        })
+    })
+
+}
+
 
 //TODO: Need to fix with string variables being null
 async function getTruthsHistory(isCurrent, isComplete, category, uuid) {
@@ -244,11 +247,10 @@ module.exports.storeRefreshTokenForUser = storeRefreshTokenForUser;
 module.exports.getUserRefreshTokenFromUUID = getUserRefreshTokenFromUUID;
 module.exports.getUserInfoFromUUID = getUserInfoFromUUID;
 module.exports.removeRefreshTokenForUser = removeRefreshTokenForUser;
-module.exports.createDare = createDare;
-module.exports.createTruths = createTruths;
-module.exports.createQuestions = createQuestions;
 module.exports.getUserVerificationCode = getUserVerificationCode;
 module.exports.updateUserInformation = updateUserInformation;
 module.exports.postFeedback = postFeedback;
 module.exports.getTruthsHistory = getTruthsHistory;
 module.exports.addTruthToDB = addTruthToDB;
+module.exports.addDareToDB = addDareToDB;
+module.exports.addQuestionToDB = addQuestionToDB;

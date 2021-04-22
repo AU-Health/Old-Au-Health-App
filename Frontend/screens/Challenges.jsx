@@ -28,14 +28,6 @@ function TaskObj (title, info, color, completed) {
     this.completion = completed;
 }
 
-let url = '';
-//basic fetch function to retrieve data from the backend
-function _fetchData(url) {
-    fetch(url)
-    .then(response => response.json())
-    .then(data => _loadDataFromJson(data));
-}
-
 //function that takes in data in the form of a json and splits into correct array
 function _loadDataFromJson(data) {
     //console.log(data)
@@ -80,9 +72,35 @@ function _selectTaskColor(category) {
     }
 }
 
-_loadDataFromJson(truths);
-_loadDataFromJson(dares);
-_loadDataFromJson(questions);
+fetchTruths();
+function fetchTruths(){
+    let url = 'http://192.168.1.10:3000/dares-truths-questions/truthsHistory' //make sure to add uuid
+    fetch(url, {
+        withCredentials: true,
+        credentials: 'include',
+        headers: {
+            //swtich the access token to the actual state of the token
+            'Authorization': 'Bearer '+ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNmI3OWZjYTgtOWY5OS0xMWViLWI1ODMtMjA0NzQ3ZDMyZjk3IiwiaXNBZG1pbiI6dHJ1ZSwiaXNWZXJpZmllZCI6MCwiY29uc2VudFNpZ25lZCI6MCwiaWF0IjoxNjE4OTQ5NTUwLCJleHAiOjE2MTg5NjAzNTB9.rpAxHT9pc8r1adBf4H-ygNE9mlE1-yWtStRroWn84-E"
+        },
+    }).then(responseJson => {
+        responseJson.json().then(data=>{
+            if(data.status=="ok"){
+                _loadDataFromJson(data.truthsHistory);
+            }
+            else{
+                //worry about issue
+            }
+        })
+    })
+    .catch(error => {
+        console.log("ERROR!!"+error);
+    })
+
+}
+
+
+// _loadDataFromJson(dares);
+// _loadDataFromJson(questions);
 
 /*
 color options for differebt kinds of tasks
