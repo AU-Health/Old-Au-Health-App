@@ -22,10 +22,12 @@ class Login extends React.Component {
 	}
 
 	handleUsernameChange = (tu) => {
-		this.setState({ username: tu.value })
+		console.log('tu', tu);
+		this.setState({ username: tu })
 	}
 	handlePasswordChange = (tp) => {
-		this.setState({ password: tp.value })
+		console.log('tp', tp);
+		this.setState({ password: tp })
 	}
 	handleLoginPress = () => {
 		console.log('logging in');
@@ -37,7 +39,9 @@ class Login extends React.Component {
 
 	}
 	handleSignUpPress = () => {
-		console.log('you sign up');
+		console.log('bergbergjberkjgn');
+		console.log('username', this.state.username);
+	
 		//fetch call to database through redux to post
 	}
 	render() {

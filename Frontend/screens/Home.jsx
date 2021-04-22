@@ -6,19 +6,39 @@ import Login from './Login';
 import { Divider, Overlay } from 'react-native-elements';
 import { ViewComponent } from 'react-native';
 import WheelOfFortune from 'react-native-wheel-of-fortune'
+import _ from 'lodash';
+import { connect } from "react-redux";
 
 
 const participants = [
   // <img src='https://foleysfitnesscenter.com/files/2019/10/weightlifting.png' />,
-  'Physical Activity',
+  "Physical Activity",
   'Occupational Wellness',
   'Emotional Wellness',
   'Social Wellness',
-  'Fruit & Vegetable Consumption',
+  'Fruit & Veg Cons.',
   'Sleep',
-  'Water Consumption',
+  'Water Cons.',
 ];
-export default class HomeScreen extends React.Component {
+const extra =
+  [
+    "Fruit and Vegetable Consumption",
+    "Water Consumption"
+  ];
+
+const explanations =
+  [
+    "Have you been maintaining a regular physical activity regime (i.e. walking, running, dancing, etc) for the past 6 months and plan to continue to do so?",
+    "Have you been engaging in professional development activities/research  for the past 6 months?  If so, this may be the right category for you.",
+    "Are you being aware, understanding, and accepting of your emotions on a regular basis through challenges and change?",
+    "Have you been continually building your social groups for the past 6 months?",
+    "Have you been eating adequate amounts of fruits and vegetables and plan to continue to do so?",
+    "Have you been getting  adequate amounts of sleep  for the past 6 months and plan to continue to do so?",
+    "Have you been drinking adequate amounts of water and plan to continue to do so? If so, this may be the right category for you.",
+
+
+  ];
+class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -40,7 +60,7 @@ export default class HomeScreen extends React.Component {
       rewards: participants,
       knobSize: 35,
       borderWidth: 2,
-      borderColor: '#fff',
+      borderColor: '#000000',
       innerRadius: 15,
       duration: 6000,
       // backgroundColor: 'transparent',
@@ -78,7 +98,7 @@ export default class HomeScreen extends React.Component {
                 color='#d7263d'
                 title="Spin!"
                 onPress={() => {
-                  console.log("the button was pressed");
+                
                   this.setState({
                     started: true,
                   });
@@ -88,30 +108,51 @@ export default class HomeScreen extends React.Component {
             </View>
           )}
           {this.state.winnerIndex != null && (
+
             <View >
-              <Overlay isVisible={this.state.vis} onBackdropPress={() =>{this.setState({vis: false})}}>
+              <Overlay overlayStyle={{width: '70%', borderRadius: 7}}isVisible={this.state.vis} onBackdropPress={() => { this.setState({ vis: false }) }}>
                 <View>
-                <Text h3>
-                Challenge: {participants[this.state.winnerIndex]}
+                  <Text h3 style={{fontWeight: 'bold', fontSize: 20, padding: '5%', textAlign: 'center'}}>
+                 
+                    {(() => {
+                      switch (this.state.winnerIndex) {
+                        case 4: return `Challenge: ${extra[0]}`;
+                        case 6: return `Challenge: ${extra[1]}`;
+                        default: return `Challenge: ${participants[this.state.winnerIndex]}`;
+                      }
+                    })()}
+
+                    {/* Challenge: {participants[this.state.winnerIndex]} */}
+                  </Text>
+                  <Divider />
+                  <Text style={{padding: '5%', fontSize: 18}}>
+                    {explanations[this.state.winnerIndex]}
               </Text>
-              <Divider />
-              <Text>
-              {participants[this.state.winnerIndex]} will involve challenges that target your 
-              daily level of activity. 
-              </Text>
-              <TouchableOpacity
+
+              <View style={{dispaly: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '10%', marginBottom: '5%'}}>
+                  <Button
+                    color='gray'
+                    title='Spin Again!'
+                    onPress={() => {
+                      this.setState({ winnerIndex: null });
+                      this.child._tryAgain();
+                    }}
+                  />
+                  
+                <Button
+                color='blue'
+                title="Proceed!"
                 onPress={() => {
-                  this.setState({ winnerIndex: null });
-                  this.child._tryAgain();
+                 
+                  //FETCH CALL TO WHATEVER
+                  
                 }}
-                style={styles.tryAgainButton}>
-                <Text style={styles.tryAgainText}>TRY AGAIN</Text>
-              </TouchableOpacity>
-              <Button title='Proceed!' />
+              />
               </View>
+                </View>
               </Overlay>
-             
-             
+
+
             </View>
           )}
         </View>
@@ -171,3 +212,24 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
 });
+
+//quetion dare or truth from physical activity
+
+const mapStateToProps = state => ({
+	// reviews: state.reviews.items,
+  truthsItems: state.truthsReducer.items,
+  truthsErros: state.truthsReducer.errors,
+  truthsLoading: state.truthsReducer.loading
+
+});
+//might have to send up to a state and have agree votes as a state
+const mapDispatchToProps = (dispatch) => {
+	return {
+		// fetchCompanies: () => dispatch(fetchProducts()),
+		// fetchRevs: (theCName) => dispatch(fetchReviews(theCName)),
+	
+	}
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)
