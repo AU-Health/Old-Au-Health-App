@@ -496,6 +496,7 @@ CREATE FUNCTION UuidFromBin(_bin BINARY(16))
                         HEX(SUBSTR(_bin, 11))
             ));
 
+######################Resource Page##############################
 CREATE TABLE IF NOT EXISTS `ResourcePage`
 (
     `Name`            VARCHAR(250)  NOT NULL,
