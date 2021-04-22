@@ -18,6 +18,7 @@ import preLogin from './screens/onboarding/preLogin';
 import Onboarding_1 from './screens/onboarding/Onboarding_1';
 import Onboarding_2 from './screens/onboarding/Onboarding_2';
 import Questionaire from './screens/onboarding/Questionaire';
+import Mood from './screens/onboarding/Mood';
 
 //import { MaterialCommunityIcons } from '@expo/vector-icons'
 // import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
@@ -78,10 +79,11 @@ export default function App() {
       <Provider store={store}>
         <NavigationContainer>
             <Stack.Navigator screenOptions={{ header: ()=>null }}>
-                <Stack.Screen name='Login' component={preLogin} />
                 <Stack.Screen name='Onboarding_1' component={Onboarding_1}/>
                 <Stack.Screen name='Onboarding_2' component={Onboarding_2}/>
                 <Stack.Screen name='Questions' component={Questionaire}/>
+                <Stack.Screen name='Mood' component={Mood}/>
+                <Stack.Screen name='Login' component={preLogin} />
                 <Stack.Screen name='HomeApp' component={HomeApp}/>
                 
             </Stack.Navigator>

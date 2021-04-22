@@ -22,6 +22,7 @@ async function createTruth(truthDescription, points, categoryId, minPoints, hour
     })
 }
 
+<<<<<<< HEAD
 async function addTruthResponse(truthId, response) {
     return dbConnection.updateTruthResponse(truthId, response).then(result => {
         return result.affectedRows > 0;
@@ -33,6 +34,19 @@ async function getTask(uuid, taskType, category) {
     console.log(currentCategoryPoints);
 
     /*
+=======
+async function createDare(dareDescription, points, categoryId, minPoints, hoursToComplete) {
+    return dbConnection.addDareToDB(dareDescription, points, categoryId, minPoints, hoursToComplete).then(result => {
+        return result.affectedRows > 0;
+    })
+}
+
+async function createQuestion(questionTitle, questionDescription, points, categoryId, minPoints, hoursToComplete) {
+    return dbConnection.addQuestionToDB(questionTitle, questionDescription, points, categoryId, minPoints, hoursToComplete).then(result => {
+        return result.affectedRows > 0;
+    })
+}
+>>>>>>> 02226b0870dcbb90aeda1722777b421ca5f39f84
 
 
 UPDATE Truths
@@ -47,5 +61,10 @@ LIMIT 1)
 
 module.exports.getTruthsHistory = getTruthsHistory;
 module.exports.createTruth = createTruth;
+<<<<<<< HEAD
 module.exports.addTruthResponse = addTruthResponse;
 module.exports.getTask = getTask;
+=======
+module.exports.createDare = createDare;
+module.exports.createQuestion = createQuestion;
+>>>>>>> 02226b0870dcbb90aeda1722777b421ca5f39f84

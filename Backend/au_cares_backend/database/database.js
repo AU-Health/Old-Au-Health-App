@@ -112,6 +112,8 @@ async function getUserRefreshTokenFromUUID(uuid) {
 }
 
 function addTruthToDB(truthDescription, points, cateogryId, minPoints, hoursToComplete) {
+<<<<<<< HEAD
+=======
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = 'INSERT INTO Truths(Description, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?)';
     return new Promise((resolve, reject) => {
@@ -126,6 +128,41 @@ function addTruthToDB(truthDescription, points, cateogryId, minPoints, hoursToCo
 
 }
 
+function addDareToDB(dareDescription, points, cateogryId, minPoints, hoursToComplete) {
+>>>>>>> 02226b0870dcbb90aeda1722777b421ca5f39f84
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = 'INSERT INTO Dares(Description, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?)';
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect(function(err) {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, [dareDescription, points, cateogryId, minPoints, hoursToComplete], function(err, result) {
+                if (err) reject(err);
+                resolve(result);
+            })
+        })
+    })
+
+}
+
+<<<<<<< HEAD
+=======
+function addQuestionToDB(questionTitle, questionDescription, points, cateogryId, minPoints, hoursToComplete) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = 'INSERT INTO Questions(QuestionTitle, Description, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?,?)';
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect(function(err) {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, [questionTitle, questionDescription, points, cateogryId, minPoints, hoursToComplete], function(err, result) {
+                if (err) reject(err);
+                resolve(result);
+            })
+        })
+    })
+
+}
+
+
+>>>>>>> 02226b0870dcbb90aeda1722777b421ca5f39f84
 //TODO: Need to fix with string variables being null
 async function getTruthsHistory(isCurrent, isComplete, category, uuid) {
     isCurrent = isCurrent || isCurrent === false ? isCurrent : null;
@@ -257,5 +294,10 @@ module.exports.updateUserInformation = updateUserInformation;
 module.exports.postFeedback = postFeedback;
 module.exports.getTruthsHistory = getTruthsHistory;
 module.exports.addTruthToDB = addTruthToDB;
+<<<<<<< HEAD
 module.exports.updateTruthResponse = updateTruthResponse;
 module.exports.getAllCategoryPoints = getAllCategoryPoints;
+=======
+module.exports.addDareToDB = addDareToDB;
+module.exports.addQuestionToDB = addQuestionToDB;
+>>>>>>> 02226b0870dcbb90aeda1722777b421ca5f39f84

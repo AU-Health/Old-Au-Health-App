@@ -13,6 +13,17 @@ var h = deviceHeight * 90 / 100;
 var w = deviceWidth * 90 / 100;
 
 const Feedback = ({ navigation }) => {
+    const [emailTextValue, setEmailTextValue] = React.useState('');
+    const [subjectTextValue, setSubjectTextValue] = React.useState('');
+    const [descTextValue, setDescTextValue] = React.useState('');
+
+    const formSubmitBtn = () => {
+        console.log(emailTextValue);
+        console.log(subjectTextValue);
+        console.log(descTextValue);
+    }
+
+    
     return (
         <View style={styles.contactContainer}>
             <View style={styles.headerContainer}>
@@ -29,7 +40,7 @@ const Feedback = ({ navigation }) => {
                         <Text style={styles.labelText}> Email </Text>
                     </View>
                     <View style={styles.inputContainer2}>
-                        <TextInput placeholder="Email" style={styles.textInput}/>
+                        <TextInput placeholder="Email" style={styles.textInput} onChangeText={text => setEmailTextValue} value={emailTextValue}/>
                     </View>
                 </View>
 
@@ -38,7 +49,7 @@ const Feedback = ({ navigation }) => {
                         <Text style={styles.labelText}> Subject </Text>
                     </View>
                     <View style={styles.inputContainer2}>
-                        <TextInput placeholder="Subject" style={styles.textInput}/>
+                        <TextInput placeholder="Subject" style={styles.textInput} onChangeText={text => setSubjectTextValue} value={subjectTextValue}/>
                     </View>
                 </View>
 
@@ -47,15 +58,13 @@ const Feedback = ({ navigation }) => {
                         <Text style={styles.labelText}> Message </Text>
                     </View>
                     <View style={styles.inputContainer2_message}>
-                        <TextInput placeholder="" style={styles.textInput}/>
+                        <TextInput placeholder="" style={styles.textInput} onChangeText={text => setDescTextValue} value={descTextValue}/>
                     </View>
                 </View>
 
                 <View style={styles.BtnContainer}>
                     <TouchableOpacity
-                        onPress={() => {
-                            {/* submit form here */}
-                        }} style={styles.submitBtnContainer}>
+                        onPress={formSubmitBtn()} style={styles.submitBtnContainer}>
                         <LinearGradient
                             colors={["#23cba7", "#2ecc71"]}
                             style={styles.linearGradient}
