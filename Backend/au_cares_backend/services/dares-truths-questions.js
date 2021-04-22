@@ -28,8 +28,8 @@ async function createDare(dareDescription, points, categoryId, minPoints, hoursT
     })
 }
 
-async function createQuestion(questionTitle, question, points, cateogryId, minPoints, hoursToComplete) {
-    return dbConnection.addQuestionToDB(questionTitle, question, points, cateogryId, minPoints, hoursToComplete).then(result => {
+async function createQuestion(questionTitle, questionDescription, points, categoryId, minPoints, hoursToComplete) {
+    return dbConnection.addQuestionToDB(questionTitle, questionDescription, points, categoryId, minPoints, hoursToComplete).then(result => {
         return result.affectedRows > 0;
     })
 }
