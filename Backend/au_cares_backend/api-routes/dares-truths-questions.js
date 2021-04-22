@@ -4,7 +4,7 @@ const dtqMiddleware = require('../middleware/dares-truths-questions-middleware')
 
 //For Express
 const express = require("express");
-const { getTruthsHistory, createTruth, addTruthResponse } = require('../services/dares-truths-questions');
+const { getTruthsHistory, createTruth, addTruthResponse, getTask } = require('../services/dares-truths-questions');
 const router = express.Router();
 
 router.use(tokenMiddleware.authenticateToken); //use token authentication for all routes
@@ -68,9 +68,15 @@ router.put('/truthsHistory/:id', dtqMiddleware.authenticateTruthHistoryAccess, d
 })
 
 
+//get a task based on task type and category
 router.get('/task/:taskType/:category', async(req, res) => {
     let taskType = req.params.taskType;
     let category = req.params.category;
+    let isCounted = req.query.isCounted && req.query.isCounted == true; //can add to query whether this truth will be counted towards data
+    console.log(req.user.uuid);
+    getTask(req.user.uuid, taskType, category);
+
+    //let newTask = await send task if success, otherwise fail
 
 })
 

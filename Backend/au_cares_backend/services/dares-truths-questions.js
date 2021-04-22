@@ -28,6 +28,24 @@ async function addTruthResponse(truthId, response) {
     })
 }
 
+async function getTask(uuid, taskType, category) {
+    let currentCategoryPoints = await dbConnection.getAllCategoryPoints(uuid);
+    console.log(currentCategoryPoints);
+
+    /*
+
+
+UPDATE Truths
+SET SentNum = SentNum+1
+WHERE TruthId = EXISTS (SELECT TruthId
+FROM Truths
+WHERE CategoryId =5 AND MinPointsNeeded >=20
+ORDER BY RAND()
+LIMIT 1)
+    */
+}
+
 module.exports.getTruthsHistory = getTruthsHistory;
 module.exports.createTruth = createTruth;
 module.exports.addTruthResponse = addTruthResponse;
+module.exports.getTask = getTask;

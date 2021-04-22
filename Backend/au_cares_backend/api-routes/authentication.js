@@ -51,6 +51,7 @@ router.post('/token', tokenMiddleware.authenticateRefreshToken, async(req, res) 
     let newAccessToken = await authentication.generateAccessToken(uuid);
 
     res.status(201).json({
+        status: "ok",
         access_token: newAccessToken
     })
 

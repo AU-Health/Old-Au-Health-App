@@ -12,17 +12,19 @@ function createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCod
         });
         mySqlConnection.connect(function(err) {
             if (err) reject(err);
-            let sqlQueryCreateUser = 'INSERT INTO User(UserEmail,Password,UUID,IsAdmin) VALUES (?,?,UuidToBin(UUID()),?)';
+            let sqlQueryCreateUser = 'INSERT INTO User(UserEmail,Password,UUID,IsAdmin) VALUES (?,?,UuidToBin(UUID()),?)'; //add user in User table
+            let sqlQueryAddVerificationCode = 'INSERT INTO VerificationCodes(UserId,ConfirmationCode) VALUES(?,?)'; //add user verification code
+            let sqlQueryAddCategoryPoints = 'INSERT INTO CategoryPoints(UserId) VALUES(?)';
             mySqlConnection.query(sqlQueryCreateUser, [hashedEmail, hashedPassword, isAdmin], function(err, result) {
                 if (err) reject(err);
-                let userId = result.insertId;
-                let sqlQueryAddVerificationCode = 'INSERT INTO VerificationCodes(UserId,ConfirmationCode) VALUES(?,?)';
-                mySqlConnection.query(sqlQueryAddVerificationCode, [userId, verificationCode], function(err, result) {
+                mySqlConnection.query(sqlQueryAddCategoryPoints, [result.insertId], (err, resultAddingCategories) => { //add category min points
                     if (err) reject(err);
-                    resolve("success");
-                    mySqlConnection.end();
+                    mySqlConnection.query(sqlQueryAddVerificationCode, [result.insertId, verificationCode], function(err, result) { //add verification code
+                        if (err) reject(err);
+                        resolve("success");
+                        mySqlConnection.end();
+                    })
                 })
-
             })
         });
     });
@@ -109,24 +111,6 @@ async function getUserRefreshTokenFromUUID(uuid) {
 
 }
 
-//Insert Dares into table
-function createDare() {
-    let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `INSERT INTO Dares(Dare, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES ("Dare", 5, 5, 2, 2)`;
-    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
-        return resolve;
-    })
-}
-
-//Insert Truths into table
-function createTruths() {
-    let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `INSERT INTO Truths(Truth, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES ("Truth", 1, 2, 3, 4)`;
-    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
-        return resolve;
-    })
-}
-
 function addTruthToDB(truthDescription, points, cateogryId, minPoints, hoursToComplete) {
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = 'INSERT INTO Truths(Description, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?)';
@@ -140,16 +124,6 @@ function addTruthToDB(truthDescription, points, cateogryId, minPoints, hoursToCo
         })
     })
 
-}
-
-
-//Insert Questions into table
-function createQuestions() {
-    let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `INSERT INTO Questions(QuestionTitle, Question, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES ("Questions", "What is your name?", 2, 1, 10, 2)`;
-    return queryViaMySqlConnection(mySqlConnection, sqlQuery).then((resolve, reject) => {
-        return resolve;
-    })
 }
 
 //TODO: Need to fix with string variables being null
@@ -187,7 +161,7 @@ async function getTruthsHistory(isCurrent, isComplete, category, uuid) {
 }
 
 //TODO: FINISH UPDATE TRUTH RESPONSE
-async function updateTruthResponse(truthId, truthResponse) {
+function updateTruthResponse(truthId, truthResponse) {
     let mySqlConnection = createMySqlConnection();
     let sqlQueryCreateNewTruthResponse = 'INSERT INTO TruthsResponses(Data) VALUES(?)';
     let sqlQueryAddTruthResponseId = 'UPDATE TruthsHistory SET TruthResponseId =?, Completed = 1 WHERE TruthHistoryId =?';
@@ -208,19 +182,41 @@ async function updateTruthResponse(truthId, truthResponse) {
     })
 }
 
-async function postFeedback(subject, feedback) {
+function getAllCategoryPoints(uuid) {
     let mySqlConnection = createMySqlConnection();
-    let sqlQuery = `INSERT INTO ApplicationFeedback(Subject,Feedback) VALUES ("${subject}","${feedback}")`
+    let sqlQuery = "SELECT CategoryPoints.* FROM User,CategoryPoints WHERE CategoryPoints.UserId = User.UserId AND User.UUID = UuidToBin(?)";
     return new Promise((resolve, reject) => {
         mySqlConnection.connect((err) => {
-            if (err) reject(err);
-            mySqlConnection.query(sqlQuery, (err, result) => {
+            if (err) reject(err)
+            mySqlConnection.query(sqlQuery, [uuid], (err, result) => {
                 if (err) reject(err);
                 resolve(result);
             })
         })
     })
 }
+
+
+
+
+function assignUserNewTaskTruthOrDare(taskType, category, MinPointsNeeded) {
+
+}
+
+async function postFeedback(subject, feedback) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = 'INSERT INTO ApplicationFeedback(Subject,Feedback) VALUES ("?","?")'
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect((err) => {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, [subject, feedback], (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            })
+        })
+    })
+}
+
 
 
 
@@ -256,12 +252,10 @@ module.exports.storeRefreshTokenForUser = storeRefreshTokenForUser;
 module.exports.getUserRefreshTokenFromUUID = getUserRefreshTokenFromUUID;
 module.exports.getUserInfoFromUUID = getUserInfoFromUUID;
 module.exports.removeRefreshTokenForUser = removeRefreshTokenForUser;
-module.exports.createDare = createDare;
-module.exports.createTruths = createTruths;
-module.exports.createQuestions = createQuestions;
 module.exports.getUserVerificationCode = getUserVerificationCode;
 module.exports.updateUserInformation = updateUserInformation;
 module.exports.postFeedback = postFeedback;
 module.exports.getTruthsHistory = getTruthsHistory;
 module.exports.addTruthToDB = addTruthToDB;
 module.exports.updateTruthResponse = updateTruthResponse;
+module.exports.getAllCategoryPoints = getAllCategoryPoints;
