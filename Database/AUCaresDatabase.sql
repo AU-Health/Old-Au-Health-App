@@ -495,3 +495,12 @@ CREATE FUNCTION UuidFromBin(_bin BINARY(16))
                         HEX(SUBSTR(_bin, 9, 2)),
                         HEX(SUBSTR(_bin, 11))
             ));
+
+CREATE TABLE IF NOT EXISTS `ResourcePage`
+(
+    `Name`            VARCHAR(250)  NOT NULL,
+    `Link`            VARCHAR(500)  NOT NULL,
+    `Email`           VARCHAR(250)  NOT NULL,
+    `PhoneNumber`     VARCHAR(20)   NOT NULL, 
+    PRIMARY KEY (Name)
+);
