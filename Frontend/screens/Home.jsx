@@ -1,13 +1,38 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, Image, View, SafeAreaView, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, Image, View, SafeAreaView, Button, TouchableOpacity, Pressable, } from 'react-native';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Login from './Login';
-import { Divider, Overlay } from 'react-native-elements';
+import { Divider, Overlay, ButtonGroup } from 'react-native-elements';
 import { ViewComponent } from 'react-native';
 import WheelOfFortune from 'react-native-wheel-of-fortune'
 import _ from 'lodash';
 import { connect } from "react-redux";
+
+let items = [require('../assets/pa1.png'), require('../assets/oa.png'), require('../assets/emotion.png'), require('../assets/social.png'), require('../assets/veg1.png'), require('../assets/slumb1.png'), require('../assets/water1.png')];
+
+//temporary dictionary of truths for each category
+let newl = '\n'
+let tempTruths = {
+  "How many minutes of moderate physical activity do adults need throughout the week?": ['25', '150', '75', '10'],
+  "How many hours per week should the average college student spending working (studying and working)?": ['3', '6', '12', '40'],
+  "True/false-Getting connected with others is not an important aspect of emotional wellness.": ['true', 'false'],
+  "To have a robust sense of well-being, how many hours of social interaction should an adult have per day?": ['6', '1', '2', '10'],
+  "How many cups per day of vegetables is part of a healthy eating pattern?": ['2 or 3', '4', '5 or 6', 'less than 1'],
+  "How many hours of continual sleep does an average adult under the age of 65 need per night for optimal health?": ['5-7 hours', '7-8 hours', '9-10 hours', 'it doesn’t matter'],
+  "How many cups of water should an adult have per day?": ['15.5', '11.3', '12', '19']
+}
+
+let tempDares =
+  ["we dare you to go outside and run 2 miles",
+    "We dare you to apply to 2 more jobs this week",
+    "We dare you to talk about how you're feeling this week with others",
+    "We dare you to go out and have unch with one new friend this week",
+    "We dare you to eat 2 new fruits or veggies this week",
+    "We dare you to sleep 7-8 hours per night for the next 3 nights. You will receive a follow-up question once per day for the following 3 days to help hold you accountable. Each day these follow-up questions are answered, you will receive 5 points. ",
+    "We dare you to drink twice as much water as you did yesterday today",
+  ]
+
 
 
 const participants = [
@@ -47,6 +72,8 @@ class HomeScreen extends React.Component {
       started: false,
       tempIsLoggedIn: false,
       vis: true,
+      challengeOverlayVisible: false,
+      selectedIndex: -1,
     };
     this.child = null;
   }
@@ -56,6 +83,8 @@ class HomeScreen extends React.Component {
     console.log('you clicked spin the button!')
   }
   render() {
+    const buttons = ['Truth', 'Dare', 'Question']
+
     const wheelOptions = {
       rewards: participants,
       knobSize: 35,
@@ -98,7 +127,7 @@ class HomeScreen extends React.Component {
                 color='#d7263d'
                 title="Spin!"
                 onPress={() => {
-                
+
                   this.setState({
                     started: true,
                   });
@@ -110,10 +139,10 @@ class HomeScreen extends React.Component {
           {this.state.winnerIndex != null && (
 
             <View >
-              <Overlay overlayStyle={{width: '70%', borderRadius: 7}}isVisible={this.state.vis} onBackdropPress={() => { this.setState({ vis: false }) }}>
+              <Overlay overlayStyle={{ width: '70%', borderRadius: 7 }} isVisible={this.state.vis} onBackdropPress={() => { this.setState({ vis: false }) }}>
                 <View>
-                  <Text h3 style={{fontWeight: 'bold', fontSize: 20, padding: '5%', textAlign: 'center'}}>
-                 
+                  <Text h3 style={{ fontWeight: 'bold', fontSize: 20, padding: '5%', textAlign: 'center' }}>
+
                     {(() => {
                       switch (this.state.winnerIndex) {
                         case 4: return `Challenge: ${extra[0]}`;
@@ -125,36 +154,89 @@ class HomeScreen extends React.Component {
                     {/* Challenge: {participants[this.state.winnerIndex]} */}
                   </Text>
                   <Divider />
-                  <Text style={{padding: '5%', fontSize: 18}}>
+                  <Text style={{ padding: '2%', fontSize: 18 }}>
                     {explanations[this.state.winnerIndex]}
-              </Text>
+                  </Text>
 
-              <View style={{dispaly: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '10%', marginBottom: '5%'}}>
-                  <Button
-                    color='gray'
-                    title='Spin Again!'
-                    onPress={() => {
-                      this.setState({ winnerIndex: null });
-                      this.child._tryAgain();
-                    }}
-                  />
-                  
-                <Button
-                color='blue'
-                title="Proceed!"
-                onPress={() => {
-                 
-                  //FETCH CALL TO WHATEVER
-                  
-                }}
-              />
-              </View>
+                  <View style={{ dispaly: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '5%', marginBottom: '5%' }}>
+                    <Button
+                      color='gray'
+                      title='Spin Again!'
+                      onPress={() => {
+                        this.setState({ winnerIndex: null });
+                        this.child._tryAgain();
+                      }}
+                    />
+
+                    <Button
+                      color='blue'
+                      title="Proceed!"
+                      onPress={() => {
+                        this.setState({ challengeOverlayVisible: true })
+                        //FETCH CALL TO WHATEVER
+                        //redirect to page where there is a category and questions truth and dare
+                        //your challenge full screen overlay
+                      }}
+                    />
+
+                  </View>
+
                 </View>
               </Overlay>
 
 
             </View>
           )}
+
+          {(this.state.challengeOverlayVisible) ?
+            <Overlay overlayStyle={{ width: '90%', height: '90%', borderRadius: 7, padding: '10%' }} fullScreen={true} isVisible={this.state.challengeOverlayVisible} onBackdropPress={() => { this.setState({ challengeOverlayVisible: false }) }}>
+              <View style={{flex: 1, flexDirection: 'column'}}>
+                <View style={{flex: 2}}>
+                <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 20, padding: '5%' }}>Select a challenge for
+                 {(() => {
+                    switch (this.state.winnerIndex) {
+                      case 4: return ` ${extra[0]}`;
+                      case 6: return ` ${extra[1]}`;
+                      default: return ` ${participants[this.state.winnerIndex]}`;
+                    }
+                  })()}!</Text>
+                <ButtonGroup
+                  onPress={(num) => { this.setState({ selectedIndex: parseInt(num) }) }}
+                  selectedIndex={this.state.selectedIndex}
+                  buttons={buttons}
+                  containerStyle={{ height: 100 }}
+                />
+                </View>
+
+
+
+               
+                <Text style={{flex: 3, justifyContent: 'center', textAlignVertical: 'center', alignItems: 'center', textAlign: 'center', marginTop: -15, paddingBottom: '5%', paddingLeft: '5%', paddingRight: '5%', fontSize: 18}}>
+                  {(() => {
+                    switch (this.state.selectedIndex) {
+                      case 0: return [`${Object.keys(tempTruths)[this.state.winnerIndex]} \n \n`, Object.values(tempTruths)[this.state.winnerIndex].map((ii) => <Button title={ii}/>)];
+                      case 1: return `${tempDares[this.state.winnerIndex]}`;
+                      case 2: return `Is there a way around a challenge your facing right now that involves doing more of the challenge: ${participants[this.state.winnerIndex]}?`;
+                      default: return <Image style={{ width: 80, height: 80 }} source={items[this.state.winnerIndex]} />;
+                    }
+                  })()}</Text>
+
+              
+
+                <View>
+                {(this.state.selectedIndex !== -1) ? <View style={{ marginBottom: 0 }}>
+                <Button
+                      
+                      title="Accept Challenge!"
+                      onPress={() => {
+                        console.log('pressed accepted')
+                      }} />
+
+                </View> : console.log('hi')}
+                  </View>
+
+              </View>
+            </Overlay> : console.log('')}
         </View>
       </SafeAreaView>
     );
@@ -216,7 +298,7 @@ const styles = StyleSheet.create({
 //quetion dare or truth from physical activity
 
 const mapStateToProps = state => ({
-	// reviews: state.reviews.items,
+  // reviews: state.reviews.items,
   truthsItems: state.truthsReducer.items,
   truthsErros: state.truthsReducer.errors,
   truthsLoading: state.truthsReducer.loading
@@ -224,11 +306,11 @@ const mapStateToProps = state => ({
 });
 //might have to send up to a state and have agree votes as a state
 const mapDispatchToProps = (dispatch) => {
-	return {
-		// fetchCompanies: () => dispatch(fetchProducts()),
-		// fetchRevs: (theCName) => dispatch(fetchReviews(theCName)),
-	
-	}
+  return {
+    // fetchCompanies: () => dispatch(fetchProducts()),
+    // fetchRevs: (theCName) => dispatch(fetchReviews(theCName)),
+
+  }
 }
 
 
