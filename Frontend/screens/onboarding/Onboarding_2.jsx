@@ -31,7 +31,7 @@ const Onboarding_2 = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("Login");
+                        navigation.navigate("Mood");
                     }} style={styles.onboardingBtnContainer}>
                     <Text style={styles.onboardingBtn}>Continue</Text>
                 </TouchableOpacity>
