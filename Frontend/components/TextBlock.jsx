@@ -28,9 +28,9 @@ const TextBlock = ({ title, desc }) => {
 
 const styles = StyleSheet.create({
     blockContainer: {
-        marginTop: 20,
+        marginTop: '5%',
         width: w,
-        height: h,
+        //height: h,
     },
     titleText: {
         fontSize: 18,
