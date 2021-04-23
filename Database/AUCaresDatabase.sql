@@ -502,8 +502,8 @@ CREATE TABLE IF NOT EXISTS `ResourcePage`
     `Name`            VARCHAR(250)  NOT NULL,
     `Link`            VARCHAR(500)  NOT NULL,
     `Email`           VARCHAR(250)  NOT NULL,
-    `PhoneNumber`     VARCHAR(100)   NOT NULL, 
-    PRIMARY KEY (Name)
+    `PhoneNumber`     VARCHAR(100)  NOT NULL, 
+     PRIMARY KEY (Name)
 );
 
 INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
