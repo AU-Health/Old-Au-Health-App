@@ -8,6 +8,24 @@ import ResourcesCard from '../../components/ResourcesCard';
 var deviceWidth = Dimensions.get("window").width;
 var deviceHeight = Dimensions.get("window").height;
 
+function ResourceObj (title, number, email, link) {
+    this.title = title;
+    this.number = number;
+    this.email = email;
+    this.link = link;
+}
+
+let resourceList = [];
+
+//function that takes in data in the form of a json and splits into correct array
+function _loadDataFromJson(data) {
+    for(let i = 0; i < Object.keys(data).length; i++) {
+        resourceList.push(new TaskObj(data[i].title, data[i].number, data[i].email, data[i].link));
+    }
+}
+
+//_loadDataFromjson(data);
+
 const Resources = ({ navigation }) => {
     return (
         <View style={styles.resourcesContainer}>
@@ -19,10 +37,7 @@ const Resources = ({ navigation }) => {
             </View>
 
             <ScrollView style={styles.body}>
-                <ResourcesCard title='Organization 1' number='xxx-xxx-xxxx' email='email@gmail.com' desc='Short description here.'/>
-                <ResourcesCard title='Organization 2' number='xxx-xxx-xxxx' email='email@gmail.com' desc='Short description here.'/>
-                <ResourcesCard title='Organization 3' number='xxx-xxx-xxxx' email='email@gmail.com' desc='Short description here.'/>
-                <ResourcesCard title='Organization 4' number='xxx-xxx-xxxx' email='email@gmail.com' desc='Short description here.'/>
+                {resourceList.map(resource => {return (<ResourcesCard title={resource.title} desc={resource.link} number={resource.number} email={resource.email} />)})}
             </ScrollView>
         </View>
     );
