@@ -6,24 +6,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 var deviceWidth = Dimensions.get("window").width;
 var deviceHeight = Dimensions.get("window").height;
 
-var h = deviceHeight * 25 / 100;
+var h = deviceHeight * 20 / 100;
 var w = deviceWidth;
-
-const AboutCard2 = ({ desc }) => {
-    return (
-        <View style={styles.aboutContainer}>
-            <Avatar
-                size="large"
-                rounded
-                icon={{name: 'user', type: 'font-awesome'}}
-                onPress={() => console.log("Works!")}
-                activeOpacity={0.7}/>
-            <Text style={styles.descText}> {desc} </Text>
-
-            <View style={styles.divider}/>
-        </View>
-    );
-};
 
 const AboutCard = ({ desc }) => {
     return (
@@ -40,9 +24,6 @@ const AboutCard = ({ desc }) => {
             <View styles={styles.textContainer}>
                 <Text style={styles.descText}> {desc} </Text>
             </View>
-
-
-
             <View style={styles.divider}/>
         </View>
     );
@@ -50,27 +31,28 @@ const AboutCard = ({ desc }) => {
 
 const styles = StyleSheet.create({
     aboutContainer: {
+        //backgroundColor: 'red',
         marginTop: 5,
-        alignItems: 'center',
-        width: w,
+        //alignItems: 'center',
+        width: w * 80 / 100,
         height: h,
-        flex: .5,
-        flexDirection: 'row',
+        flexDirection: 'column',
     },
     descText: {
-        flexShrink: 1,
+        //marginTop: 20,
         fontSize: 14,
     },
     divider: { //get this working lol
         borderBottomColor: 'black',
-        borderBottomWidth: 2,
+        borderBottomWidth: 1,
     },
     avaterContainer: {
-        marginLeft: 5,
+        //marginLeft: 5,
+        flex: 1,
     },
     textContainer: { //work on fixing the text, currently goes off the screen!
-        flexGrow: 1,
-        flex: .5,
+        position: 'absolute',
+        bottom: 0,
     },
 })
 

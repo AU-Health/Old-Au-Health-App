@@ -1,6 +1,7 @@
 /*File will have all of the authentication routes*/
 const authentication = require('../services/authentication');
-const middleware = require("../middleware/auth_middleware");
+const authMiddleware = require("../middleware/auth-middleware");
+const tokenMiddleware = require('../middleware/token-middleware');
 
 //this will be the class for the routes
 const express = require("express"); //import express
@@ -8,7 +9,7 @@ const router = express.Router(); //used to set up an express server
 
 
 /*Create a new user*/
-router.post('/user_create', middleware.ensureEmailAndPass, async(req, res) => {
+router.post('/user_create', authMiddleware.ensureEmailAndPass, async(req, res) => {
     let userEmail = req.body.email;
     let userPass = req.body.password;
     let isAdmin = req.body.isAdmin;
@@ -21,7 +22,7 @@ router.post('/user_create', middleware.ensureEmailAndPass, async(req, res) => {
 });
 
 /*Login a user*/
-router.post('/login', middleware.authenticateUserAccount, async(req, res) => {
+router.post('/login', authMiddleware.authenticateUserAccount, async(req, res) => {
     let uuid = req.user.uuid;
     let isVerified = req.user.isVerified;
     let loginUserInfo = await authentication.login(uuid, isVerified);
@@ -36,7 +37,7 @@ router.post('/login', middleware.authenticateUserAccount, async(req, res) => {
 });
 
 /*Logout user by removing their refresh token*/
-router.put('/logout', middleware.authenticateToken, middleware.authenticateLogout, async(req, res) => {
+router.put('/logout', tokenMiddleware.authenticateToken, authMiddleware.authenticateLogout, async(req, res) => {
     res.status(201).json({
         status: "ok",
         message: "User logout success"
@@ -45,7 +46,7 @@ router.put('/logout', middleware.authenticateToken, middleware.authenticateLogou
 })
 
 /*Gives user a new access token upon given a good refresh token*/
-router.post('/token', middleware.authenticateRefreshToken, async(req, res) => {
+router.post('/token', tokenMiddleware.authenticateRefreshToken, async(req, res) => {
     let uuid = req.user.uuid;
     let newAccessToken = await authentication.generateAccessToken(uuid);
 
@@ -57,7 +58,7 @@ router.post('/token', middleware.authenticateRefreshToken, async(req, res) => {
 })
 
 //verify email of account
-router.put('/verifyAccount', middleware.authenticateToken, middleware.verifyVerificationCode, async(req, res) => {
+router.put('/verifyAccount', tokenMiddleware.authenticateToken, authMiddleware.verifyVerificationCode, async(req, res) => {
     let uuid = req.user.uuid;
     let verifiedInfo = await authentication.updateAccountPostVerified(uuid);
     res.status(200).json({

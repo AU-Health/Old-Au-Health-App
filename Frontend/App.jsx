@@ -6,6 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { StackNavigator } from 'react-navigation';
+import { BlurView, VibrancyView } from "@react-native-community/blur";
+import { LinearGradient } from 'expo-linear-gradient';
 //https://stackoverflow.com/questions/36795819/when-should-i-use-curly-braces-for-es6-import/36796281#36796281 << super cool explanation on imports
 //importing the different screens
 import HomeScreen from './screens/Home';
@@ -16,6 +18,7 @@ import preLogin from './screens/onboarding/preLogin';
 import Onboarding_1 from './screens/onboarding/Onboarding_1';
 import Onboarding_2 from './screens/onboarding/Onboarding_2';
 import Questionaire from './screens/onboarding/Questionaire';
+import Mood from './screens/onboarding/Mood';
 
 //import { MaterialCommunityIcons } from '@expo/vector-icons'
 // import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
@@ -37,9 +40,9 @@ function HomeApp({ navigation }) {
                   tabBarIcon: ({ color, size }) => {
                       const icons = {
                           Home: 'home',
-                          Progress: 'progress-clock',
-                          Challenges: 'ship-wheel',
-                          Settings: 'settings-helper',
+                          Progress: 'chart-donut-variant',
+                          Challenges: 'playlist-check',
+                          Settings: 'account-settings',
                       };
 
                       return (
@@ -53,8 +56,11 @@ function HomeApp({ navigation }) {
 
               })}
               tabBarOptions={{
-                  activeTintColor: '#1b998b',
+                  activeTintColor: '#000080',
                   inactiveTintColor: 'grey',
+                  style: {
+                    backgroundColor: 'rgba(250, 250, 248, .2)',
+                  }
               }}
               >
                 <Tab.Screen name="Home" component={HomeScreen} />
@@ -75,8 +81,9 @@ export default function App() {
             <Stack.Navigator screenOptions={{ header: ()=>null }}>
                 <Stack.Screen name='Onboarding_1' component={Onboarding_1}/>
                 <Stack.Screen name='Onboarding_2' component={Onboarding_2}/>
-                <Stack.Screen name='Login' component={preLogin} />
                 <Stack.Screen name='Questions' component={Questionaire}/>
+                <Stack.Screen name='Mood' component={Mood}/>
+                <Stack.Screen name='Login' component={preLogin} />
                 <Stack.Screen name='HomeApp' component={HomeApp}/>
                 
             </Stack.Navigator>

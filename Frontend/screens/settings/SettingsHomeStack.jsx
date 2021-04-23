@@ -19,32 +19,32 @@ var w = deviceWidth * 80 / 100;
 let settingList = [
     {
         name: 'Profile',
-        icon: 'av-timer',
+        icon: 'account-circle',
         route: 'Test'
     },
     {
         name: 'Resources',
-        icon: 'av-timer',
+        icon: 'book',
         route: 'Test1'
     },
     {
         name: 'Notifications',
-        icon: 'av-timer',
+        icon: 'assistant',
         route: 'Test1'
     },
     {
         name: 'Feedback',
-        icon: 'av-timer',
+        icon: 'comment',
         route: 'Test1'
     },
     {
         name: 'About',
-        icon: 'av-timer',
+        icon: 'brush',
         route: 'Test1'
     },
     {
         name: 'Logout',
-        icon: 'av-timer',
+        icon: 'logout',
         route: 'Test1'
     },
  ]

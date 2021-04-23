@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Dimensions, Input, StyleSheet, CheckBox, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, Dimensions, Input, StyleSheet, CheckBox, ScrollView, TouchableOpacity, TextInput, Image } from 'react-native';
 
 var deviceWidth = Dimensions.get("window").width;
 var deviceHeight = Dimensions.get("window").height;
@@ -7,52 +7,27 @@ var deviceHeight = Dimensions.get("window").height;
 var h = deviceHeight * 25 / 100;
 var w = deviceWidth * 80 / 100;
 
-const Questionaire = ({ navigation }) => {
+const Mood = ({ navigation }) => {
     return (
         <View style={styles.questionaireContainer}>
             <View style={styles.titleContainer}>
-                <Text style={styles.title}> Questionnaire </Text>
+                <Text style={styles.title}> Mood </Text>
             </View>
-          
-                <View style={styles.inputContainer}>
-                    <View style={styles.floatTextLeft}>
-                        <Text style={styles.labelText}> Question 1 </Text>
-                    </View>
-                    <View style={styles.inputContainer2}>
-                        <TextInput placeholder="Question 1" style={styles.textInput}/>
-                    </View>
-                </View>
 
-                <View style={styles.inputContainer}>
-                    <View style={styles.floatTextLeft}>
-                        <Text style={styles.labelText}> Question 2 </Text>
-                    </View>
-                    <View style={styles.inputContainer2}>
-                        <TextInput placeholder="Question 2" style={styles.textInput}/>
-                    </View>
-                </View>
-
-                <View style={styles.inputContainer}>
-                    <View style={styles.floatTextLeft}>
-                        <Text style={styles.labelText}> Subject </Text>
-                    </View>
-                    <View style={styles.inputContainer2}>
-                        <TextInput placeholder="Subject" style={styles.textInput}/>
-                    </View>
-                </View>
+            <Image source={require('../../assets/mood.png')} style={{ width: 500, height: 650, marginTop: '8%' }}/>
 
             <View style={styles.BtnViewContainer}>
                 <TouchableOpacity
                     onPress={() => {
                         navigation.navigate("Onboarding_2");
                     }} style={styles.onboardingBtnContainer}>
-                    <Text style={styles.onboardingBtn}>Back</Text>
+                <Text style={styles.onboardingBtn}>Back</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("HomeApp");
+                        navigation.navigate("Login");
                     }} style={styles.onboardingBtnContainer}>
-                    <Text style={styles.onboardingBtn}>Finish</Text>
+                    <Text style={styles.onboardingBtn}>Continue</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -124,4 +99,4 @@ const styles = StyleSheet.create({
       },
 });
 
-export default Questionaire;
+export default Mood;

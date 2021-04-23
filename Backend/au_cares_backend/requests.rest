@@ -1,6 +1,6 @@
 ######TEST SERVER CONNECTION#######
 
-###Ping Request to see whether connecting to server. Should return pong
+###Ping Request to see whetheroh connecting to server. Should return pong
 GET http://localhost:3000/ping
 
 ###Check access to server with UUID

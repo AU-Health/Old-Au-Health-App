@@ -70,6 +70,8 @@ const styles = StyleSheet.create({
     },
     infoContainer: {
         marginTop: 10,
+        marginLeft: 10,
+        marginRight: 10,
         alignItems: 'center',
     },
     infoText: {
