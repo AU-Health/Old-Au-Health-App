@@ -4,16 +4,16 @@ SET time_zone = "+00:00";
 #Main User Table
 CREATE TABLE IF NOT EXISTS `User`
 (
-    `UserId`              MEDIUMINT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-    `UserEmail`           VARCHAR(150)       NOT NULL UNIQUE,
-    `Password`            VARCHAR(150)       NOT NULL,
-    `UUID`                BINARY(16)         NOT NULL UNIQUE,
-    `IsAdmin`             BOOLEAN            NOT NULL DEFAULT (FALSE),
-    `UserVerified`        BOOLEAN            NOT NULL DEFAULT (FALSE),
-    `ConsentFormSigned`   BOOLEAN            NOT NULL DEFAULT (FALSE),
-    `UserAccountDisabled` BOOLEAN            NOT NULL DEFAULT (FALSE),
-    `CreatedDate`         DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `LastAccessDate`      DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `UserId`              MEDIUMINT UNSIGNED AUTO_INCREMENT,
+    `UserEmail`           VARCHAR(150) NOT NULL UNIQUE,
+    `Password`            VARCHAR(150) NOT NULL,
+    `UUID`                BINARY(16)   NOT NULL UNIQUE,
+    `IsAdmin`             BOOLEAN      NOT NULL DEFAULT (FALSE),
+    `UserVerified`        BOOLEAN      NOT NULL DEFAULT (FALSE),
+    `ConsentFormSigned`   BOOLEAN      NOT NULL DEFAULT (FALSE),
+    `UserAccountDisabled` BOOLEAN      NOT NULL DEFAULT (FALSE),
+    `CreatedDate`         DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `LastAccessDate`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (UserId)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `CategoryPoints`
 CREATE TABLE `CategoryPointsHistory`
 (
     `CategoryPointsHistoryId`            INT AUTO_INCREMENT,
-    `UserId`                             MEDIUMINT   NOT NULL,
+    `UserId`                             MEDIUMINT UNSIGNED,
     `Date`                               DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `PhysicalActivityPoints`             SMALLINT(3) NOT NULL DEFAULT (0),
     `OccupationalWellnessPoints`         SMALLINT(3) NOT NULL DEFAULT (0),
@@ -343,21 +343,23 @@ VALUES (3, 'Text');
 
 CREATE TABLE IF NOT EXISTS `Resources`
 (
-    `Name`            VARCHAR(250)  NOT NULL,
-    `Link`            VARCHAR(500)  NOT NULL,
-    `Email`           VARCHAR(250)  NOT NULL,
-    `PhoneNumber`     VARCHAR(100)  NOT NULL, 
-     PRIMARY KEY (Name)
+    `Name`        VARCHAR(250) NOT NULL,
+    `Link`        VARCHAR(500) NOT NULL,
+    `Email`       VARCHAR(250) NOT NULL,
+    `PhoneNumber` VARCHAR(100) NOT NULL,
+    PRIMARY KEY (Name)
 );
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
 VALUES ('AU Health Center', 'https://www.american.edu/', 'shc@american.edu', '202-885-3380');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('AU Health and Wellness', 'https://www.american.edu/ocl/dos/health-and-wellness.cfm', 'dos@american.edu', '202-885-3300');
+VALUES ('AU Health and Wellness', 'https://www.american.edu/ocl/dos/health-and-wellness.cfm', 'dos@american.edu',
+        '202-885-3300');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Health Promotion and Advocacy Center', 'https://www.american.edu/ocl/promote-health/', 'hpac@american.edu', '202-885-3276');
+VALUES ('Health Promotion and Advocacy Center', 'https://www.american.edu/ocl/promote-health/', 'hpac@american.edu',
+        '202-885-3276');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
 VALUES ('Counseling Center', 'https://www.american.edu/ocl/counseling/', '', '202-885-3500');
@@ -366,50 +368,57 @@ INSERT INTO Resources(Name, Link, Email, PhoneNumber)
 VALUES ('Step Up', 'https://www.american.edu/ocl/stepup/', '', '');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Center for Diversity and Inclusion', 'https://www.american.edu/ocl/cdi/', 'cdi@american.edu',  '202-885-3641');
+VALUES ('Center for Diversity and Inclusion', 'https://www.american.edu/ocl/cdi/', 'cdi@american.edu', '202-885-3641');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Kay Spiritual Life Center', 'https://www.american.edu/ocl/kay/', 'kslc@american.edu',  '202-885-3320');
+VALUES ('Kay Spiritual Life Center', 'https://www.american.edu/ocl/kay/', 'kslc@american.edu', '202-885-3320');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('OASIS: Office of Advocacy Services for Interpersonal and Sexual Violence', 'https://www.american.edu/ocl/promote-health/oasis.cfm', 'OASIS@american.edu',  '202-885-7070');
+VALUES ('OASIS: Office of Advocacy Services for Interpersonal and Sexual Violence',
+        'https://www.american.edu/ocl/promote-health/oasis.cfm', 'OASIS@american.edu', '202-885-7070');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Public Safety', 'https://www.american.edu/police/', 'dps@american.edu',  'Non-Emergency: 202.885.2527, Emergency: 202-885-3636');
+VALUES ('Public Safety', 'https://www.american.edu/police/', 'dps@american.edu',
+        'Non-Emergency: 202.885.2527, Emergency: 202-885-3636');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Student Conduct & Conflict Resolution Services', 'https://www.american.edu/ocl/sccrs/', 'conduct@american.edu',  '202-885-3328');
+VALUES ('Student Conduct & Conflict Resolution Services', 'https://www.american.edu/ocl/sccrs/', 'conduct@american.edu',
+        '202-885-3328');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Student Activities', 'https://www.american.edu/ocl/universitycenter/', '',  '202-885-3390');
+VALUES ('Student Activities', 'https://www.american.edu/ocl/universitycenter/', '', '202-885-3390');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Office of Campus Life', 'https://www.american.edu/ocl/', 'campuslife@american.edu',  '202-885-3310');
+VALUES ('Office of Campus Life', 'https://www.american.edu/ocl/', 'campuslife@american.edu', '202-885-3310');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Women’s Health Services', 'https://www.american.edu/ocl/healthcenter/women-health-services.cfm', 'shc@american.edu',  '202-885-3380');
+VALUES ('Women’s Health Services', 'https://www.american.edu/ocl/healthcenter/women-health-services.cfm',
+        'shc@american.edu', '202-885-3380');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('COVID-19 Resources', 'https://www.american.edu/coronavirus/', '',  '');
+VALUES ('COVID-19 Resources', 'https://www.american.edu/coronavirus/', '', '');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Health Equity', 'https://www.american.edu/ocl/cdi/health-equity.cfm', 'cdi@american.edu',  '202-885-3651');
+VALUES ('Health Equity', 'https://www.american.edu/ocl/cdi/health-equity.cfm', 'cdi@american.edu', '202-885-3651');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Psychiatric Services', 'https://www.american.edu/ocl/healthcenter/psychiatric-services.cfm', 'shc@american.edu',  '202-885-3380');
+VALUES ('Psychiatric Services', 'https://www.american.edu/ocl/healthcenter/psychiatric-services.cfm',
+        'shc@american.edu', '202-885-3380');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Health Insurance', 'https://www.american.edu/ocl/healthcenter/about-student-health-insurance-plan.cfm', 'shc@american.edu',  '202-885-3380');
+VALUES ('Health Insurance', 'https://www.american.edu/ocl/healthcenter/about-student-health-insurance-plan.cfm',
+        'shc@american.edu', '202-885-3380');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Immunization', 'https://www.american.edu/ocl/healthcenter/immunization-faqs.cfm', 'shc@american.edu',  '202-885-3380');
+VALUES ('Immunization', 'https://www.american.edu/ocl/healthcenter/immunization-faqs.cfm', 'shc@american.edu',
+        '202-885-3380');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('AhealthyU', 'https://www.american.edu/hr/ahealthyu/', 'ahealthyu@american.edu',  '202-885-3742');
+VALUES ('AhealthyU', 'https://www.american.edu/hr/ahealthyu/', 'ahealthyu@american.edu', '202-885-3742');
 
 INSERT INTO Resources(Name, Link, Email, PhoneNumber)
-VALUES ('Academic Support and Access Center', 'https://www.american.edu/provost/academic-access/index.cfm', 'asac@american.edu',  '202-885-3360');
-
+VALUES ('Academic Support and Access Center', 'https://www.american.edu/provost/academic-access/index.cfm',
+        'asac@american.edu', '202-885-3360');
 
 
 
