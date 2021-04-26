@@ -303,6 +303,16 @@ async function postFeedback(subject, feedback) {
     })
 }
 
+async function getResources(specificResource) {
+    let sqlQuery = 'SELECT * FROM Resources WHERE (CASE WHEN ISNULL(?)THEN TRUE ELSE Name=? END)'
+    return new Promise((resolve, reject) => {
+        sqlConnectionPool.query(sqlQuery, [specificResource, specificResource], (err, result) => {
+            if (err) reject(err);
+            resolve(result);
+        })
+    })
+}
+
 
 
 
@@ -349,3 +359,4 @@ module.exports.addDareToDB = addDareToDB;
 module.exports.addQuestionToDB = addQuestionToDB;
 module.exports.assignUserNewTruthTask = assignUserNewTruthTask;
 module.exports.getTruthTask = getTruthTask;
+module.exports.getResources = getResources;

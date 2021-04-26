@@ -127,7 +127,6 @@ router.get('/task/:taskType/:categoryName', (req, res) => {
     let taskType = req.params.taskType;
     let category = req.params.categoryName;
     let isCounted = req.query.isCounted && req.query.isCounted == true; //can add to query whether this truth will be counted towards data
-    console.log("CAT NAMR!!" + req.params.categoryName);
     getTask(req.user.uuid, taskType, category).then(result => {
         if (result) {
             res.status(201).json({

@@ -12,7 +12,8 @@ require('dotenv').config({ path: './config/dot.env' });
 //required routes files
 const authenticationRoute = require('./api-routes/authentication');
 const daresTruthsQuestionsRoute = require('./api-routes/dares-truths-questions');
-const settings = require('./api-routes/settings');
+const settingsRoute = require('./api-routes/settings');
+const resourcesRoute = require('./api-routes/resources');
 
 //allows jsons to be sent in body request
 app.use(express.json());
@@ -20,7 +21,8 @@ app.use(express.json());
 //routes
 app.use('/authentication', authenticationRoute);
 app.use('/dares-truths-questions', daresTruthsQuestionsRoute);
-app.use('/settings', settings);
+app.use('/settings', settingsRoute);
+app.use('/resources', resourcesRoute)
 
 //test whether server works. Should receive "pong" as response
 app.get('/ping', (req, res) => {
