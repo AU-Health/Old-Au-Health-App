@@ -499,3 +499,73 @@ CREATE FUNCTION UuidFromBin(_bin BINARY(16))
                         HEX(SUBSTR(_bin, 9, 2)),
                         HEX(SUBSTR(_bin, 11))
             ));
+
+######################Resource Page##############################
+CREATE TABLE IF NOT EXISTS `ResourcePage`
+(
+    `Name`            VARCHAR(250)  NOT NULL,
+    `Link`            VARCHAR(500)  NOT NULL,
+    `Email`           VARCHAR(250)  NOT NULL,
+    `PhoneNumber`     VARCHAR(100)  NOT NULL, 
+     PRIMARY KEY (Name)
+);
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('AU Health Center', 'https://www.american.edu/', 'shc@american.edu', '202-885-3380');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('AU Health and Wellness', 'https://www.american.edu/ocl/dos/health-and-wellness.cfm', 'dos@american.edu', '202-885-3300');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Health Promotion and Advocacy Center', 'https://www.american.edu/ocl/promote-health/', 'hpac@american.edu', '202-885-3276');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Counseling Center', 'https://www.american.edu/ocl/counseling/', '', '202-885-3500');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Step Up', 'https://www.american.edu/ocl/stepup/', '', '');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Center for Diversity and Inclusion', 'https://www.american.edu/ocl/cdi/', 'cdi@american.edu',  '202-885-3641');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Kay Spiritual Life Center', 'https://www.american.edu/ocl/kay/', 'kslc@american.edu',  '202-885-3320');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('OASIS: Office of Advocacy Services for Interpersonal and Sexual Violence', 'https://www.american.edu/ocl/promote-health/oasis.cfm', 'OASIS@american.edu',  '202-885-7070');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Public Safety', 'https://www.american.edu/police/', 'dps@american.edu',  'Non-Emergency: 202.885.2527, Emergency: 202-885-3636');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Student Conduct & Conflict Resolution Services', 'https://www.american.edu/ocl/sccrs/', 'conduct@american.edu',  '202-885-3328');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Student Activities', 'https://www.american.edu/ocl/universitycenter/', '',  '202-885-3390');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Office of Campus Life', 'https://www.american.edu/ocl/', 'campuslife@american.edu',  '202-885-3310');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Women’s Health Services', 'https://www.american.edu/ocl/healthcenter/women-health-services.cfm', 'shc@american.edu',  '202-885-3380');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('COVID-19 Resources', 'https://www.american.edu/coronavirus/', '',  '');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Health Equity', 'https://www.american.edu/ocl/cdi/health-equity.cfm', 'cdi@american.edu',  '202-885-3651');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Psychiatric Services', 'https://www.american.edu/ocl/healthcenter/psychiatric-services.cfm', 'shc@american.edu',  '202-885-3380');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Health Insurance', 'https://www.american.edu/ocl/healthcenter/about-student-health-insurance-plan.cfm', 'shc@american.edu',  '202-885-3380');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Immunization', 'https://www.american.edu/ocl/healthcenter/immunization-faqs.cfm', 'shc@american.edu',  '202-885-3380');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('AhealthyU', 'https://www.american.edu/hr/ahealthyu/', 'ahealthyu@american.edu',  '202-885-3742');
+
+INSERT INTO ResourcePage(Name, Link, Email, PhoneNumber)
+VALUES ('Academic Support and Access Center', 'https://www.american.edu/provost/academic-access/index.cfm', 'asac@american.edu',  '202-885-3360');

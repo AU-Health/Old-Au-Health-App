@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, View, Image, Button, TextInput, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Image, Button, TextInput, SafeAreaView, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
-import { Input, Header, Text, Label, Icon} from 'react-native-elements';
+import { Input, Header, Text, Label, Icon } from 'react-native-elements';
 import _ from 'lodash';
 import { connect } from "react-redux";
 import { onUserLogin, onFetchProduct } from '../redux';
@@ -94,6 +94,12 @@ class Login extends React.Component {
 	render() {
 
 		return (
+			<KeyboardAvoidingView
+				 behavior={Platform.OS === "ios" ? "padding" : null}
+	
+				 style={{ flex: 1 }}
+				// note to self have to fix keyboard error
+				>
 			<SafeAreaView style={styles.container}>
 				<View style={{ flex: 1, justifyContent: 'center' }}>
 
@@ -142,49 +148,52 @@ class Login extends React.Component {
 
 						:
 
+								//shows login
+								<View style={{ flex: 4, alignItems: 'center' }}>
+									<View style={{ flex: 2, justifyContent: 'flex-end' }}>
+									
+										<Input
+											
+											labelStyle={{ color: 'black' }}
+											label='Username'
+											placeholder='email@mail.com'
+											inputContainerStyle={{ width: '50%'}}
+											onChangeText={text => this.handleUsernameChange(text)}
+										/>
 
 
-						//shows login
-						<View style={{ flex: 4, alignItems: 'center' }}>
+										<Input
+											labelStyle={{ color: 'black' }}
+											label='Password'
+											placeholder='******'
+											secureTextEntry={true}
+											inputContainerStyle={{ width: '50%' }}
+											onChangeText={text => this.handlePasswordChange(text)}
+										/>
 
-							<View style={{ flex: 2, justifyContent: 'flex-end' }}>
-								<Input
-									labelStyle={{ color: 'black' }}
-									label='Username'
-									placeholder='email@mail.com'
-									inputContainerStyle={{ width: '50%' }}
-									onChangeText={text => this.handleUsernameChange(text)}
-								/>
+										<Button
+											color='#f46036'
+											raised={true}
+											onPress={this.handleLoginPress}
+											title="Login"
+										/>
+									</View>
 
+									<View style={{ flex: 2, justifyContent: 'center' }}>
+										<Text style={{ textAlign: 'center' }}>Don't have an account?</Text>
+										<Button raised={true} color='#f46036' title='Sign-up' onPress={() => { this.setState({ signup: true }) }} />
 
-								<Input
-									labelStyle={{ color: 'black' }}
-									label='Password'
-									placeholder='******'
-									inputContainerStyle={{ width: '50%' }}
-									onChangeText={text => this.handlePasswordChange(text)}
-								/>
+										<Text style={{ textAlign: 'center' }}> {'\n'}Forgot password?</Text>
+										<Button raised={true} color='#f46036' title='Send email' />
+									</View>
 
-								<Button
-									color='#f46036'
-									raised={true}
-									onPress={this.handleLoginPress}
-									title="Login"
-								/>
-							</View>
+								</View>}
 
-							<View style={{ flex: 2, justifyContent: 'center' }}>
-								<Text style={{textAlign:'center'}}>Don't have an account?</Text>
-								<Button raised={true} color='#f46036' title='Sign-up' onPress={() => { this.setState({ signup: true }) }} />
-							
-								<Text style={{textAlign: 'center'}}> {'\n'}Forgot password?</Text>
-								<Button raised={true} color='#f46036' title='Send email' />
-							</View>
-
-						</View>}
-
-				</View>
+						</View>
+				
+				
 			</SafeAreaView>
+			</KeyboardAvoidingView>
 		);
 	}
 }
