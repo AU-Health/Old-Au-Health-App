@@ -8,6 +8,8 @@ import ResourcesCard from '../../components/ResourcesCard';
 var deviceWidth = Dimensions.get("window").width;
 var deviceHeight = Dimensions.get("window").height;
 
+import Data from '../data/dares.json';
+
 function ResourceObj (title, number, email, link) {
     this.title = title;
     this.number = number;
@@ -19,10 +21,15 @@ let resourceList = [];
 
 //function that takes in data in the form of a json and splits into correct array
 function _loadDataFromJson(data) {
+    console.log(data);
+    console.log(Object.keys(data).length);
     for(let i = 0; i < Object.keys(data).length; i++) {
-        resourceList.push(new TaskObj(data[i].title, data[i].number, data[i].email, data[i].link));
+        resourceList.push(new ResourceObj(data[i].Name, data[i].PhoneNumber, data[i].Email, data[i].Link));
     }
 }
+
+_loadDataFromJson(Data);
+console.log(resourceList);
 
 //_loadDataFromjson(data);
 
@@ -37,7 +44,9 @@ const Resources = ({ navigation }) => {
             </View>
 
             <ScrollView style={styles.body}>
-                {resourceList.map(resource => {return (<ResourcesCard title={resource.title} desc={resource.link} number={resource.number} email={resource.email} />)})}
+                {resourceList.map(resource => {
+                    return (<ResourcesCard title={resource.title} desc={resource.link} number={resource.number} email={resource.email} />)
+                    })}
             </ScrollView>
         </View>
     );
