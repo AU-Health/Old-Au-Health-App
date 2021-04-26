@@ -53,7 +53,7 @@ CREATE TABLE `VerificationCodes`
 #Table for User Base Questionnaire History Responses
 CREATE TABLE IF NOT EXISTS `HistoryQuestionnaireResponses`
 (
-    `HistoryQuestionnaireId`            INT UNSIGNED       NOT NULL UNIQUE AUTO_INCREMENT, #should these be big ints or just unsigned ints?
+    `HistoryQuestionnaireId`            INT UNSIGNED AUTO_INCREMENT, #should these be big ints or just unsigned ints?
     `UserId`                            MEDIUMINT UNSIGNED NOT NULL,
     `CreatedDate`                       DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `PhysicalActivityStage`             TINYINT(1),
@@ -70,30 +70,29 @@ CREATE TABLE IF NOT EXISTS `HistoryQuestionnaireResponses`
 #Level user is inside each category
 CREATE TABLE IF NOT EXISTS `CategoryLevels`
 (
-    `UserId`                            MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `PhysicalActivityLevel`             TINYINT(1)         NOT NULL DEFAULT (0),
-    `OccupationalWellnessLevel`         TINYINT(1)         NOT NULL DEFAULT (0),
-    `EmotionalWellnessLevel`            TINYINT(1)         NOT NULL DEFAULT (0),
-    `SocialWellnessLevel`               TINYINT(1)         NOT NULL DEFAULT (0),
-    `FruitAndVegetableConsumptionLevel` TINYINT(1)         NOT NULL DEFAULT (0),
-    `SleepLevel`                        TINYINT(1)         NOT NULL DEFAULT (0),
-    `WaterConsumptionLevel`             TINYINT(1)         NOT NULL DEFAULT (0),
+    `UserId`                            MEDIUMINT UNSIGNED,
+    `PhysicalActivityLevel`             TINYINT(1) NOT NULL DEFAULT (0),
+    `OccupationalWellnessLevel`         TINYINT(1) NOT NULL DEFAULT (0),
+    `EmotionalWellnessLevel`            TINYINT(1) NOT NULL DEFAULT (0),
+    `SocialWellnessLevel`               TINYINT(1) NOT NULL DEFAULT (0),
+    `FruitAndVegetableConsumptionLevel` TINYINT(1) NOT NULL DEFAULT (0),
+    `SleepLevel`                        TINYINT(1) NOT NULL DEFAULT (0),
+    `WaterConsumptionLevel`             TINYINT(1) NOT NULL DEFAULT (0),
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserId) REFERENCES User (UserId)
 );
 
-
 #Table to Store User Current Points per Category
 CREATE TABLE IF NOT EXISTS `CategoryPoints`
 (
-    `UserId`                             MEDIUMINT UNSIGNED NOT NULL UNIQUE,
-    `PhysicalActivityPoints`             SMALLINT(3)        NOT NULL DEFAULT (0),
-    `OccupationalWellnessPoints`         SMALLINT(3)        NOT NULL DEFAULT (0),
-    `EmotionalWellnessPoints`            SMALLINT(3)        NOT NULL DEFAULT (0),
-    `SocialWellnessPoints`               SMALLINT(3)        NOT NULL DEFAULT (0),
-    `FruitAndVegetableConsumptionPoints` SMALLINT(3)        NOT NULL DEFAULT (0),
-    `SleepPoints`                        SMALLINT(3)        NOT NULL DEFAULT (0),
-    `WaterConsumptionPoints`             SMALLINT(3)        NOT NULL DEFAULT (0),
+    `UserId`                             MEDIUMINT UNSIGNED,
+    `PhysicalActivityPoints`             SMALLINT(3) NOT NULL DEFAULT (0),
+    `OccupationalWellnessPoints`         SMALLINT(3) NOT NULL DEFAULT (0),
+    `EmotionalWellnessPoints`            SMALLINT(3) NOT NULL DEFAULT (0),
+    `SocialWellnessPoints`               SMALLINT(3) NOT NULL DEFAULT (0),
+    `FruitAndVegetableConsumptionPoints` SMALLINT(3) NOT NULL DEFAULT (0),
+    `SleepPoints`                        SMALLINT(3) NOT NULL DEFAULT (0),
+    `WaterConsumptionPoints`             SMALLINT(3) NOT NULL DEFAULT (0),
     PRIMARY KEY (UserId),
     FOREIGN KEY (UserId) REFERENCES User (UserId) ON DELETE CASCADE
 );
@@ -101,13 +100,18 @@ CREATE TABLE IF NOT EXISTS `CategoryPoints`
 #Table to Store User History Current Points per Category
 CREATE TABLE `CategoryPointsHistory`
 (
-    `UserId`         MEDIUMINT UNSIGNED NOT NULL,
-    `Category`       TINYINT            NOT NULL,
-    `CategoryPoints` SMALLINT(3)        NOT NULL DEFAULT (0),
-    `Date`           DATETIME           NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (UserId, Category, Date),
-    FOREIGN KEY (UserId) REFERENCES User (UserId),
-    FOREIGN KEY (Category) REFERENCES CategoryTypes (CategoryId)
+    `CategoryPointsHistoryId`            INT AUTO_INCREMENT,
+    `UserId`                             MEDIUMINT   NOT NULL,
+    `Date`                               DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `PhysicalActivityPoints`             SMALLINT(3) NOT NULL DEFAULT (0),
+    `OccupationalWellnessPoints`         SMALLINT(3) NOT NULL DEFAULT (0),
+    `EmotionalWellnessPoints`            SMALLINT(3) NOT NULL DEFAULT (0),
+    `SocialWellnessPoints`               SMALLINT(3) NOT NULL DEFAULT (0),
+    `FruitAndVegetableConsumptionPoints` SMALLINT(3) NOT NULL DEFAULT (0),
+    `SleepPoints`                        SMALLINT(3) NOT NULL DEFAULT (0),
+    `WaterConsumptionPoints`             SMALLINT(3) NOT NULL DEFAULT (0),
+    PRIMARY KEY (CategoryPointsHistoryId),
+    FOREIGN KEY (UserId) REFERENCES User (UserId)
 );
 
 #Table for storing user's next spin and number of spins a day
@@ -221,19 +225,19 @@ CREATE TABLE `CategoryTypes`
 );
 
 INSERT INTO CategoryTypes(CategoryId, CategoryName)
-VALUES (1, 'Physical Activity');
+VALUES (1, 'PhysicalActivity');
 INSERT INTO CategoryTypes(CategoryId, CategoryName)
-VALUES (2, 'Occupational Wellness');
+VALUES (2, 'OccupationalWellness');
 INSERT INTO CategoryTypes(CategoryId, CategoryName)
-VALUES (3, 'Emotional Wellness');
+VALUES (3, 'EmotionalWellness');
 INSERT INTO CategoryTypes(CategoryId, CategoryName)
-VALUES (4, 'Social Wellness');
+VALUES (4, 'SocialWellness');
 INSERT INTO CategoryTypes(CategoryId, CategoryName)
-VALUES (5, 'Fruit & Vegetable Consumption');
+VALUES (5, 'FruitAndVegetableConsumption');
 INSERT INTO CategoryTypes(CategoryId, CategoryName)
 VALUES (6, 'Sleep');
 INSERT INTO CategoryTypes(CategoryId, CategoryName)
-VALUES (7, 'Water Consumption');
+VALUES (7, 'WaterConsumption');
 
 #User year in university
 CREATE TABLE `UniversityYear`

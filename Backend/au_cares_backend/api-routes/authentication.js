@@ -17,7 +17,7 @@ router.post('/user_create', authMiddleware.ensureEmailAndPass, async(req, res) =
     res.status(200).json({
         status: "ok",
         uuid: createdUserInfo.uuid,
-        access_token: createdUserInfo.accessToken
+        accessToken: createdUserInfo.accessToken
     });
 });
 
@@ -31,8 +31,8 @@ router.post('/login', authMiddleware.authenticateUserAccount, async(req, res) =>
         status: "ok",
         isVerified: loginUserInfo.isVerified,
         uuid: loginUserInfo.uuid,
-        access_token: loginUserInfo.accessToken,
-        refresh_token: loginUserInfo.refreshToken
+        accessToken: loginUserInfo.accessToken,
+        refreshToken: loginUserInfo.refreshToken
     })
 });
 
@@ -52,7 +52,7 @@ router.post('/token', tokenMiddleware.authenticateRefreshToken, async(req, res) 
 
     res.status(201).json({
         status: "ok",
-        access_token: newAccessToken
+        accessToken: newAccessToken
     })
 
 
@@ -65,8 +65,8 @@ router.put('/verifyAccount', tokenMiddleware.authenticateToken, authMiddleware.v
     res.status(200).json({
         status: "ok",
         message: "Account Verified",
-        access_token: verifiedInfo.accessToken,
-        refresh_token: verifiedInfo.refreshToken
+        accessToken: verifiedInfo.accessToken,
+        refreshToken: verifiedInfo.refreshToken
     })
 })
 

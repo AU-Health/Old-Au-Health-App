@@ -1,6 +1,14 @@
 /*File will have all of the methods for database querying*/
 const mysql = require('mysql');
 
+/*Create a connection Pool*/
+const sqlConnectionPool = mysql.createPool({
+    connectionLimit: 10,
+    user: 'root', //process.env.DB_USER,
+    // password: process.env.DB_PASS,
+    database: "au_cares_db"
+})
+
 //Create a new user in DB and add verification
 function createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCode) {
     return new Promise((resolve, reject) => {
@@ -29,6 +37,7 @@ function createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCod
         });
     });
 }
+
 
 async function getUserVerificationCode(uuid) {
     let sqlConnection = createMySqlConnection();
@@ -112,8 +121,6 @@ async function getUserRefreshTokenFromUUID(uuid) {
 }
 
 function addTruthToDB(truthDescription, points, cateogryId, minPoints, hoursToComplete) {
-<<<<<<< HEAD
-=======
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = 'INSERT INTO Truths(Description, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?)';
     return new Promise((resolve, reject) => {
@@ -129,7 +136,6 @@ function addTruthToDB(truthDescription, points, cateogryId, minPoints, hoursToCo
 }
 
 function addDareToDB(dareDescription, points, cateogryId, minPoints, hoursToComplete) {
->>>>>>> 02226b0870dcbb90aeda1722777b421ca5f39f84
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = 'INSERT INTO Dares(Description, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?)';
     return new Promise((resolve, reject) => {
@@ -144,8 +150,6 @@ function addDareToDB(dareDescription, points, cateogryId, minPoints, hoursToComp
 
 }
 
-<<<<<<< HEAD
-=======
 function addQuestionToDB(questionTitle, questionDescription, points, cateogryId, minPoints, hoursToComplete) {
     let mySqlConnection = createMySqlConnection();
     let sqlQuery = 'INSERT INTO Questions(QuestionTitle, Description, Points, CategoryId, MinPointsNeeded, HoursToComplete) VALUES (?,?,?,?,?,?)';
@@ -162,7 +166,6 @@ function addQuestionToDB(questionTitle, questionDescription, points, cateogryId,
 }
 
 
->>>>>>> 02226b0870dcbb90aeda1722777b421ca5f39f84
 //TODO: Need to fix with string variables being null
 async function getTruthsHistory(isCurrent, isComplete, category, uuid) {
     isCurrent = isCurrent || isCurrent === false ? isCurrent : null;
@@ -233,11 +236,57 @@ function getAllCategoryPoints(uuid) {
     })
 }
 
+//get 1 truth with the parameters. Also used to get a truth for a user to have
+function getTruthTask(category, minPointsNeeded, isCounted) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQueryGetTask =
+        `
+    SELECT *
+    FROM Truths
+    INNER JOIN CategoryTypes ON Truths.CategoryId = CategoryTypes.CategoryId
+    WHERE CategoryTypes.CategoryName=? AND MinPointsNeeded >=?
+    ORDER BY RAND()
+    LIMIT 1
+    `
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect((err) => {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQueryGetTask, [category, minPointsNeeded], (err, result) => {
+                if (err) reject(err);
 
+                if (isCounted) {
+                    let updateTruthCountSentSqlQuery =
+                        `
+                    UPDATE Truths
+                    SET SentNum = SentNum+1
+                    WHERE TruthId = ${result.TruthId}
+                    `
+                    mySqlConnection.query(updateTruthCountSentSqlQuery, (err) => {
+                        if (err) reject(err);
+                    })
+                }
+                resolve(result);
+            })
+        })
+    })
+}
 
+//assigns user new task. Things for multiple choice and dropdown will be in separate query
+function assignUserNewTruthTask(uuid, truthId) {
+    let mySqlConnection = createMySqlConnection();
+    let sqlQuery = `INSERT INTO TruthsHistory(UserId,TruthId,Expiration)
+    SELECT (SELECT UserId FROM User WHERE User.UUID=UuidToBin(?)),?,(SELECT NOW() + INTERVAL Truths.HoursToComplete HOUR FROM Truths WHERE TruthId =?)
+    `;
 
-function assignUserNewTaskTruthOrDare(taskType, category, MinPointsNeeded) {
-
+    return new Promise((resolve, reject) => {
+        mySqlConnection.connect((err) => {
+            if (err) reject(err);
+            mySqlConnection.query(sqlQuery, [uuid, truthId, truthId], (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            })
+        })
+    })
 }
 
 async function postFeedback(subject, feedback) {
@@ -294,10 +343,9 @@ module.exports.updateUserInformation = updateUserInformation;
 module.exports.postFeedback = postFeedback;
 module.exports.getTruthsHistory = getTruthsHistory;
 module.exports.addTruthToDB = addTruthToDB;
-<<<<<<< HEAD
 module.exports.updateTruthResponse = updateTruthResponse;
 module.exports.getAllCategoryPoints = getAllCategoryPoints;
-=======
 module.exports.addDareToDB = addDareToDB;
 module.exports.addQuestionToDB = addQuestionToDB;
->>>>>>> 02226b0870dcbb90aeda1722777b421ca5f39f84
+module.exports.assignUserNewTruthTask = assignUserNewTruthTask;
+module.exports.getTruthTask = getTruthTask;

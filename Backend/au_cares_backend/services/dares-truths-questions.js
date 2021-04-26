@@ -22,19 +22,22 @@ async function createTruth(truthDescription, points, categoryId, minPoints, hour
     })
 }
 
-<<<<<<< HEAD
 async function addTruthResponse(truthId, response) {
     return dbConnection.updateTruthResponse(truthId, response).then(result => {
         return result.affectedRows > 0;
     })
 }
 
-async function getTask(uuid, taskType, category) {
+async function getTask(uuid, taskType, category) { //currently assuming we are only doing truth types
     let currentCategoryPoints = await dbConnection.getAllCategoryPoints(uuid);
-    console.log(currentCategoryPoints);
+    let minPointsOfCategory = currentCategoryPoints[0][category + "Points"];
+    let getNewTask = await dbConnection.getTruthTask(category, minPointsOfCategory, false);
+    let truthInsertedQueryResult = await dbConnection.assignUserNewTruthTask(uuid, getNewTask[0].TruthId);
 
-    /*
-=======
+    return truthInsertedQueryResult.affectedRows > 0 ? getNewTask : "";
+}
+
+
 async function createDare(dareDescription, points, categoryId, minPoints, hoursToComplete) {
     return dbConnection.addDareToDB(dareDescription, points, categoryId, minPoints, hoursToComplete).then(result => {
         return result.affectedRows > 0;
@@ -46,25 +49,10 @@ async function createQuestion(questionTitle, questionDescription, points, catego
         return result.affectedRows > 0;
     })
 }
->>>>>>> 02226b0870dcbb90aeda1722777b421ca5f39f84
-
-
-UPDATE Truths
-SET SentNum = SentNum+1
-WHERE TruthId = EXISTS (SELECT TruthId
-FROM Truths
-WHERE CategoryId =5 AND MinPointsNeeded >=20
-ORDER BY RAND()
-LIMIT 1)
-    */
-}
 
 module.exports.getTruthsHistory = getTruthsHistory;
 module.exports.createTruth = createTruth;
-<<<<<<< HEAD
 module.exports.addTruthResponse = addTruthResponse;
 module.exports.getTask = getTask;
-=======
 module.exports.createDare = createDare;
 module.exports.createQuestion = createQuestion;
->>>>>>> 02226b0870dcbb90aeda1722777b421ca5f39f84

@@ -123,14 +123,26 @@ router.put('/truthsHistory/:id', dtqMiddleware.authenticateTruthHistoryAccess, d
 
 
 //get a task based on task type and category
-router.get('/task/:taskType/:category', async(req, res) => {
+router.get('/task/:taskType/:categoryName', (req, res) => {
     let taskType = req.params.taskType;
-    let category = req.params.category;
+    let category = req.params.categoryName;
     let isCounted = req.query.isCounted && req.query.isCounted == true; //can add to query whether this truth will be counted towards data
-    console.log(req.user.uuid);
-    getTask(req.user.uuid, taskType, category);
+    console.log("CAT NAMR!!" + req.params.categoryName);
+    getTask(req.user.uuid, taskType, category).then(result => {
+        if (result) {
+            res.status(201).json({
+                status: "ok",
+                task: result[0]
+            })
+        } else {
+            res.status(401).json({
+                status: "error",
+                error: "No new task"
+            })
+        }
+    })
 
-    //let newTask = await send task if success, otherwise fail
+
 
 })
 
