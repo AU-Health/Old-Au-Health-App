@@ -21,19 +21,23 @@ let resourceList = [];
 
 //function that takes in data in the form of a json and splits into correct array
 function _loadDataFromJson(data) {
-    console.log(data);
     console.log(Object.keys(data).length);
     for(let i = 0; i < Object.keys(data).length; i++) {
         resourceList.push(new ResourceObj(data[i].Name, data[i].PhoneNumber, data[i].Email, data[i].Link));
     }
 }
 
-_loadDataFromJson(Data);
-console.log(resourceList);
+function _loadData(){
+    fetch('http://192.168.1.10:3000/resources/health-resources')
+    .then(response => response.json())
+    .then(data=>{
+        _loadDataFromJson(data.resources);
+    })
+}
 
-//_loadDataFromjson(data);
 
 const Resources = ({ navigation }) => {
+    _loadData();
     return (
         <View style={styles.resourcesContainer}>
             <View style={styles.headerContainer}>

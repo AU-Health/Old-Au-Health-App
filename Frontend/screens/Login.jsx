@@ -47,7 +47,6 @@ class Login extends React.Component {
         	},
 			body: JSON.stringify(userCreds)
     	}).then(responseJson => {
-			console.log("SUCCESS");
 			responseJson.json().then(data=>{
 				console.log(data);
 			})

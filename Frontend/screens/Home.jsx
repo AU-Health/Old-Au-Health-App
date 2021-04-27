@@ -8,6 +8,7 @@ import { ViewComponent } from 'react-native';
 import WheelOfFortune from 'react-native-wheel-of-fortune'
 import _ from 'lodash';
 import { connect } from "react-redux";
+import { fetchTruths,fetchTruthsCat } from '../redux/index';
 
 let items = [require('../assets/pa1.png'), require('../assets/oa.png'), require('../assets/emotion.png'), require('../assets/social.png'), require('../assets/veg1.png'), require('../assets/slumb1.png'), require('../assets/water1.png')];
 
@@ -33,6 +34,8 @@ let tempDares =
     "We dare you to drink twice as much water as you did yesterday today",
   ]
 
+  const backendParticipants = ['PhysicalActivity','OccupationalWellness','EmotionalWellness','SocialWellness','FruitAndVegetableConsumption','Sleep','WaterConsumption'];
+
 
 
 const participants = [
@@ -41,7 +44,7 @@ const participants = [
   'Occupational Wellness',
   'Emotional Wellness',
   'Social Wellness',
-  'Fruit & Veg Cons.',
+  'Fruit & Veg. Cons.',
   'Sleep',
   'Water Cons.',
 ];
@@ -82,7 +85,13 @@ class HomeScreen extends React.Component {
   handleWheelSpinButtonClick = () => {
     console.log('you clicked spin the button!')
   }
+  handleAllThis = () =>{
+    if (this.props.truthsItems.payload){
+      console.log('over hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', this.props.truthsItems.payload.task.Description)
+}
+}
   render() {
+    
     const buttons = ['Truth', 'Dare', 'Question']
 
     const wheelOptions = {
@@ -137,13 +146,20 @@ class HomeScreen extends React.Component {
             </View>
           )}
           {this.state.winnerIndex != null && (
-
-            <View >
+            <View>
               <Overlay overlayStyle={{ width: '70%', borderRadius: 7 }} isVisible={this.state.vis} onBackdropPress={() => { this.setState({ vis: false }) }}>
                 <View>
                   <Text h3 style={{ fontWeight: 'bold', fontSize: 20, padding: '5%', textAlign: 'center' }}>
-
+                    
                     {(() => {
+                  
+
+
+                      //  if(this.props.truthsItems!==null){
+                      //    console.log("this.props",this.props);
+                         
+                      // }
+
                       switch (this.state.winnerIndex) {
                         case 4: return `Challenge: ${extra[0]}`;
                         case 6: return `Challenge: ${extra[1]}`;
@@ -158,7 +174,7 @@ class HomeScreen extends React.Component {
                     {explanations[this.state.winnerIndex]}
                   </Text>
 
-                  <View style={{ dispaly: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '5%', marginBottom: '5%' }}>
+                  <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '5%', marginBottom: '5%' }}>
                     <Button
                       color='gray'
                       title='Spin Again!'
@@ -173,6 +189,9 @@ class HomeScreen extends React.Component {
                       title="Proceed!"
                       onPress={() => {
                         this.setState({ challengeOverlayVisible: true })
+                        this.props.fetchTruths(backendParticipants[this.state.winnerIndex])
+                        this.handleAllThis();
+                        
                         //FETCH CALL TO WHATEVER
                         //redirect to page where there is a category and questions truth and dare
                         //your challenge full screen overlay
@@ -209,12 +228,19 @@ class HomeScreen extends React.Component {
                 </View>
 
 
+               
+                
+              
+            
+            
+  
 
                
                 <Text style={{flex: 3, justifyContent: 'center', textAlignVertical: 'center', alignItems: 'center', textAlign: 'center', marginTop: -15, paddingBottom: '5%', paddingLeft: '5%', paddingRight: '5%', fontSize: 18}}>
                   {(() => {
                     switch (this.state.selectedIndex) {
-                      case 0: return [`${Object.keys(tempTruths)[this.state.winnerIndex]} \n \n`, Object.values(tempTruths)[this.state.winnerIndex].map((ii) => <Button title={ii}/>)];
+                     // case 0: return [`${Object.keys(tempTruths)[this.state.winnerIndex]} \n \n`, Object.values(tempTruths)[this.state.winnerIndex].map((ii) => <Button title={ii}/>)];
+                     case 0: return (this.props.truthsItems.payload) ? this.props.truthsItems.payload.task.Description: `${Object.keys(tempTruths)[this.state.winnerIndex]} \n \n`;
                       case 1: return `${tempDares[this.state.winnerIndex]}`;
                       case 2: return `Is there a way around a challenge your facing right now that involves doing more of the challenge: ${participants[this.state.winnerIndex]}?`;
                       default: return <Image style={{ width: 80, height: 80 }} source={items[this.state.winnerIndex]} />;
@@ -299,16 +325,16 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   // reviews: state.reviews.items,
-  truthsItems: state.truthsReducer.items,
-  truthsErros: state.truthsReducer.errors,
+  truthsItems: state.truthsReducer,
+  truthsErrors: state.truthsReducer.errors,
   truthsLoading: state.truthsReducer.loading
-
 });
 //might have to send up to a state and have agree votes as a state
 const mapDispatchToProps = (dispatch) => {
   return {
     // fetchCompanies: () => dispatch(fetchProducts()),
     // fetchRevs: (theCName) => dispatch(fetchReviews(theCName)),
+    fetchTruths: (truthCategory) => dispatch(fetchTruthsCat(truthCategory))
 
   }
 }

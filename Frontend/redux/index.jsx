@@ -1,7 +1,7 @@
 import axios from "axios";
 import thunk from 'redux-thunk';
 import { combineReducers, createStore, applyMiddleware } from "redux";
-
+import _ from 'lodash';
 
 
 
@@ -22,34 +22,58 @@ const FETCH_TRUTHS_FAILURE = "FETCH_TRUTHS_FAILURE";
 	};
 }; */
 
-function getTruths() {
-	// 	fetch("http://localhost:4000/companies")
-	// 	  .then(handleErrors)
-	// 	  .then(res => res.json())
-	// 	  .then(_ = (res) => {
-	// 		companyResults = Object.values(res.data);
-
-	// 		for (co = 0; co < companyResults.length + 1; co++){
-	// 			if (companyResults && companyResults[co] && companyResults[co].companyName){
-	// 			innerProduct = {
-	// 				companyName: companyResults[co].companyName,
-	// 				numOfRatings: companyResults[co].numOfRatings,
-	// 				overallRatingGrade: companyResults[co].overallRatingGrade,
-	// 				imgLogoUrl: companyResults[co].imgLogoUrl
-	// 			}
-	// 			if (products.length < companyResults.length) {
-	// 				products.push(innerProduct);
-	// 			  }
-	// 		}
-	// 		else{
-
-	// 		}
-	// 	}
-
-	//   })
+function makeTempJSON() {
+	fetch('https://jsonplaceholder.typicode.com/posts', {
+		method: 'POST',
+		body: JSON.stringify({
+			"status": "ok",
+			"task": {
+				"TruthId": 10,
+				"Description": "How many hours a travel",
+				"Points": 55,
+				"CategoryId": 6,
+				"MinPointsNeeded": 40,
+				"HoursToComplete": 3,
+				"SentNum": 1,
+				"CompleteNum": 0,
+				"CategoryName": "Sleep"
+			}
+		}),
+		headers: {
+			'Content-type': 'application/json; charset=UTF-8',
+		},
+	})
+		.then((response) => response.json())
+		.then((json) => console.log(json));
 }
-function fakeGetTruths() {
-	getTruths()
+
+function getTruths(categoryName) {
+	const url = 'http://192.168.1.10:3000/dares-truths-questions/task/truth/' + categoryName;
+	const url2 = 'https://mocki.io/v1/9f7ce101-f5df-4460-9d21-c3ef0d4b84b5'
+	//YOU HAVE TO SWITCH THE URL TO URL...URL2 IS MY FAKE JSON PAGE
+
+	fetch(url2, {
+		withCredentials: true,
+		credentials: 'include',
+		headers: {
+			//swtich the access token to the actual state of the token
+			'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNjE5ZDc3OWMtYTI0Yy0xMWViLTk2YzItMjA0NzQ3ZDMyZjk3IiwiaXNBZG1pbiI6dHJ1ZSwiaXNWZXJpZmllZCI6MSwiY29uc2VudFNpZ25lZCI6MCwiaWF0IjoxNjE5NTYxMjcxLCJleHAiOjE2MTk1NzIwNzF9.N6tXpHqs10kxC_oQ2siYzbzPdjamfqjOK5oOktYUbho"
+		},
+	}).then(response => response.json())
+		.then(response => {
+			console.log("RESP BODY line 41 ", response);
+			truths.push(response)
+		})
+		.catch(error => {
+			console.log("There was an error, " + error);
+		})
+}
+
+
+
+function fakeGetTruths(categoryName) {
+
+	getTruths(categoryName)
 	return new Promise(resolve => {
 		// Resolve after a timeout so we can see the loading indicator
 		setTimeout(
@@ -62,29 +86,36 @@ function fakeGetTruths() {
 	});
 }
 
-export function fetchTruths() {
+export function fetchTruthsCat(categoryName) {
 	return dispatch => {
-		dispatch({ type: 'FETCH_TRUTHS_BEGIN', payload: response.data });
-		return fakeGetTruths()
-		//   .then(json => {
-		// 	dispatch(fetchTruthsSuccess(json.products));
-		// 	return json.products;
-		//   })
-		//   .catch(error =>
-		// 	dispatch(fetchProductsFailure(error))
-		//   );
+		dispatch({ type: 'FETCH_TRUTHS_BEGIN' });
+		console.log("Category name line 65", categoryName);
+		return fakeGetTruths(categoryName)
+			.then(json => {
+				console.log('line 68', json.truths[0]);
+				dispatch({ type: 'FETCH_TRUTHS_SUCCESS', payload: json.truths[0]});
+				return json;
+			})
+			.catch(error =>
+				dispatch({ type: 'FETCH_TRUTHS_FAILURE', payload: error })
+			);
 	};
 };
 
 //reducers
+const initialState = {
+	items: [],
+	loading: false,
+	error: null
+};
 
-const userReducer = (state = {}, action) => {
-	switch (action.payload) {
+const userReducer = (action, state = initialState) => {
+	switch (action) {
 		case FETCH_TRUTHS_BEGIN:
 			return {
 				...state,
 				loading: true,
-				error: null
+				error: null,
 			};
 
 		case FETCH_TRUTHS_SUCCESS:
@@ -93,7 +124,7 @@ const userReducer = (state = {}, action) => {
 			return {
 				...state,
 				loading: false,
-				items: action.payload.products
+				items: action.payload
 			};
 
 		case FETCH_TRUTHS_FAILURE:
@@ -101,7 +132,7 @@ const userReducer = (state = {}, action) => {
 			return {
 				...state,
 				loading: false,
-				error: action.payload.error,
+				error: action.payload,
 				items: []
 			};
 
