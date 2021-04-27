@@ -57,7 +57,7 @@ function getTruths(categoryName) {
 		credentials: 'include',
 		headers: {
 			//swtich the access token to the actual state of the token
-			'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNjE5ZDc3OWMtYTI0Yy0xMWViLTk2YzItMjA0NzQ3ZDMyZjk3IiwiaXNBZG1pbiI6dHJ1ZSwiaXNWZXJpZmllZCI6MSwiY29uc2VudFNpZ25lZCI6MCwiaWF0IjoxNjE5NTYxMjcxLCJleHAiOjE2MTk1NzIwNzF9.N6tXpHqs10kxC_oQ2siYzbzPdjamfqjOK5oOktYUbho"
+			'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNjgzOWVkMWYtYTRhZS0xMWViLWEzOWYtMjA0NzQ3ZDMyZjk3IiwiaXNBZG1pbiI6dHJ1ZSwiaXNWZXJpZmllZCI6MSwiY29uc2VudFNpZ25lZCI6MCwiaWF0IjoxNjE5NDYyMDY0LCJleHAiOjE2MTk0NzI4NjR9.1zK0TlRbtuKdUsyYwzp0SGqDqjPev0RP6SoWT12x6GM"
 		},
 	}).then(response => response.json())
 		.then(response => {
