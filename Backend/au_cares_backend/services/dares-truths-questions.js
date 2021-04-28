@@ -2,6 +2,8 @@ const dbConnection = require('../database/database');
 
 
 async function getTruthsHistory(isCurrent, isComplete, category, uuid) {
+    isCurrent = isCurrent ? isCurrent === "true" : null;
+    isComplete = isComplete ? isComplete === "true" : null;
 
     return dbConnection.getTruthsHistory(isCurrent, isComplete, category, uuid).then(result => {
         let truthArr = [];

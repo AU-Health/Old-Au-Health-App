@@ -218,7 +218,7 @@ function getTruthTask(category, minPointsNeeded, isCounted) {
         `
     UPDATE Truths
     SET SentNum = SentNum+1
-    WHERE TruthId = ${result.TruthId}
+    WHERE TruthId = ?
     `
 
     return new Promise((resolve, reject) => {
@@ -228,7 +228,7 @@ function getTruthTask(category, minPointsNeeded, isCounted) {
                 if (err) reject(err);
 
                 if (isCounted) {
-                    mySqlConnection.query(updateTruthCountSentSqlQuery, (err) => {
+                    mySqlConnection.query(updateTruthCountSentSqlQuery, [result.TruthId], (err) => {
                         if (err) reject(err);
                     });
                 }
