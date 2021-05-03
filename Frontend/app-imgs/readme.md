@@ -7,6 +7,8 @@
 - see sketches.AI for all adjustable, individual vectors
 - clean components: scratch files are compiled into a scratch/concept directory. Same as components but includes sleep final wheel and cleaner layout. 
 
+## *** Note: when ready to export for screen, ALWAYS export your AI file as an SVG. SVGs are completely scalable, meaning you can resize the image to any size and still preserve the integrity of the image (it won't become pixilated or blurry)
+
 ## Tutorials
 - Fitting your AI images into wheel shapes:
   - Step 1: Locate the "wheel-final.ai" file under Final-imgs/final-wheels and open this file
