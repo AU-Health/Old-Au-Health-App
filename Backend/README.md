@@ -77,3 +77,6 @@ API's can be tested using requests.rest file in VS Code or Insomnia for a nicer 
     1. After createing a new collection, in the top left corner where you see "Dashboard/(name of collection)", click on the name of your collection, and select "Import/Export"
     1. Select "Import Data" and select "From File". Get file from au_cares_backend -> Insomnia -> (Insomnia JSON file)
     1. Test out the API's how you want :)
+
+## Starting the server
+Start the server by going into au_cares folder in terminal, and typing *nodemon app.js*. This command can only be done after setup
