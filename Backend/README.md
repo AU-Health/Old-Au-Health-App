@@ -17,7 +17,7 @@ Tools to be installed: Node.JS, some IDE for backend, Insomnia (for testing API)
 ## Setting up IDE and Backend
 
 1. Download preferred IDE. I recommend VS Code
-1. Open the au_cares_backend folder in terminal. Install the required packages by typing: *npm install express jsonwebtoken dotenv nodemon nodemailer mysql bcrypt crypto moment*
+1. Open the au_cares_backend folder in terminal. Install the required packages by typing: *npm install*. This will install express, jsonwebtoken, dotenv, nodemon, nodemailer, mysql, bcrypt, crypto, moment
 1. Create a config folder in au_cares_backend, and  create a *dot.env* file in the config folder.
 1. Setup the dot.env file
     1. Create the following template in your dot.env file

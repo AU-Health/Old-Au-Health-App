@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Dimensions, Input, StyleSheet, CheckBox, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, Dimensions, Input, StyleSheet, CheckBox, ScrollView, TouchableOpacity, TextInput, Button } from 'react-native';
 import { Avatar, ListItem, Icon } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -13,14 +13,25 @@ var h = deviceHeight * 90 / 100;
 var w = deviceWidth * 90 / 100;
 
 const Feedback = ({ navigation }) => {
-    const [emailTextValue, setEmailTextValue] = React.useState('');
-    const [subjectTextValue, setSubjectTextValue] = React.useState('');
-    const [descTextValue, setDescTextValue] = React.useState('');
+    let email, subject, desc
 
-    const formSubmitBtn = () => {
-        console.log(emailTextValue);
-        console.log(subjectTextValue);
-        console.log(descTextValue);
+    _formSubmitBtn = () => {
+        //console.log('yay')
+        console.log(email)
+        console.log(subject)
+        console.log(desc)
+    }
+
+    _handEmailInput = (text) => {
+        email = text
+    }
+
+    _handSubjectInput = (text) => {
+        subject = text
+    }
+
+    _handDescInput = (text) => {
+        desc = text
     }
 
     
@@ -40,7 +51,7 @@ const Feedback = ({ navigation }) => {
                         <Text style={styles.labelText}> Email </Text>
                     </View>
                     <View style={styles.inputContainer2}>
-                        <TextInput placeholder="Email" style={styles.textInput} onChangeText={text => setEmailTextValue} value={emailTextValue}/>
+                        <TextInput placeholder="Email" style={styles.textInput} onChangeText={text => this._handEmailInput(text)} />
                     </View>
                 </View>
 
@@ -49,7 +60,7 @@ const Feedback = ({ navigation }) => {
                         <Text style={styles.labelText}> Subject </Text>
                     </View>
                     <View style={styles.inputContainer2}>
-                        <TextInput placeholder="Subject" style={styles.textInput} onChangeText={text => setSubjectTextValue} value={subjectTextValue}/>
+                        <TextInput placeholder="Subject" style={styles.textInput} onChangeText={text => this._handSubjectInput(text)} />
                     </View>
                 </View>
 
@@ -58,21 +69,18 @@ const Feedback = ({ navigation }) => {
                         <Text style={styles.labelText}> Message </Text>
                     </View>
                     <View style={styles.inputContainer2_message}>
-                        <TextInput placeholder="" style={styles.textInput} onChangeText={text => setDescTextValue} value={descTextValue}/>
+                        <TextInput placeholder="" style={styles.textInput} onChangeText={text => this._handDescInput(text)} />
                     </View>
                 </View>
 
                 <View style={styles.BtnContainer}>
-                    <TouchableOpacity
-                        onPress={formSubmitBtn()} style={styles.submitBtnContainer}>
-                        <LinearGradient
-                            colors={["#23cba7", "#2ecc71"]}
-                            style={styles.linearGradient}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 1 }}>
-                                <Text style={styles.submitBtn}> {'Submit'} </Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
+                    <Button
+                        onPress = {this._formSubmitBtn}
+                        title = "Submit"
+                        color = "#23cba7"
+                        style={styles.linearGradient}
+                    />
+                    
                 </View>
 
             </View>
@@ -147,20 +155,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     submitBtn: {
-      fontSize: 18,
-      color: 'white',
-      //fontWeight: "bold",
+        fontSize: 18,
+        color: 'white',
+        //fontWeight: "bold",
     },
     submitBtnContainer: {
-      elevation: 8,
+        elevation: 8,
     },
     linearGradient: {
-      marginTop: 5,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 6,
-      width: 100,
-      height: 40,
+        fontSize: 28,
+        marginTop: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 6,
+        width: 100,
+        height: 40,
     },
     textInput: {
         marginTop: 5,
@@ -188,5 +197,17 @@ export default Feedback;
                         <TextInput placeholder="Last Name" style={styles.textInput}/>
                     </View>
                 </View>
+
+
+                <TouchableOpacity
+                        onPress={this._formSubmitBtn()} style={styles.submitBtnContainer}>
+                        <LinearGradient
+                            colors={["#23cba7", "#2ecc71"]}
+                            style={styles.linearGradient}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}>
+                                <Text style={styles.submitBtn}> {'Submit'} </Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
 
 */
