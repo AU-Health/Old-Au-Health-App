@@ -56,5 +56,8 @@ Will need to setup MySQL,DataGrip(kinda optional) and PHPMyAdmin
 1. In the row with MySQL, click "Admin". (Starts phpMyAdmin)
 
 ### Setting up the Database
-
+1. Download the "AUCaresDatabase.sql" file in this /Database folder 
+2. Import the SQL file into phpMyAdmin by clicking the "Import" tab in the top menu
+3. Under "File to Import," click "Browse" and select the SQL file
+4. Click "Go" on the bottom right to import the database file
 
