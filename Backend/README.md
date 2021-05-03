@@ -1,10 +1,25 @@
 # Welcome to the AU Cares Backend!!
 
 # Introduction
-This is the backend to AUCares application. The backend is uses NodeJS with JavaScript as the backend language, and Express is the technology used to create API(Application Programming Interface) endpoints and send responses to requests.
-
+The backend of this application uses Node.JS as its runtime environment, and JavaScript is used as the programming language used in Node JS. We are using Express as our backend framework to create API (Application Programming Interface) and handle user requests to the server and respond to them. The main requests of our application are logging a user end and tracking users’ progress, along with giving new truths, dares, and questions upon spinning the wheel daily.
 ## Application Setup
-The backend is divided
+The code and the back end are organized based on a structure similar to the MVC model, with each service being in its layer. Data is sent between the layers, however, only the service function layer has access to the database to ensure consistency. Each layer also has its functions divided into separate files based on the tasks they provide. For example, all API routes that have to do with authentication are in their file, and API requests that have to do with accessing resources are in another file.
+
+
+The entry point of the backend is app.js file. All requests go through app.js, and then are directed to their request based on the query. 
+
+For example: http://localhost:3000/authentication/login
+* localhost:3000 sends request to backend, so request arrives to app.js
+* /authentication sends request to authentication folder
+* /login sends request to login function
+
+### Folder structure of Backend
+* api-routes - Location to where a request arrives to. This is the API-Routes layer. All function calls that needs to be done to suffice the requests are done here. The response of the request is also sent here. Each file in api-routes is divided based on the subject of the routes. Example: Authentication is for authentication routes only
+* database - Location to where all database requests are stored. This is the database layer. The database.js is the file which holds all functions the database.
+* Insomnia - Folder with JSON of current endpoints created. This JSON is to be imported in Insomnia and updated when new endpoints are created for testing.
+* middleware - Location where all middleware functions occur. This is the middleware layer. Middleware functions are functions run in between the request arriving to the api-routes and the service functions being called. Most of them are mainly to authorize a user to ensure that by the time service functions are called, the request is fully valid. Middleware functions are also split into files based on topic
+* services - Location to where all service functions are located. This is the Service/Controller layer, and connects the api-routes layer to the database layer. The service functions are the workhorse of the requests. Service functions are also split into files based on topic
+
 
 
 # SETUP
