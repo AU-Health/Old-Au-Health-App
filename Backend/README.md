@@ -1,5 +1,12 @@
 # Welcome to the AU Cares Backend!!
 
+# Introduction
+This is the backend to AUCares application. The backend is uses NodeJS with JavaScript as the backend language, and Express is the technology used to create API(Application Programming Interface) endpoints and send responses to requests.
+
+## Application Setup
+The backend is divided
+
+
 # SETUP
 Tools to be installed: Node.JS, some IDE for backend, Insomnia (for testing API)
 
