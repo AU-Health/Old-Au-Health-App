@@ -17,23 +17,30 @@ router.post('/create-truth', authMiddleware.authenticateAdministrator, (req, res
     let hoursToComplete = req.body.hoursToComplete;
 
     //send response that truth added was ssuccess
-    createTruth(truthDescription, points, categoryId, minPoints, hoursToComplete).then(truthAdded => {
-        if (truthAdded) {
-            res.status(201).json({
-                status: "ok",
-                truth_added: {
-                    Description: truthDescription,
-                    Points: points,
-                    CategoryId: categoryId,
-                }
-            })
-        } else {
+    createTruth(truthDescription, points, categoryId, minPoints, hoursToComplete)
+        .then(truthAdded => {
+            if (truthAdded) {
+                res.status(201).json({
+                    status: "ok",
+                    truth_added: {
+                        Description: truthDescription,
+                        Points: points,
+                        CategoryId: categoryId,
+                    }
+                })
+            } else {
+                res.status(401).json({
+                    status: "error",
+                    error: "Truth not added"
+                })
+            }
+        })
+        .catch(err => {
             res.status(401).json({
                 status: "error",
-                error: "Truth not added"
+                error: err
             })
-        }
-    })
+        })
 })
 
 router.post('/create-dare', authMiddleware.authenticateAdministrator, (req, res) => {
@@ -44,23 +51,30 @@ router.post('/create-dare', authMiddleware.authenticateAdministrator, (req, res)
     let hoursToComplete = req.body.hoursToComplete;
 
     //send response that truth added was success
-    createDare(dareDescription, points, categoryId, minPoints, hoursToComplete).then(dareAdded => {
-        if (dareAdded) {
-            res.status(201).json({
-                status: "ok",
-                dare_added: {
-                    Description: dareDescription,
-                    Points: points,
-                    CategoryId: categoryId,
-                }
-            })
-        } else {
+    createDare(dareDescription, points, categoryId, minPoints, hoursToComplete)
+        .then(dareAdded => {
+            if (dareAdded) {
+                res.status(201).json({
+                    status: "ok",
+                    dare_added: {
+                        Description: dareDescription,
+                        Points: points,
+                        CategoryId: categoryId,
+                    }
+                })
+            } else {
+                res.status(401).json({
+                    status: "error",
+                    error: "Dare not added"
+                })
+            }
+        })
+        .catch(err => {
             res.status(401).json({
                 status: "error",
-                error: "Dare not added"
+                error: err
             })
-        }
-    })
+        })
 })
 
 router.post('/create-questions', authMiddleware.authenticateAdministrator, (req, res) => {
@@ -72,34 +86,47 @@ router.post('/create-questions', authMiddleware.authenticateAdministrator, (req,
     let hoursToComplete = req.body.hoursToComplete;
 
     //send response that truth added was success
-    createQuestion(questionTitle, questionDescription, points, categoryId, minPoints, hoursToComplete).then(dareAdded => {
-        if (dareAdded) {
-            res.status(201).json({
-                status: "ok",
-                dare_added: {
-                    Question: questionDescription,
-                    Points: points,
-                    CategoryId: categoryId,
-                }
-            })
-        } else {
+    createQuestion(questionTitle, questionDescription, points, categoryId, minPoints, hoursToComplete)
+        .then(dareAdded => {
+            if (dareAdded) {
+                res.status(201).json({
+                    status: "ok",
+                    dare_added: {
+                        Question: questionDescription,
+                        Points: points,
+                        CategoryId: categoryId,
+                    }
+                })
+            } else {
+                res.status(401).json({
+                    status: "error",
+                    error: "Question not added"
+                })
+            }
+        })
+        .catch(err => {
             res.status(401).json({
                 status: "error",
-                error: "Question not added"
+                error: err
             })
-        }
-    })
+        })
 })
 
 router.get('/truthsHistory', dtqMiddleware.authenticateAccess, async(req, res) => {
     //send request with values
-    let truthsHistoryArr = await getTruthsHistory(req.query.isCurrent, req.query.isComplete, req.query.category, req.query.uuid);
-
-    res.status(200).json({
-        status: "ok",
-        truthsHistory: truthsHistoryArr
-    })
-
+    getTruthsHistory(req.query.isCurrent, req.query.isComplete, req.query.category, req.query.uuid)
+        .then(truthsHistoryArr => {
+            res.status(200).json({
+                status: "ok",
+                truthsHistory: truthsHistoryArr
+            })
+        })
+        .catch(err => {
+            res.status(401).json({
+                status: "error",
+                error: err
+            })
+        })
 });
 
 //update or add answer to a truth

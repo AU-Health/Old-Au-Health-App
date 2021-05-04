@@ -13,8 +13,6 @@ router.post('/feedback', tokenMiddleware.authenticateToken, (req, res) => {
     let feedbackBody = req.body.feedback;
 
     sendFeedback(feedbackSubject, feedbackBody).then(response => {
-        console.log("RESPONSE");
-        console.log(response);
         if (response == "error") {
             res.status(500).json({
                 status: "error",
