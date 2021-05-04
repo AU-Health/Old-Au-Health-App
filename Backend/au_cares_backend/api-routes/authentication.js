@@ -80,7 +80,7 @@ router.post('/token', tokenMiddleware.authenticateRefreshToken, (req, res) => {
 })
 
 //verify email of account
-router.put('/verifyAccount', tokenMiddleware.authenticateToken, authMiddleware.verifyVerificationCode, async(req, res) => {
+router.put('/verifyAccount', tokenMiddleware.authenticateToken, authMiddleware.verifyVerificationCode, (req, res) => {
     let uuid = req.user.uuid;
     authentication.updateAccountPostVerified(uuid)
         .then(verifiedInfo => {
