@@ -9,31 +9,47 @@ const router = express.Router(); //used to set up an express server
 
 
 /*Create a new user*/
-router.post('/user_create', authMiddleware.ensureEmailAndPass, async(req, res) => {
+router.post('/user_create', authMiddleware.ensureEmailAndPass, (req, res) => {
     let userEmail = req.body.email;
     let userPass = req.body.password;
     let isAdmin = req.body.isAdmin;
-    let createdUserInfo = await authentication.createUserAccount(userEmail, userPass, isAdmin);
-    res.status(200).json({
-        status: "ok",
-        uuid: createdUserInfo.uuid,
-        accessToken: createdUserInfo.accessToken
-    });
+    authentication.createUserAccount(userEmail, userPass, isAdmin)
+        .then(createdUserInfo => {
+            res.status(200).json({
+                status: "ok",
+                uuid: createdUserInfo.uuid,
+                accessToken: createdUserInfo.accessToken
+            });
+        })
+        .catch(err => {
+            res.status(401).json({
+                status: "error",
+                error: err
+            })
+        })
+
 });
 
 /*Login a user*/
-router.post('/login', authMiddleware.authenticateUserAccount, async(req, res) => {
+router.post('/login', authMiddleware.authenticateUserAccount, (req, res) => {
     let uuid = req.user.uuid;
     let isVerified = req.user.isVerified;
-    let loginUserInfo = await authentication.login(uuid, isVerified);
-
-    res.status(200).json({
-        status: "ok",
-        isVerified: loginUserInfo.isVerified,
-        uuid: loginUserInfo.uuid,
-        accessToken: loginUserInfo.accessToken,
-        refreshToken: loginUserInfo.refreshToken
-    })
+    authentication.login(uuid, isVerified)
+        .then(loginUserInfo => {
+            res.status(200).json({
+                status: "ok",
+                isVerified: loginUserInfo.isVerified,
+                uuid: loginUserInfo.uuid,
+                accessToken: loginUserInfo.accessToken,
+                refreshToken: loginUserInfo.refreshToken
+            })
+        })
+        .catch(err => {
+            res.status(401).json({
+                status: "error",
+                error: err
+            })
+        })
 });
 
 /*Logout user by removing their refresh token*/
@@ -46,28 +62,42 @@ router.put('/logout', tokenMiddleware.authenticateToken, authMiddleware.authenti
 })
 
 /*Gives user a new access token upon given a good refresh token*/
-router.post('/token', tokenMiddleware.authenticateRefreshToken, async(req, res) => {
+router.post('/token', tokenMiddleware.authenticateRefreshToken, (req, res) => {
     let uuid = req.user.uuid;
-    let newAccessToken = await authentication.generateAccessToken(uuid);
-
-    res.status(201).json({
-        status: "ok",
-        accessToken: newAccessToken
-    })
-
-
+    authentication.generateAccessToken(uuid)
+        .then(newAccessToken => {
+            res.status(201).json({
+                status: "ok",
+                accessToken: newAccessToken
+            })
+        })
+        .catch(err => {
+            res.status(401).json({
+                status: "error",
+                error: err
+            })
+        })
 })
 
 //verify email of account
 router.put('/verifyAccount', tokenMiddleware.authenticateToken, authMiddleware.verifyVerificationCode, async(req, res) => {
     let uuid = req.user.uuid;
-    let verifiedInfo = await authentication.updateAccountPostVerified(uuid);
-    res.status(200).json({
-        status: "ok",
-        message: "Account Verified",
-        accessToken: verifiedInfo.accessToken,
-        refreshToken: verifiedInfo.refreshToken
-    })
+    authentication.updateAccountPostVerified(uuid)
+        .then(verifiedInfo => {
+            res.status(200).json({
+                status: "ok",
+                message: "Account Verified",
+                accessToken: verifiedInfo.accessToken,
+                refreshToken: verifiedInfo.refreshToken
+            })
+        })
+        .catch(err => {
+            res.status(401).json({
+                status: "error",
+                error: err
+            })
+        })
+
 })
 
 

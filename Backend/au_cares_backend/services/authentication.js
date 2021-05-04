@@ -21,10 +21,8 @@ async function createUserAccount(email, password, isAdmin) {
             uuid: uuid,
             accessToken: await generateAccessToken(uuid)
         }
-    } catch (e) {
-        console.log(e);
-        return "error";
-
+    } catch (err) {
+        return new Error(err);
     }
 }
 
@@ -97,6 +95,7 @@ async function generateAccessToken(uuid) {
     return dbConnection.getUserInfoFromUUID(uuid).then(response => {
             let jwtPayload = {};
             jwtPayload["uuid"] = response["UuidFromBin(UUID)"].toString();
+            jwtPayload["binaryUuid"] = response["UUID"]; //not using this yet
             jwtPayload["userType"] = response.userType;
             jwtPayload["isAdmin"] = !!response.IsAdmin;
             jwtPayload["isVerified"] = response.UserVerified;

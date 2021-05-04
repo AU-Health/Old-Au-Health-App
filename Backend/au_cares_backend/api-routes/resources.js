@@ -6,8 +6,8 @@ const { getResources } = require('../services/resources');
 router.get('/health-resources', (req, res) => {
 
     let selectedResource = req.query.specificResource || null;
-    console.log(selectedResource);
-    getResources(selectedResource).then(resources => {
+    getResources(selectedResource)
+        .then(resources => {
             res.status(200).json({
                 status: "ok",
                 resources: resources
