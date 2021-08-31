@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - directory: frontend
+    package-ecosystem: npm
+    schedule:
+      interval: daily
+  - directory: backend
+    package-ecosystem: npm
+    schedule:
+      interval: daily
