@@ -11,7 +11,6 @@ import MoodImage from '../../../assets/mood.png'
 import { StackNavigationProp } from '@react-navigation/stack'
 
 const deviceWidth = Dimensions.get('window').width
-// const deviceHeight = Dimensions.get('window').height
 
 // const h = (deviceHeight * 25) / 100
 const w = (deviceWidth * 80) / 100
