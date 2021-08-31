@@ -2,7 +2,6 @@
   "expo": {
     "name": "Au-Health-App",
     "slug": "Au-Health-App",
-    "bundleIdentifier": "health.au.client",
     "entryPoint": "./src/App.tsx",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -17,9 +16,11 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "health.au.client"
     },
     "android": {
+      "bundleIdentifier": "health.au.client",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

@@ -55,7 +55,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
       - name: install
         run: yarn install
-      - name: build ios
+      - name: build android
         run: expo build:android
   # test:
   #   name: Test
