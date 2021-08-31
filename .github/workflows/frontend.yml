@@ -14,43 +14,39 @@ on:
 
 jobs:
   build-ios:
-    name: Build
-    environment: Test
-    strategy:
-      matrix:
-        node-version: [16.x]
+    name: Build iOS
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Node.js
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
-      # - run: cd client && npm install -g yarn
-      - name: yarn install and build
-        run: |
-          cd frontend
-          yarn 
-          yarn build:ios
+          node-version: 16.x
+      - uses: expo/expo-github-action@v6
+        with:
+          expo-version: 4.x
+          expo-cache: true
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: install
+        run: yarn install
+      - name: build ios
+        run: expo build:ios
   build-android:
-    name: Build
-    environment: Test
-    strategy:
-      matrix:
-        node-version: [16.x]
+    name: Build Android
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Node.js
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
-      # - run: cd client && npm install -g yarn
-      - name: yarn install and build
-        run: |
-          cd frontend
-          yarn 
-          yarn build:android
+          node-version: 16.x
+      - uses: expo/expo-github-action@v6
+        with:
+          expo-version: 4.x
+          expo-cache: true
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: install
+        run: yarn install
+      - name: build ios
+        run: expo build:android
   # test:
   #   name: Test
   #   environment: Test
