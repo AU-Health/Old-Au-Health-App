@@ -20,7 +20,7 @@
     "@react-navigation/native": "^5.9.2",
     "@react-navigation/stack": "^5.14.3",
     "axios": "^0.21.1",
-    "d3": "^3.5.17",
+    "d3": "^7.0.1",
     "expo": "^42.0.3",
     "expo-linear-gradient": "~8.4.0",
     "expo-status-bar": "~1.0.4",
