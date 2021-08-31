@@ -12,7 +12,6 @@ import { StackNavigationProp } from '@react-navigation/stack'
 
 const deviceWidth = Dimensions.get('window').width
 
-// const h = (deviceHeight * 25) / 100
 const w = (deviceWidth * 80) / 100
 
 export interface MoodProps {
