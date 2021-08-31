@@ -21,7 +21,7 @@ export interface MoodProps {
 }
 
 export const Mood: React.FC<MoodProps> = ({ navigation }) => {
-  navigation.navigate({ name: 'preLogin' })
+  navigation.navigate('preLogin')
 
   return (
     <View style={styles.questionaireContainer}>
