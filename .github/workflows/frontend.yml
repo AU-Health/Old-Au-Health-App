@@ -1,9 +1,5 @@
 name: Frontend
 
-defaults:
-  run:
-    working-directory: frontend
-
 on:
   push:
     branches:
@@ -18,6 +14,9 @@ on:
 
 jobs:
   build-ios:
+    defaults:
+      run:
+        working-directory: frontend
     name: Build iOS
     runs-on: ubuntu-latest
     steps:

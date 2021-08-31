@@ -21,6 +21,9 @@ jobs:
     name: Build
     environment: Test
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v2
       - name: Node.js
