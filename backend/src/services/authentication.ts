@@ -1,128 +1,144 @@
 /*File will have all authentication related things here*/
-const dbConnection = require('../database/database');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const crypto = require('crypto');
-const emailer = require('./emailer');
+import bcrypt from 'bcrypt'
+import crypto from 'crypto'
+import jwt from 'jsonwebtoken'
+import {
+  createNewUserInDB,
+  getUserInfoFromEmail,
+  getUserInfoFromUUID,
+  getUserRefreshTokenFromUUID,
+  getUserVerificationCodeFromDB,
+  removeRefreshTokenForUser,
+  updateUserInformation,
+} from '../database/database'
 
 //method to create an account
-async function createUserAccount(email, password, isAdmin) {
-    try {
-        const hashAlgo = crypto.createHash('sha256');
-        const hashedEmail = hashAlgo.update(email).digest('hex');
-        const passwordSalt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(password, passwordSalt); //hashes with salt
-        const verificationCode = '123';
+export async function createUserAccount(
+  email: string,
+  password: string,
+  isAdmin: boolean
+) {
+  try {
+    const hashAlgo = crypto.createHash('sha256')
+    const hashedEmail = hashAlgo.update(email).digest('hex')
+    const passwordSalt = await bcrypt.genSalt()
+    const hashedPassword = await bcrypt.hash(password, passwordSalt) //hashes with salt
+    const verificationCode = '123'
 
-        await dbConnection.createNewUserInDB(hashedEmail, hashedPassword, isAdmin, verificationCode);
-        let queryResult = await getUserInformationFromEmail(hashedEmail, true);
-        let uuid = queryResult["UuidFromBin(UUID)"].toString();
-        return {
-            uuid: uuid,
-            accessToken: await generateAccessToken(uuid)
-        }
-    } catch (err) {
-        return new Error(err);
-    }
-}
-
-//login user. Returns user's UUID and JWT token
-async function login(uuid, isVerified) {
-    let accessToken = await generateAccessToken(uuid);
-    let refreshToken = null;
-
-    if (isVerified) {
-        refreshToken = generateAndStoreRefreshToken(uuid);
-    }
-
+    await createNewUserInDB(
+      hashedEmail,
+      hashedPassword,
+      isAdmin,
+      verificationCode
+    )
+    let queryResult = await getUserInformationFromEmail(hashedEmail, true)
+    let uuid = queryResult['UuidFromBin(UUID)'].toString()
     return {
-        uuid: uuid,
-        isVerified: !!isVerified,
-        accessToken: accessToken,
-        refreshToken: refreshToken
+      uuid: uuid,
+      accessToken: await generateAccessToken(uuid),
     }
+  } catch (err) {
+    return new Error(err)
+  }
 }
 
+/** login user. Returns user's UUID and JWT token */
+export async function login(uuid: string, isVerified: boolean) {
+  let accessToken = await generateAccessToken(uuid)
+  let refreshToken = null
 
-//logout user by deleting the refresh token ... returns undefined if error, otherwise num rows deletd
-async function logout(uuid) {
-    let queryResult = await dbConnection.removeRefreshTokenForUser(uuid);
-    if (!queryResult) {
-        return undefined;
-    }
-    return queryResult.affectedRows;
+  if (isVerified) {
+    refreshToken = generateAndStoreRefreshToken(uuid)
+  }
+
+  return {
+    uuid: uuid,
+    isVerified: !!isVerified,
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+  }
 }
 
-async function getUserVerificationCode(uuid) {
-    return await dbConnection.getUserVerificationCode(uuid);
+/**logout user by deleting the refresh token ... returns undefined if error, otherwise num rows deletd */
+export async function logout(uuid: string) {
+  let queryResult = await removeRefreshTokenForUser(uuid)
+  if (!queryResult) {
+    return undefined
+  }
+  return queryResult.affectedRows
 }
 
-
-//service of what to do once we are aware account is verified
-async function updateAccountPostVerified(uuid) {
-    await dbConnection.updateUserInformation(uuid, "UserVerified", true, true);
-    //maybe send email saying user is now verified
-
-    return {
-        accessToken: await generateAccessToken(uuid),
-        refreshToken: generateAndStoreRefreshToken(uuid)
-    }
+export async function getUserVerificationCode(uuid: string) {
+  return await getUserVerificationCodeFromDB(uuid)
 }
 
-//get user information from UUID
-async function getUserInformationFromUUID(uuid) {
-    return await dbConnection.getUserRefreshTokenFromUUID(uuid);
+/** service of what to do once we are aware account is verified */
+export async function updateAccountPostVerified(uuid: string) {
+  await updateUserInformation(uuid, 'UserVerified', true, true)
+  //maybe send email saying user is now verified
+
+  return {
+    accessToken: await generateAccessToken(uuid),
+    refreshToken: generateAndStoreRefreshToken(uuid),
+  }
 }
 
-//get user information from email
-async function getUserInformationFromEmail(email, isHashed) {
-    if (!isHashed) {
-        const hashAlgo = crypto.createHash('sha256');
-        email = hashAlgo.update(email).digest('hex');
-    }
-    return await dbConnection.getUserInfoFromEmail(email);
+/** get user information from UUID */
+export async function getUserInformationFromUUID(uuid: string) {
+  return await getUserRefreshTokenFromUUID(uuid)
 }
 
-async function isRefreshTokenCorrectForAccount(uuid, refreshToken) {
-    let queryResult = await dbConnection.getUserRefreshTokenFromUUID(uuid);
-    return queryResult && queryResult['RefreshToken'] === refreshToken;
+/** get user information from email */
+export async function getUserInformationFromEmail(
+  email: string,
+  isHashed: boolean
+) {
+  if (!isHashed) {
+    const hashAlgo = crypto.createHash('sha256')
+    email = hashAlgo.update(email).digest('hex')
+  }
+  return await getUserInfoFromEmail(email)
+}
+
+export async function isRefreshTokenCorrectForAccount(
+  uuid: string,
+  refreshToken: string
+) {
+  let queryResult = await getUserRefreshTokenFromUUID(uuid)
+  return queryResult && queryResult['RefreshToken'] === refreshToken
 }
 
 //methods to change password, email, or other things
 
-//create a new JWT for the user --- maybe add points per category?
-async function generateAccessToken(uuid) {
-    return dbConnection.getUserInfoFromUUID(uuid).then(response => {
-            let jwtPayload = {};
-            jwtPayload["uuid"] = response["UuidFromBin(UUID)"].toString();
-            jwtPayload["binaryUuid"] = response["UUID"]; //not using this yet
-            jwtPayload["userType"] = response.userType;
-            jwtPayload["isAdmin"] = !!response.IsAdmin;
-            jwtPayload["isVerified"] = response.UserVerified;
-            jwtPayload["consentSigned"] = response.ConsentFormSigned;
-            jwtPayload["isAccountDisabled"] = response.UserAccountDisabled;
-            return jwt.sign(jwtPayload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '3h' });
-        })
-        .catch(err => {
-            console.log("ERROR");
-            console.log(err);
-        })
+/** create a new JWT for the user --- maybe add points per category? */
+export async function generateAccessToken(uuid: string) {
+  return getUserInfoFromUUID(uuid)
+    .then((response) => {
+      let jwtPayload: Record<string, any> = {}
+      jwtPayload['uuid'] = response['UuidFromBin(UUID)'].toString()
+      jwtPayload['binaryUuid'] = response['UUID'] //not using this yet
+      jwtPayload['userType'] = response.userType
+      jwtPayload['isAdmin'] = !!response.IsAdmin
+      jwtPayload['isVerified'] = response.UserVerified
+      jwtPayload['consentSigned'] = response.ConsentFormSigned
+      jwtPayload['isAccountDisabled'] = response.UserAccountDisabled
+      return jwt.sign(jwtPayload, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: '3h',
+      })
+    })
+    .catch((err) => {
+      console.log('ERROR')
+      console.log(err)
+    })
 }
 
-//create a refresh token for user
-function generateAndStoreRefreshToken(uuid) {
-    let refreshToken = jwt.sign({ "uuid": uuid }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-    dbConnection.storeRefreshTokenForUser(uuid, refreshToken);
-    return refreshToken;
+/** create a refresh token for user */
+export function generateAndStoreRefreshToken(uuid: string) {
+  let refreshToken = jwt.sign(
+    { uuid: uuid },
+    process.env.REFRESH_TOKEN_SECRET,
+    { expiresIn: '7d' }
+  )
+  storeRefreshTokenForUser(uuid, refreshToken)
+  return refreshToken
 }
-
-
-//exporting functions
-module.exports.login = login;
-module.exports.logout = logout;
-module.exports.createUserAccount = createUserAccount;
-module.exports.generateAccessToken = generateAccessToken;
-module.exports.isRefreshTokenCorrectForAccount = isRefreshTokenCorrectForAccount;
-module.exports.updateAccountPostVerified = updateAccountPostVerified;
-module.exports.getUserInformationFromEmail = getUserInformationFromEmail;
-module.exports.getUserVerificationCode = getUserVerificationCode;
