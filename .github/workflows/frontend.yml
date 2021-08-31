@@ -29,7 +29,7 @@ jobs:
       # - run: cd client && npm install -g yarn
       - name: yarn install and build
         run: |
-          cd client
+          cd frontend
           yarn 
           yarn build:ios
   build-android:
@@ -48,7 +48,7 @@ jobs:
       # - run: cd client && npm install -g yarn
       - name: yarn install and build
         run: |
-          cd client
+          cd frontend
           yarn 
           yarn build:android
   # test:
