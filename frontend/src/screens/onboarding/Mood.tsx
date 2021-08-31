@@ -11,9 +11,9 @@ import MoodImage from '../../../assets/mood.png'
 import { StackNavigationProp } from '@react-navigation/stack'
 
 const deviceWidth = Dimensions.get('window').width
-const deviceHeight = Dimensions.get('window').height
+// const deviceHeight = Dimensions.get('window').height
 
-const h = (deviceHeight * 25) / 100
+// const h = (deviceHeight * 25) / 100
 const w = (deviceWidth * 80) / 100
 
 export interface MoodProps {
@@ -21,7 +21,7 @@ export interface MoodProps {
 }
 
 export const Mood: React.FC<MoodProps> = ({ navigation }) => {
-  navigation.navigate({ name: 'preLogin', params: {} })
+  navigation.navigate({ name: 'preLogin' })
 
   return (
     <View style={styles.questionaireContainer}>
