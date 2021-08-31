@@ -1,6 +1,6 @@
-# Au-Health-App Front-end Installation and Setup.
+# Au-Health-App Front-end Installation and Setup
 
-first install npm here: https://www.npmjs.com/get-npm
+first install npm [here](https://www.npmjs.com/get-npm)
 
 ## Windows
 
@@ -14,10 +14,9 @@ first install npm here: https://www.npmjs.com/get-npm
 
 1. placeholder
 
-
 ## MacOS
 
-1. open terminal and install homebrew by pasting the following command: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+1. open terminal and install homebrew [here](https://brew.sh/)
 
 2. next install node.js: brew install node
 

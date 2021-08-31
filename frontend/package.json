@@ -19,12 +19,12 @@
     "@react-navigation/stack": "^5.14.3",
     "axios": "^0.21.1",
     "d3": "^3.5.17",
-    "expo": "^40.0.1",
+    "expo": "^42.0.3",
     "expo-linear-gradient": "~8.4.0",
     "expo-status-bar": "~1.0.3",
     "lodash": "^4.17.21",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
     "react-minimal-pie-chart": "^8.2.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.2.tar.gz",
@@ -42,7 +42,7 @@
     "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "~2.15.2",
     "react-native-switch": "^2.0.0",
-    "react-native-web": "^0.15.5",
+    "react-native-web": "^0.17.1",
     "react-native-wheel-of-fortune": "^1.5.4",
     "react-navigation": "^4.4.4",
     "react-redux": "^7.2.2",
@@ -51,7 +51,22 @@
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
-    "@babel/core": "~7.9.0"
+    "@babel/core": "~7.9.0",
+    "@types/react": "^17.0.19",
+    "@types/react-native": "^0.64.13",
+    "@typescript-eslint/eslint-plugin": "^4.30.0",
+    "@typescript-eslint/parser": "^4.30.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.25.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "jest": "^27.1.0",
+    "prettier": "^2.3.2",
+    "typescript": "~4.0.0"
   },
   "private": true
 }
