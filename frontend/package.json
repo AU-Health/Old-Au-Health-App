@@ -41,7 +41,7 @@
     "react-native-progress": "^4.1.2",
     "react-native-reanimated": "^2.1.0",
     "react-native-render-html": "^6.1.0",
-    "react-native-safe-area-context": "3.1.9",
+    "react-native-safe-area-context": "3.4.1",
     "react-native-screens": "~2.15.2",
     "react-native-switch": "^2.0.0",
     "react-native-web": "^0.17.1",
